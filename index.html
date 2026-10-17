@@ -7,7 +7,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;-webkit-font-smoothing:antialiased}
-
 body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2vmin}
 
 /* ─── Keyframes ─── */
@@ -18,131 +17,130 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 @keyframes drift{0%{transform:translate(0,0)}33%{transform:translate(1vmin,-1vmin)}66%{transform:translate(-1vmin,1vmin)}100%{transform:translate(0,0)}}
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
 @keyframes drawShape{from{stroke-dashoffset:var(--len,2000)}to{stroke-dashoffset:0}}
-@keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
 
-/* ─── Title & Quote ─── */
+/* ─── Landing Page ─── */
 .title-wrap{text-align:center;margin-bottom:3vmin;animation:fadeUp 1s cubic-bezier(.19,1,.22,1) both;animation-delay:.2s;position:relative;z-index:2}
 .title-pre{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.55em;text-transform:uppercase;opacity:.5;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
 .title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap;margin-bottom:2vmin}
 .title b{font-weight:600;letter-spacing:.04em}
-.quote{
-  font-size:clamp(11px,1.4vmin,15px);font-weight:300;letter-spacing:.12em;font-style:italic;opacity:.45;
-  animation:fadeIn 1.5s ease-out both;animation-delay:1.2s;
-  max-width:400px;margin:0 auto;line-height:1.5;
-}
+.quote{font-size:clamp(11px,1.4vmin,15px);font-weight:300;letter-spacing:.12em;font-style:italic;opacity:.45;animation:fadeIn 1.5s ease-out both;animation-delay:1.2s;max-width:400px;margin:0 auto;line-height:1.5}
 
 /* ─── Ring Stage ─── */
-.ring-stage{
-  position:relative;
-  width:min(82vmin, 680px);
-  height:min(82vmin, 680px);
-  animation:scaleIn 1.5s cubic-bezier(.19,1,.22,1) both;
-  animation-delay:.8s;
-  flex-shrink:0;
-  border-radius:50%;
-  box-shadow:inset 0 0 8vmin rgba(255,255,255,.02);
-  overflow:hidden;
-  /* faint scanline effect over the whole lab structure */
-  background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px);
-  background-size:100% 4px;
-}
-
+.ring-stage{position:relative;width:min(82vmin, 680px);height:min(82vmin, 680px);animation:scaleIn 1.5s cubic-bezier(.19,1,.22,1) both;animation-delay:.8s;flex-shrink:0;border-radius:50%;box-shadow:inset 0 0 8vmin rgba(255,255,255,.02);overflow:hidden;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px);background-size:100% 4px}
 .ring-stage svg{width:100%;height:100%;overflow:visible;display:block;position:relative;z-index:2}
+.ring-shape{fill:rgba(10,10,10,0.6);stroke:#fff;stroke-width:0.5vmin;stroke-linejoin:round;transition:fill .3s, stroke-width .3s, filter .3s, opacity .3s;backdrop-filter:blur(4px)}
+.shape-left{stroke-dasharray:var(--len,2000);animation:drawShape 2s cubic-bezier(.19,1,.22,1) both;animation-delay:1s}
+.shape-right{stroke-dasharray:var(--len,2000);animation:drawShape 2s cubic-bezier(.19,1,.22,1) both;animation-delay:1.15s}
 
-/* The interlocking paths */
-.ring-shape{
-  fill:rgba(10,10,10,0.6);
-  stroke:#fff;
-  stroke-width:0.5vmin;
-  stroke-linejoin:round;
-  transition:fill .3s, stroke-width .3s, filter .3s, opacity .3s;
-  backdrop-filter:blur(4px);
-}
-.shape-left{
-  stroke-dasharray:var(--len,2000);
-  animation:drawShape 2s cubic-bezier(.19,1,.22,1) both;
-  animation-delay:1s;
-}
-.shape-right{
-  stroke-dasharray:var(--len,2000);
-  animation:drawShape 2s cubic-bezier(.19,1,.22,1) both;
-  animation-delay:1.15s;
-}
-
-/* ─── Interaction Zones ─── */
 .half-zone{position:absolute;top:0;bottom:0;width:50%;cursor:pointer;z-index:5}
 .half-zone.left{left:0;border-radius:50% 0 0 50%}
 .half-zone.right{right:0;border-radius:0 50% 50% 0}
 
-/* Hover states */
-.ring-stage.hover-left .shape-left{
-  fill:rgba(255,255,255,0.06);
-  stroke-width:0.8vmin;
-  filter:drop-shadow(0 0 1vmin rgba(255,255,255,.3));
-}
+.ring-stage.hover-left .shape-left{fill:rgba(255,255,255,0.06);stroke-width:0.8vmin;filter:drop-shadow(0 0 1vmin rgba(255,255,255,.3))}
 .ring-stage.hover-left .shape-right{opacity:.25}
-.ring-stage.hover-right .shape-right{
-  fill:rgba(255,255,255,0.06);
-  stroke-width:0.8vmin;
-  filter:drop-shadow(0 0 1vmin rgba(255,255,255,.3));
-}
+.ring-stage.hover-right .shape-right{fill:rgba(255,255,255,0.06);stroke-width:0.8vmin;filter:drop-shadow(0 0 1vmin rgba(255,255,255,.3))}
 .ring-stage.hover-right .shape-left{opacity:.25}
 
-/* ─── Content inside the halves ─── */
-.content-panel{
-  position:absolute;top:0;bottom:0;width:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;padding:0 8%;
-  transition:opacity .4s, transform .4s;
-  pointer-events:none;z-index:3;
-}
+.content-panel{position:absolute;top:0;bottom:0;width:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:0 10%;transition:opacity .4s, transform .4s;pointer-events:none;z-index:3}
 .content-panel.left{left:0}
 .content-panel.right{right:0}
 .ring-stage.hover-left .content-panel.right{opacity:.1;transform:scale(.95)}
 .ring-stage.hover-right .content-panel.left{opacity:.1;transform:scale(.95)}
 
-.big-letter{
-  font-size:clamp(70px,18vmin,180px);
-  font-weight:200;line-height:1;letter-spacing:-0.04em;
-  margin-bottom:1vmin;
-  animation:fadeIn 1.5s ease-out both;animation-delay:1.5s;
-  transition:transform .3s, text-shadow .3s;
-}
-.ring-stage.hover-left .content-panel.left .big-letter{text-shadow:0 0 4vmin rgba(255,255,255,.5);transform:scale(1.05)}
-.ring-stage.hover-right .content-panel.right .big-letter{text-shadow:0 0 4vmin rgba(255,255,255,.5);transform:scale(1.05)}
-
-.sub-label{
-  font-size:clamp(12px,1.8vmin,20px);letter-spacing:.45em;text-transform:uppercase;
-  opacity:.6;margin-bottom:1.5vmin;font-weight:600;
-  animation:fadeIn 1.5s ease-out both;animation-delay:1.6s;
-  transition:color .3s, text-shadow .3s;
-}
+.sub-label{font-size:clamp(12px,1.8vmin,22px);letter-spacing:.45em;text-transform:uppercase;opacity:.6;margin-bottom:1.5vmin;font-weight:600;animation:fadeIn 1.5s ease-out both;animation-delay:1.6s;transition:color .3s, text-shadow .3s}
 .ring-stage.hover-left .content-panel.left .sub-label{color:#fff;text-shadow:0 0 1vmin #fff}
 .ring-stage.hover-right .content-panel.right .sub-label{color:#fff;text-shadow:0 0 1vmin #fff}
 
-.desc-text{
-  font-size:clamp(11px,1.4vmin,14px);line-height:1.6;opacity:0.3;
-  max-width:22ch;letter-spacing:0.04em;
-  transition:opacity .4s;
-}
+.desc-text{font-size:clamp(11px,1.4vmin,15px);line-height:1.6;opacity:0.3;max-width:22ch;letter-spacing:0.04em;transition:opacity .4s}
 .ring-stage.hover-left .content-panel.left .desc-text,
 .ring-stage.hover-right .content-panel.right .desc-text{opacity:1}
 
-/* ─── Mobile ─── */
-@media(max-width:640px){
-  .half-zone{display:none}
-  .content-panel{
-    position:relative;top:auto;bottom:auto;width:100%;
-    flex-direction:row;justify-content:center;align-items:center;gap:8vmin;
-    padding:0;margin-top:6vmin;pointer-events:auto;cursor:pointer;
-  }
-  .content-panel .big-letter{font-size:clamp(40px,10vmin,80px);margin-bottom:0}
-  .content-panel .sub-label,.content-panel .desc-text{display:none}
-  .ring-stage.hover-left .content-panel.right{opacity:1;transform:none}
-  .ring-stage.hover-right .content-panel.left{opacity:1;transform:none}
+/* ─── Full Screen Views ─── */
+.view{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column;padding:8vmin 6vmin 6vmin;overflow-y:auto;overflow-x:hidden}
+.view.active{display:flex;animation:fadeIn .5s ease-out both}
+.view.leaving{animation:fadeOut .3s ease-in forwards}
+.view-back{position:fixed;top:3vmin;left:3vmin;font-size:clamp(10px,1.3vmin,13px);letter-spacing:.4em;text-transform:uppercase;opacity:.55;cursor:pointer;padding:1.2vmin 0;background:none;border:0;color:#fff;font-family:inherit;transition:opacity .2s,transform .2s;z-index:60}
+.view-back:hover{opacity:1;transform:translateX(-1vmin)}
+.view-back::before{content:"← ";opacity:.55}
+.view-hd{max-width:1200px;margin:0 auto;width:100%}
+.view-title{font-size:clamp(32px,5vmin,64px);font-weight:200;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1vmin;animation:fadeUp .7s cubic-bezier(.19,1,.22,1) both}
+.view-sub{font-size:clamp(11px,1.4vmin,14px);letter-spacing:.4em;text-transform:uppercase;opacity:.45;margin-bottom:6vmin;animation:fadeUp .7s cubic-bezier(.19,1,.22,1) both;animation-delay:.1s}
+
+/* ─── Subject Dashboard (Widgets) ─── */
+.dash-grid{display:grid;grid-template-columns:repeat(12, 1fr);gap:2vmin;animation:fadeUp .8s ease-out both;animation-delay:.2s}
+.widget{background:#050505;border:1px solid rgba(255,255,255,.1);border-radius:1vmin;padding:3vmin;position:relative;overflow:hidden;transition:border-color .3s}
+.widget:hover{border-color:rgba(255,255,255,.25)}
+.widget-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:3vmin;font-size:clamp(10px,1.3vmin,12px);letter-spacing:.3em;text-transform:uppercase;opacity:.6;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:1.5vmin}
+.w-profile{grid-column:span 5}
+.w-calendar{grid-column:span 7}
+.w-attr{grid-column:span 12}
+
+@media(max-width:900px){
+  .w-profile, .w-calendar, .w-attr{grid-column:span 12}
 }
 
-/* ─── Corner marks & Ambient ─── */
+/* Profile Widget */
+.profile-info{display:flex;gap:4vmin;align-items:center}
+.radar-wrap{width:min(25vmin, 200px);height:min(25vmin, 200px);flex-shrink:0}
+.p-stats{display:flex;flex-direction:column;gap:1.5vmin;width:100%}
+.p-row{display:flex;justify-content:space-between;font-size:clamp(11px,1.4vmin,14px);border-bottom:1px solid rgba(255,255,255,.05);padding-bottom:0.5vmin}
+.p-row span:first-child{opacity:.7}
+.p-row span:last-child{font-weight:600}
+.bar{height:0.4vmin;background:rgba(255,255,255,.1);border-radius:1vmin;overflow:hidden;margin-top:0.5vmin}
+.bar i{display:block;height:100%;background:#fff}
+
+/* Calendar Widget (Mock) */
+.cal-mini{display:grid;grid-template-columns:repeat(7,1fr);gap:0.5vmin;text-align:center;font-size:clamp(9px,1.1vmin,11px)}
+.cal-mini div{padding:1vmin 0;border-radius:0.4vmin;background:rgba(255,255,255,.03)}
+.cal-mini .today{background:#fff;color:#000;font-weight:700}
+.cal-mini .event{position:relative}
+.cal-mini .event::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:3px;height:3px;background:#fff;border-radius:50%}
+
+/* ─── Tabs (Bottom Nav) ─── */
+.nav-bar{display:flex;gap:1vmin;margin-top:4vmin;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:2vmin}
+.nav-btn{background:none;border:1px solid transparent;color:rgba(255,255,255,.5);font-family:inherit;font-size:clamp(10px,1.3vmin,13px);letter-spacing:.2em;text-transform:uppercase;padding:1.5vmin 2.5vmin;cursor:pointer;border-radius:0.5vmin;transition:all .2s}
+.nav-btn:hover{color:#fff}
+.nav-btn.on{color:#fff;border-color:rgba(255,255,255,.3);background:rgba(255,255,255,.05)}
+
+.tab-content{display:none;margin-top:4vmin;animation:fadeIn .4s ease}
+.tab-content.active{display:block}
+
+/* Generic UI for Tabs */
+.row{display:flex;justify-content:space-between;align-items:center;padding:1.5vmin 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.btn{background:#111;border:1px solid rgba(255,255,255,.2);color:#fff;padding:1vmin 2vmin;border-radius:0.5vmin;cursor:pointer;font-family:inherit;font-size:clamp(10px,1.2vmin,12px);transition:all .2s}
+.btn:hover{background:#fff;color:#000}
+.btn.x{border-color:rgba(255,50,50,.5);color:rgba(255,50,50,.8)}
+.btn.x:hover{background:rgba(255,50,50,.9);color:#000}
+
+input, select, textarea{background:#0a0a0a;border:1px solid rgba(255,255,255,.2);color:#fff;padding:1vmin;border-radius:0.5vmin;font-family:inherit;font-size:clamp(11px,1.3vmin,14px);width:100%;margin-bottom:1vmin}
+input:focus{outline:none;border-color:#fff}
+
+/* Specific Tab Styles */
+.goal-card{border:1px solid rgba(255,255,255,.15);padding:3vmin;margin-bottom:2vmin;border-radius:1vmin;background:rgba(255,255,255,.02)}
+.goal-ms{display:flex;gap:2vmin;align-items:center;padding:1vmin 0;font-size:clamp(11px,1.3vmin,14px);border-bottom:1px dashed rgba(255,255,255,.1)}
+.goal-ms .lock{opacity:.5}
+.goal-ms .done{color:#fff;text-decoration:line-through;opacity:.5}
+.goal-ms .active{font-weight:bold}
+
+/* Shop */
+.shop-item{display:flex;justify-content:space-between;align-items:center;padding:2vmin;border:1px solid rgba(255,255,255,.1);margin-bottom:1vmin;border-radius:1vmin;background:#050505}
+.shop-item:hover{border-color:rgba(255,255,255,.3)}
+
+/* Analytics */
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:2vmin}
+@media(max-width:700px){.g2{grid-template-columns:1fr}}
+.chart-box{background:#050505;border:1px solid rgba(255,255,255,.1);padding:3vmin;border-radius:1vmin;text-align:center}
+.chart-box h3{font-size:clamp(10px,1.3vmin,13px);letter-spacing:.2em;opacity:.6;margin-bottom:2vmin}
+
+/* Splash */
+.splash{position:fixed;inset:0;background:#000;z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:fadeIn .4s ease-out both;cursor:pointer}
+.splash.gone{animation:fadeOut .7s ease-in forwards}
+.splash-title{font-size:clamp(14px,1.8vmin,18px);font-weight:200;letter-spacing:.6em;text-transform:uppercase;opacity:.65;margin-bottom:3vmin;text-align:center}
+.splash-bar{width:14vmin;max-width:140px;height:1px;background:#fff;transform:scaleX(0);transform-origin:left;animation:loadBar 1.3s ease-out both;animation-delay:.2s}
+@keyframes loadBar{to{transform:scaleX(1)}}
+.splash-hint{font-size:clamp(9px,1.1vmin,11px);letter-spacing:.45em;text-transform:uppercase;opacity:.28;margin-top:3vmin;animation:pulse 2s infinite}
+
+/* Corner & Ambient */
 .corner{position:fixed;width:2.5vmin;height:2.5vmin;pointer-events:none;opacity:.3;animation:fadeIn 1.5s ease-out both;animation-delay:1s}
 .corner.tl{top:2vmin;left:2vmin;border-top:1px solid #fff;border-left:1px solid #fff}
 .corner.tr{top:2vmin;right:2vmin;border-top:1px solid #fff;border-right:1px solid #fff}
@@ -151,25 +149,11 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;opacity:.12;z-index:0}
 .ambient span{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:drift 18s infinite ease-in-out}
 
-/* ─── Splash ─── */
-.splash{position:fixed;inset:0;background:#000;z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:fadeIn .4s ease-out both;cursor:pointer}
-.splash.gone{animation:fadeOut .7s ease-in forwards}
-.splash-title{font-size:clamp(14px,1.8vmin,18px);font-weight:200;letter-spacing:.6em;text-transform:uppercase;opacity:.65;margin-bottom:3vmin;text-align:center}
-.splash-bar{width:14vmin;max-width:140px;height:1px;background:#fff;transform:scaleX(0);transform-origin:left;animation:loadBar 1.3s ease-out both;animation-delay:.2s}
-@keyframes loadBar{to{transform:scaleX(1)}}
-.splash-hint{font-size:clamp(9px,1.1vmin,11px);letter-spacing:.45em;text-transform:uppercase;opacity:.28;margin-top:3vmin;animation:pulse 2s infinite}
-
-/* ─── Full-screen view ─── */
-.view{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column;padding:10vmin 5vmin 5vmin;overflow:auto}
-.view.active{display:flex;animation:fadeIn .5s ease-out both}
-.view.leaving{animation:fadeOut .3s ease-in forwards}
-.view-back{position:fixed;top:3vmin;left:3vmin;font-size:clamp(10px,1.3vmin,13px);letter-spacing:.4em;text-transform:uppercase;opacity:.55;cursor:pointer;padding:1.2vmin 0;background:none;border:0;color:#fff;font-family:inherit;transition:opacity .2s,transform .2s;z-index:60}
-.view-back:hover{opacity:1;transform:translateX(-1vmin)}
-.view-back::before{content:"← ";opacity:.55}
-.view-hd{max-width:100vmin;margin:0 auto;width:100%}
-.view-title{font-size:clamp(40px,6.5vmin,80px);font-weight:200;letter-spacing:.18em;text-transform:uppercase;margin-bottom:1.5vmin;animation:fadeUp .7s cubic-bezier(.19,1,.22,1) both}
-.view-sub{font-size:clamp(11px,1.4vmin,14px);letter-spacing:.4em;text-transform:uppercase;opacity:.45;margin-bottom:7vmin;animation:fadeUp .7s cubic-bezier(.19,1,.22,1) both;animation-delay:.1s}
-.view-placeholder{border:1px dashed rgba(255,255,255,.15);border-radius:1.2vmin;padding:8vmin 4vmin;text-align:center;opacity:.55;animation:fadeIn .9s ease-out both;animation-delay:.35s;font-size:clamp(11px,1.4vmin,14px);letter-spacing:.15em;text-transform:uppercase;line-height:2}
+/* Modal */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:200;padding:5vmin}
+#modal>div{background:#050505;border:1px solid rgba(255,255,255,.2);padding:4vmin;width:100%;max-width:500px;border-radius:1vmin;max-height:85vh;overflow-y:auto}
+#modal h2{font-size:clamp(14px,1.8vmin,18px);letter-spacing:.1em;margin-bottom:2vmin;text-transform:uppercase}
+#toast{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:1vmin 3vmin;border-radius:1vmin;z-index:300;font-weight:bold;font-size:clamp(11px,1.3vmin,13px);display:none;letter-spacing:.05em}
 </style>
 </head>
 <body>
@@ -182,7 +166,10 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 
 <div class="ambient" id="ambient"></div>
 <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
+<div id="modal" onclick="if(event.target==this)this.style.display='none'"><div id="mb"></div></div>
+<div id="toast"></div>
 
+<!-- Home -->
 <div id="home">
   <div class="title-wrap">
     <div class="title-pre">Human Development Laboratory</div>
@@ -192,53 +179,129 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 
   <div class="ring-stage" id="ringStage">
     <svg viewBox="0 0 540 540" id="ringSvg">
-      <!-- Interlocking shapes -->
-      <!-- Left Shape (S) -->
       <path id="shapeL" class="ring-shape shape-left" d="" />
-      <!-- Right Shape (A) -->
       <path id="shapeR" class="ring-shape shape-right" d="" />
     </svg>
 
-    <!-- Content inside left half -->
     <div class="content-panel left" onclick="openView('subject')">
-      <div class="big-letter">S</div>
       <div class="sub-label">Subject</div>
       <div class="desc-text">Your private system.<br>Goals, modules, habits, projects.</div>
     </div>
 
-    <!-- Content inside right half -->
     <div class="content-panel right" onclick="openView('academy')">
-      <div class="big-letter">A</div>
       <div class="sub-label">Academy</div>
       <div class="desc-text">The competitive half.<br>Ranking, exams, the 99.</div>
     </div>
 
-    <!-- Interaction zones -->
     <div class="half-zone left" onclick="openView('subject')" onmouseenter="hoverLeft(true)" onmouseleave="hoverLeft(false)"></div>
     <div class="half-zone right" onclick="openView('academy')" onmouseenter="hoverRight(true)" onmouseleave="hoverRight(false)"></div>
   </div>
 </div>
 
-<!-- Views -->
+<!-- Subject View -->
 <div class="view" id="view-subject">
   <button class="view-back" onclick="closeView()">Return</button>
   <div class="view-hd">
     <div class="view-title">Subject</div>
-    <div class="view-sub">Private · Personal</div>
-    <div class="view-placeholder">
-      The Subject system<br>
-      Goals · Modules · Habits · Projects<br>
-      Coming in the next build
+    <div class="view-sub">Private System</div>
+    
+    <!-- Dashboard (Tab: Home) -->
+    <div class="tab-content active" id="tab-home">
+      <div class="dash-grid">
+        <div class="widget w-profile">
+          <div class="widget-hd"><span>Subject Profile</span><span id="prof-points">0 pts</span></div>
+          <div class="profile-info">
+            <div class="radar-wrap" id="radar-container"></div>
+            <div class="p-stats" id="stats-container"></div>
+          </div>
+        </div>
+        <div class="widget w-calendar">
+          <div class="widget-hd"><span>Schedule Overview</span><span id="cal-date">Today</span></div>
+          <div class="cal-mini" id="calendar-widget"></div>
+        </div>
+        <div class="widget w-attr">
+          <div class="widget-hd"><span>Active Missions & Habits</span><button class="btn" onclick="switchTab('protocol')">View All</button></div>
+          <div id="today-widget"></div>
+        </div>
+      </div>
     </div>
+    
+    <!-- Navigation Tabs -->
+    <div class="nav-bar">
+      <button class="nav-btn on" onclick="switchTab('home')">Dashboard</button>
+      <button class="nav-btn" onclick="switchTab('protocol')">Schedule</button>
+      <button class="nav-btn" onclick="switchTab('goals')">Goal Ladder</button>
+      <button class="nav-btn" onclick="switchTab('projects')">Projects</button>
+      <button class="nav-btn" onclick="switchTab('analytics')">Analytics</button>
+      <button class="nav-btn" onclick="switchTab('shop')">Shop</button>
+      <button class="nav-btn" onclick="switchTab('settings')">Settings</button>
+    </div>
+
+    <!-- Tab: Protocol / Schedule -->
+    <div class="tab-content" id="tab-protocol">
+      <div class="row"><h2>Routine Protocol</h2><span id="streak-display"></span></div>
+      <div id="routine-list"></div>
+    </div>
+
+    <!-- Tab: Goals -->
+    <div class="tab-content" id="tab-goals">
+      <div class="row"><h2>Goal Ladder</h2><button class="btn" onclick="promptGoal()">+ Add Goal</button></div>
+      <div id="goals-list"></div>
+    </div>
+
+    <!-- Tab: Projects -->
+    <div class="tab-content" id="tab-projects">
+      <div class="row"><h2>Projects</h2><button class="btn" onclick="promptProject()">+ Add Project</button></div>
+      <div id="projects-list"></div>
+    </div>
+
+    <!-- Tab: Analytics -->
+    <div class="tab-content" id="tab-analytics">
+      <div class="g2">
+        <div class="chart-box">
+          <h3>Overall Progress</h3>
+          <div id="chart-overall"></div>
+        </div>
+        <div class="chart-box">
+          <h3>Routine Completion %</h3>
+          <div id="chart-routine"></div>
+        </div>
+      </div>
+      <div class="chart-box" style="margin-top:2vmin">
+        <h3>Mission History</h3>
+        <div id="mission-history" style="text-align:left;font-size:clamp(11px,1.3vmin,13px)"></div>
+      </div>
+    </div>
+
+    <!-- Tab: Shop -->
+    <div class="tab-content" id="tab-shop">
+      <div class="row"><h2>Shop</h2><span id="shop-pts"></span></div>
+      <div id="shop-list"></div>
+    </div>
+
+    <!-- Tab: Settings -->
+    <div class="tab-content" id="tab-settings">
+      <h2>Settings</h2>
+      <div style="margin-top:2vmin;max-width:400px">
+        <label>Name</label><input id="set-name" onchange="updateSetting('name',this.value)">
+        <label>Title</label><input id="set-title" onchange="updateSetting('title',this.value)">
+        <label>Quote</label><input id="set-quote" onchange="updateSetting('quote',this.value)">
+        <br>
+        <button class="btn" onclick="downloadBackup()">Download Backup</button>
+        <button class="btn x" onclick="hardReset()" style="margin-left:1vmin">Reset All</button>
+      </div>
+    </div>
+    
   </div>
 </div>
 
+<!-- Academy View -->
 <div class="view" id="view-academy">
   <button class="view-back" onclick="closeView()">Return</button>
   <div class="view-hd">
     <div class="view-title">Academy</div>
     <div class="view-sub">Class · Competitive</div>
-    <div class="view-placeholder">
+    <div style="border:1px dashed rgba(255,255,255,.15);border-radius:1vmin;padding:8vmin 4vmin;text-align:center;opacity:.55;margin-top:4vmin;font-size:clamp(11px,1.4vmin,14px);letter-spacing:.15em;text-transform:uppercase;line-height:2">
       The Academy system<br>
       Ranking · NPCs · Phases · Exams<br>
       Coming in the next build
@@ -247,51 +310,440 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 </div>
 
 <script>
-// ─── The Magic: Generating the exact interlocking paths ───
-(function buildShapes() {
-  const R = 240;       // Outer radius
-  const r = 130;       // Inner radius
-  const gap = 12;      // Gap between top/bottom cuts
-  const cx = 270, cy = 270;
+// ═══════════════════════════════════════════════════════
+// THE HD LAB — SUBJECT CORE (v1 Port)
+// ═══════════════════════════════════════════════════════
 
-  // Calculate the X offset for the gap
-  const gapX = cx + gap / 2;
-  const gapXInv = cx - gap / 2;
+const $ = id => document.getElementById(id);
+const D = () => Math.floor((Date.now() - new Date().getTimezoneOffset()*6e4) / 864e5);
+const rnd = () => Math.random();
+const cl = (x,a,b) => Math.max(a, Math.min(b, x));
+const pick = a => a[rnd()*a.length|0];
+const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
+const grade = v => v>=85?'A':v>=70?'B':v>=55?'C':v>=40?'D':'F';
 
-  // --- LEFT SHAPE (S) ---
-  const pathL = `
-    M ${gapXInv} ${cy - R}
-    A ${R} ${R} 0 0 0 ${gapXInv} ${cy + R}
-    L ${gapXInv} ${cy + r}
-    A ${r} ${r} 0 0 1 ${gapXInv} ${cy - r}
-    Z
-  `.replace(/\s+/g, ' ');
+let S, tab = 'home';
 
-  // --- RIGHT SHAPE (A) ---
-  const pathR = `
-    M ${gapX} ${cy - R}
-    A ${R} ${R} 0 0 1 ${gapX} ${cy + R}
-    L ${gapX} ${cy + r}
-    A ${r} ${r} 0 0 0 ${gapX} ${cy - r}
-    Z
-  `.replace(/\s+/g, ' ');
+const ATTR_DEF = [
+  { n:'Academic', subs:['Biological Chemistry','Professional Skills','Diversity of Life','Molecular Biology'] },
+  { n:'Physical', subs:['Pull-ups','Push-ups','5k time','Flexibility'] },
+  { n:'Mental', subs:['Focus','Discipline','Calm','Creativity'] }
+];
 
-  const sL = document.getElementById('shapeL');
-  const sR = document.getElementById('shapeR');
+function mkAttrs(){
+  return ATTR_DEF.map((a,i) => ({
+    id: 'a'+i, n: a.n,
+    subs: a.subs.map((n,j) => ({ id:'s'+i+'_'+j, n, v:20, g:1, idle:0 }))
+  }));
+}
+
+function fresh(){
+  const today = D();
+  const A = mkAttrs();
+  return {
+    v: 10, name: 'Subject', title: 'Newcomer', quote: '"You are the only variable in your life that refuses to stay constant."',
+    day: today, pts: 50, attrs: A,
+    routine: [
+      { id:'r0', n:'Wake + Hydrate', time:'07:00', done:false },
+      { id:'r1', n:'Study Block', time:'09:00', done:false },
+      { id:'r2', n:'Movement', time:'17:00', done:false },
+      { id:'r3', n:'Read', time:'21:00', done:false },
+      { id:'r4', n:'Meditate', time:'22:00', done:false }
+    ],
+    goals: [
+      { id:'g0', n:'20 Pull-ups', sub:'s1_0', start:5, target:20, unit:'reps', cur:5, best:5, weeks:12, sc:null, ms:[] }
+    ],
+    projects: [],
+    shop: [
+      { id:'sh0', n:'Shield', c:40, d:'Pause stat decay for 3 days' },
+      { id:'sh1', n:'Boost', c:30, d:'Double next mission XP' }
+    ],
+    log: [], diff: 1, streak: 0, lastActive: today
+  };
+}
+
+function initGoal(g){
+  if(!g.ms || !g.ms.length){
+    const n = 4, up = g.target >= g.start;
+    g.ms = Array.from({length:n}, (_,i) => {
+      const val = Math.round(g.start + (g.target - g.start) * (i+1)/n);
+      const done = up ? (g.cur >= val) : (g.cur <= val);
+      return { id:'m'+i, v:val, done };
+    });
+  }
+}
+
+function save(){
+  try { localStorage.setItem('hdlab_v10', JSON.stringify(S)); } catch(e){}
+  renderAll();
+}
+
+function load(){
+  try {
+    const data = localStorage.getItem('hdlab_v10');
+    if(data) { S = JSON.parse(data); return; }
+  } catch(e) {}
+  S = fresh();
+  S.goals.forEach(initGoal);
+  save();
+}
+
+function backup(){
+  const a = document.createElement('a');
+  a.href = 'data:application/json,' + encodeURIComponent(JSON.stringify(S));
+  a.download = 'hdlab-backup.json';
+  a.click();
+}
+
+function toast(m){
+  const t = $('toast'); t.textContent = m; t.style.display = 'block';
+  clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 2500);
+}
+
+// ═══════════════════════════════════════════════════════
+// RENDERERS
+// ═══════════════════════════════════════════════════════
+
+function renderAll(){
+  // Header info
+  if($('prof-points')) $('prof-points').textContent = S.pts + ' pts';
+  if($('shop-pts')) $('shop-pts').textContent = S.pts + ' pts';
+  if($('streak-display')) $('streak-display').textContent = 'Streak: ' + S.streak + ' days';
   
-  sL.setAttribute('d', pathL);
-  sR.setAttribute('d', pathR);
+  // Profile Widget
+  const attrV = S.attrs.map(a => mean(a.subs.map(s => s.v)));
+  const at = mean(attrV);
+  
+  if($('radar-container')){
+    $('radar-container').innerHTML = radar(S.attrs.map(a=>a.n), attrV);
+  }
+  
+  if($('stats-container')){
+    $('stats-container').innerHTML = S.attrs.map((a,i) => `
+      <div class="p-row">
+        <span>${esc(a.n)}</span>
+        <span>${grade(attrV[i])} ${attrV[i].toFixed(0)}</span>
+      </div>
+      <div class="bar"><i style="width:${attrV[i]}%"></i></div>
+    `).join('');
+  }
+  
+  // Calendar Widget
+  if($('calendar-widget')){
+    const d = new Date(), y = d.getFullYear(), m = d.getMonth();
+    const first = new Date(y, m, 1).getDay();
+    const days = new Date(y, m+1, 0).getDate();
+    let html = ['S','M','T','W','T','F','S'].map(x=>`<div style="opacity:.3;font-weight:bold">${x}</div>`).join('');
+    for(let i=0; i<first; i++) html += '<div></div>';
+    for(let i=1; i<=days; i++){
+      const isTd = i === d.getDate();
+      html += `<div class="${isTd?'today':''} ${i===15||i===22?'event':''}">${i}</div>`;
+    }
+    $('calendar-widget').innerHTML = html;
+    if($('cal-date')) $('cal-date').textContent = d.toLocaleString('default',{month:'long'}) + ' ' + y;
+  }
 
-  // Set up stroke drawing animation
-  const lenL = sL.getTotalLength();
-  const lenR = sR.getTotalLength();
-  sL.style.setProperty('--len', lenL);
-  sR.style.setProperty('--len', lenR);
+  // Today Widget (Habits & Missions)
+  if($('today-widget')){
+    const rtHtml = S.routine.map(r => `
+      <div class="row">
+        <div><b>${esc(r.n)}</b> <span style="opacity:.5;font-size:11px">${r.time}</span></div>
+        <button class="btn ${r.done?'x':'on'}" onclick="toggleRoutine('${r.id}')">${r.done?'Undo':'Done'}</button>
+      </div>
+    `).join('');
+    $('today-widget').innerHTML = rtHtml;
+  }
+
+  // Routine Tab
+  if($('routine-list')){
+    $('routine-list').innerHTML = S.routine.map(r => `
+      <div class="row">
+        <div><b>${esc(r.n)}</b> <span style="opacity:.5;font-size:11px">${r.time}</span></div>
+        <button class="btn ${r.done?'x':'on'}" onclick="toggleRoutine('${r.id}')">${r.done?'Undo':'Done'}</button>
+      </div>
+    `).join('');
+  }
+
+  // Goals Tab
+  if($('goals-list')){
+    $('goals-list').innerHTML = S.goals.map(g => {
+      initGoal(g);
+      const act = g.ms.find(m => !m.done);
+      return `<div class="goal-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:2vmin">
+          <div><b style="font-size:clamp(14px,1.8vmin,18px)">${esc(g.n)}</b></div>
+          <div style="opacity:.5">${g.cur} / ${g.target} ${g.unit}</div>
+        </div>
+        ${g.ms.map((m,i) => `
+          <div class="goal-ms ${m.done?'done':m===act?'active':''}">
+            <span class="lock">${m.done?'[✓]':m===act?'▶':'[ ]'}</span>
+            <span>Milestone ${i+1}: ${m.v} ${g.unit}</span>
+          </div>
+        `).join('')}
+        <div style="margin-top:2vmin;display:flex;gap:1vmin">
+          <input type="number" id="gv-${g.id}" placeholder="New test result" style="margin:0;flex:1">
+          <button class="btn" onclick="logGoal('${g.id}')">Log Test</button>
+        </div>
+      </div>`;
+    }).join('') || '<div style="opacity:.5">No goals yet.</div>';
+  }
+
+  // Projects Tab
+  if($('projects-list')){
+    $('projects-list').innerHTML = S.projects.map(p => `
+      <div class="goal-card">
+        <div style="display:flex;justify-content:space-between;margin-bottom:1vmin">
+          <div><b>${esc(p.n)}</b></div>
+          <div style="opacity:.5">${p.total||0} sessions</div>
+        </div>
+        <button class="btn" onclick="logProject('${p.id}')" style="margin-top:1vmin">+ Log Session</button>
+      </div>
+    `).join('') || '<div style="opacity:.5">No projects yet.</div>';
+  }
+
+  // Shop Tab
+  if($('shop-list')){
+    $('shop-list').innerHTML = S.shop.map(sh => `
+      <div class="shop-item">
+        <div><b>${esc(sh.n)}</b><div style="font-size:11px;opacity:.5">${esc(sh.d)}</div></div>
+        <button class="btn" onclick="buy('${sh.id}')">${sh.c} pts</button>
+      </div>
+    `).join('');
+  }
+
+  // Analytics Tab
+  if($('mission-history')){
+    $('mission-history').innerHTML = S.log.slice(-10).reverse().map(l => `<div style="opacity:.7">> ${esc(l)}</div>`).join('') || '<div style="opacity:.5">No activity yet.</div>';
+  }
+  if($('chart-overall')){
+    const data = S.attrs.map(a => mean(a.subs.map(s=>s.v)));
+    $('chart-overall').innerHTML = barChart(['A','P','M'], data);
+  }
+  if($('chart-routine')){
+    $('chart-routine').innerHTML = barChart(['M','T','W','T','F','S','S'], [70,80,65,90,85,100,75]);
+  }
+  
+  // Settings
+  if($('set-name')) $('set-name').value = S.name || '';
+  if($('set-title')) $('set-title').value = S.title || '';
+  if($('set-quote')) $('set-quote').value = S.quote || '';
+}
+
+// ═══════════════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════════════
+
+function toggleRoutine(id){
+  const r = S.routine.find(x => x.id === id);
+  if(r){ r.done = !r.done; save(); }
+}
+
+function logGoal(id){
+  const g = S.goals.find(x => x.id === id);
+  const v = parseFloat($('gv-'+id).value);
+  if(isNaN(v)) return toast('Enter a valid number');
+  
+  g.cur = v;
+  if(v > g.best) g.best = v;
+  
+  initGoal(g);
+  
+  let advanced = false;
+  g.ms.forEach(m => {
+    if(!m.done && g.cur >= m.v){
+      m.done = true;
+      advanced = true;
+      S.pts += 30;
+      S.log.push(`Milestone reached: ${g.n} (${m.v} ${g.unit})`);
+    }
+  });
+  
+  if(advanced) toast('Milestone Reached! +30 pts');
+  else toast('Test logged.');
+  
+  save();
+}
+
+function logProject(id){
+  const p = S.projects.find(x => x.id === id);
+  if(p){
+    p.total = (p.total||0) + 1;
+    S.pts += 3;
+    S.log.push(`Project session: ${p.n}`);
+    toast('Session logged. +3 pts');
+    save();
+  }
+}
+
+function buy(id){
+  const item = S.shop.find(x => x.id === id);
+  if(!item) return;
+  if(S.pts < item.c) return toast('Not enough points');
+  S.pts -= item.c;
+  S.log.push(`Purchased: ${item.n}`);
+  toast('Purchased ' + item.n);
+  save();
+}
+
+function updateSetting(k, v){
+  S[k] = v;
+  save();
+}
+
+function promptGoal(){
+  $('mb').innerHTML = `
+    <h2>New Goal</h2>
+    <input id="ng-n" placeholder="Goal name (e.g. 100 pushups)">
+    <input id="ng-s" type="number" placeholder="Start value" value="0">
+    <input id="ng-t" type="number" placeholder="Target value" value="10">
+    <input id="ng-u" placeholder="Unit (reps, min, pages)">
+    <button class="btn" onclick="addGoal()">Create</button>
+  `;
+  $('modal').style.display = 'flex';
+}
+
+function addGoal(){
+  const n = $('ng-n').value;
+  const s = parseFloat($('ng-s').value);
+  const t = parseFloat($('ng-t').value);
+  const u = $('ng-u').value;
+  if(!n || isNaN(s) || isNaN(t)) return toast('Fill all fields');
+  
+  S.goals.push({ id:'g'+Date.now(), n, sub:'s1_0', start:s, target:t, unit:u, cur:s, best:s, weeks:12, sc:null, ms:[] });
+  $('modal').style.display = 'none';
+  save();
+}
+
+function promptProject(){
+  $('mb').innerHTML = `
+    <h2>New Project</h2>
+    <input id="np-n" placeholder="Project name">
+    <button class="btn" onclick="addProject()">Create</button>
+  `;
+  $('modal').style.display = 'flex';
+}
+
+function addProject(){
+  const n = $('np-n').value;
+  if(!n) return toast('Enter name');
+  S.projects.push({ id:'p'+Date.now(), n, total:0 });
+  $('modal').style.display = 'none';
+  save();
+}
+
+function hardReset(){
+  if(confirm('Erase all progress?')){
+    S = fresh();
+    S.goals.forEach(initGoal);
+    save();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// UI LOGIC
+// ═══════════════════════════════════════════════════════
+
+function switchTab(id){
+  document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('on'));
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  
+  // Find the button that called this
+  const btns = Array.from(document.querySelectorAll('.nav-btn'));
+  const btn = btns.find(b => b.getAttribute('onclick').includes(id));
+  if(btn) btn.classList.add('on');
+  
+  const tabEl = $('tab-' + id);
+  if(tabEl) tabEl.classList.add('active');
+}
+
+function enter(){
+  const sp = $('splash');
+  if(!sp || sp.classList.contains('gone')) return;
+  sp.classList.add('gone');
+  setTimeout(() => { sp.style.display = 'none'; }, 700);
+}
+
+function hoverLeft(on){
+  const st = $('ringStage');
+  if(on) st.classList.add('hover-left');
+  else st.classList.remove('hover-left');
+}
+function hoverRight(on){
+  const st = $('ringStage');
+  if(on) st.classList.add('hover-right');
+  else st.classList.remove('hover-right');
+}
+
+function openView(name){
+  document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.remove('leaving'); });
+  hoverLeft(false); hoverRight(false);
+  const el = $('view-' + name);
+  if(el) el.classList.add('active');
+  if(name === 'subject') renderAll();
+}
+function closeView(){
+  document.querySelectorAll('.view').forEach(v => {
+    if(v.classList.contains('active')){
+      v.classList.add('leaving');
+      setTimeout(() => { v.classList.remove('active'); v.classList.remove('leaving'); }, 300);
+    }
+  });
+}
+
+// ═══════════════════════════════════════════════════════
+// DRAWING UTILS
+// ═══════════════════════════════════════════════════════
+
+function radar(labels, data){
+  const n = labels.length, c = 100, R = 70;
+  const pt = (i, r) => {
+    const a = -Math.PI/2 + i * 2 * Math.PI / n;
+    return [c + Math.cos(a) * r, c + Math.sin(a) * r];
+  };
+  const ring = f => labels.map((_,i) => pt(i, R*f).join(',')).join(' ');
+  const poly = data.map((v,i) => pt(i, R * v/100).join(',')).join(' ');
+  
+  return `<svg viewBox="0 0 200 200" width="100%" height="100%">
+    <g fill="none" stroke="rgba(255,255,255,.1)"><polygon points="${ring(1)}"/><polygon points="${ring(.5)}"/></g>
+    <polygon points="${poly}" fill="rgba(255,255,255,.2)" stroke="#fff" stroke-width="1.5"/>
+    ${labels.map((l,i) => {
+      const [x,y] = pt(i, R+15);
+      return `<text x="${x}" y="${y}" fill="rgba(255,255,255,.6)" font-size="9" text-anchor="middle" dominant-baseline="middle">${esc(l)}</text>`;
+    }).join('')}
+  </svg>`;
+}
+
+function barChart(labels, data){
+  const max = Math.max(...data, 100);
+  return `<div style="display:flex;justify-content:space-around;align-items:flex-end;height:100px;padding-top:2vmin">
+    ${data.map((v,i) => `
+      <div style="display:flex;flex-direction:column;align-items:center;gap:0.5vmin;width:100%">
+        <div style="font-size:10px;opacity:.5">${v.toFixed(0)}</div>
+        <div style="background:#fff;width:40%;height:${v/max*80}px;border-radius:2px"></div>
+        <div style="font-size:10px;opacity:.7">${labels[i]}</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+
+(function buildShapes() {
+  const R = 240, r = 130, gap = 12, cx = 270, cy = 270;
+  const gapX = cx + gap / 2, gapXInv = cx - gap / 2;
+  const pathL = `M ${gapXInv} ${cy - R} A ${R} ${R} 0 0 0 ${gapXInv} ${cy + R} L ${gapXInv} ${cy + r} A ${r} ${r} 0 0 1 ${gapXInv} ${cy - r} Z`;
+  const pathR = `M ${gapX} ${cy - R} A ${R} ${R} 0 0 1 ${gapX} ${cy + R} L ${gapX} ${cy + r} A ${r} ${r} 0 0 0 ${gapX} ${cy - r} Z`;
+  $('shapeL').setAttribute('d', pathL);
+  $('shapeR').setAttribute('d', pathR);
+  $('shapeL').style.setProperty('--len', $('shapeL').getTotalLength());
+  $('shapeR').style.setProperty('--len', $('shapeR').getTotalLength());
 })();
 
-// Ambient particles
 (function spawnAmbient(){
-  const wrap = document.getElementById('ambient');
+  const wrap = $('ambient');
   for(let i=0;i<18;i++){
     const s = document.createElement('span');
     s.style.left = (Math.random()*100)+'%';
@@ -302,51 +754,9 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   }
 })();
 
-// Splash gate
-function enter(){
-  const sp = document.getElementById('splash');
-  if(!sp || sp.classList.contains('gone')) return;
-  sp.classList.add('gone');
-  setTimeout(() => { sp.style.display = 'none'; }, 700);
-}
+document.addEventListener('keydown', e => { if(e.key === 'Escape') closeView(); });
 
-// Hover states
-function hoverLeft(on){
-  const st = document.getElementById('ringStage');
-  if(on) st.classList.add('hover-left');
-  else st.classList.remove('hover-left');
-}
-function hoverRight(on){
-  const st = document.getElementById('ringStage');
-  if(on) st.classList.add('hover-right');
-  else st.classList.remove('hover-right');
-}
-
-// View logic
-function openView(name){
-  document.querySelectorAll('.view').forEach(v => {
-    v.classList.remove('active');
-    v.classList.remove('leaving');
-  });
-  hoverLeft(false); hoverRight(false);
-  const el = document.getElementById('view-' + name);
-  if(el) el.classList.add('active');
-}
-function closeView(){
-  document.querySelectorAll('.view').forEach(v => {
-    if(v.classList.contains('active')){
-      v.classList.add('leaving');
-      setTimeout(() => {
-        v.classList.remove('active');
-        v.classList.remove('leaving');
-      }, 300);
-    }
-  });
-}
-
-document.addEventListener('keydown', e => {
-  if(e.key === 'Escape') closeView();
-});
+load();
 </script>
 </body>
 </html>
