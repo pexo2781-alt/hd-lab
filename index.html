@@ -5,11 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The HD Lab</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-html,body{height:100%;overflow:hidden;background:#000;color:#fff;font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;-webkit-font-smoothing:antialiased}
-body{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:2vmin}
+:root{--bg:#000;--ac:#fff;--tx:#fff;--pn:#050505;--gb:#1a73e8;--cb:#ffffff;--ct:#202124;--cg:#e0e0e0;--ch:#f1f3f4;--cm:#70757a;--cn:#ea4335;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,"SF Mono",Menlo,Consolas,monospace;overflow:hidden}
 
-/* ─── Keyframes ─── */
+/* Keyframes for HD Lab Entry */
 @keyframes fadeUp{from{opacity:0;transform:translateY(3vmin)}to{opacity:1;transform:translateY(0)}}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 @keyframes scaleIn{from{opacity:0;transform:scale(.96)}to{opacity:1;transform:scale(1)}}
@@ -18,14 +18,14 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
 @keyframes drawShape{from{stroke-dashoffset:var(--len,2000)}to{stroke-dashoffset:0}}
 
-/* ─── Landing Page ─── */
+/* Home / Splash */
+#home{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2vmin}
 .title-wrap{text-align:center;margin-bottom:3vmin;animation:fadeUp 1s cubic-bezier(.19,1,.22,1) both;animation-delay:.2s;position:relative;z-index:2}
 .title-pre{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.55em;text-transform:uppercase;opacity:.5;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
 .title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap;margin-bottom:2vmin}
 .title b{font-weight:600;letter-spacing:.04em}
 .quote{font-size:clamp(11px,1.4vmin,15px);font-weight:300;letter-spacing:.12em;font-style:italic;opacity:.45;animation:fadeIn 1.5s ease-out both;animation-delay:1.2s;max-width:400px;margin:0 auto;line-height:1.5}
 
-/* ─── Ring Stage ─── */
 .ring-stage{position:relative;width:min(82vmin, 680px);height:min(82vmin, 680px);animation:scaleIn 1.5s cubic-bezier(.19,1,.22,1) both;animation-delay:.8s;flex-shrink:0;border-radius:50%;box-shadow:inset 0 0 8vmin rgba(255,255,255,.02);overflow:hidden;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px);background-size:100% 4px}
 .ring-stage svg{width:100%;height:100%;overflow:visible;display:block;position:relative;z-index:2}
 .ring-shape{fill:rgba(10,10,10,0.6);stroke:#fff;stroke-width:0.5vmin;stroke-linejoin:round;transition:fill .3s, stroke-width .3s, filter .3s, opacity .3s;backdrop-filter:blur(4px)}
@@ -54,69 +54,29 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .ring-stage.hover-left .content-panel.left .desc-text,
 .ring-stage.hover-right .content-panel.right .desc-text{opacity:1}
 
-/* ─── Full Screen Views (Subject/Academy) ─── */
+/* Views */
 .view{position:fixed;inset:0;background:#000;z-index:50;display:none;flex-direction:column;padding:4vmin 4vmin 0 4vmin;overflow:hidden}
 .view.active{display:flex;animation:fadeIn .4s ease-out both}
 .view.leaving{animation:fadeOut .3s ease-in forwards}
 .view-back{font-size:clamp(10px,1.3vmin,13px);letter-spacing:.4em;text-transform:uppercase;opacity:.55;cursor:pointer;padding:1.2vmin 0;background:none;border:0;color:#fff;font-family:inherit;transition:opacity .2s,transform .2s;z-index:60;align-self:flex-start;}
 .view-back:hover{opacity:1;transform:translateX(-1vmin)}
 .view-back::before{content:"← ";opacity:.55}
-.view-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3vmin}
+.view-hd{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:3vmin;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:2vmin}
 .view-title{font-size:clamp(32px,5vmin,64px);font-weight:200;letter-spacing:.18em;text-transform:uppercase;}
 .action-icons{display:flex;gap:2vmin;padding-bottom:1vmin}
 .icon-btn{background:none;border:none;color:#fff;font-size:clamp(20px,3vmin,32px);cursor:pointer;opacity:.6;transition:opacity .2s, transform .2s}
 .icon-btn:hover{opacity:1;transform:scale(1.1)}
 
-/* ─── Subject Dashboard Layout ─── */
+/* Subject Dashboard */
 .subject-dash{display:flex;flex-direction:column;height:100%;gap:3vmin}
 .calendar-wrapper{flex:1;min-height:0;background:#050505;border:1px solid rgba(255,255,255,.1);border-radius:1vmin;display:flex;flex-direction:column;overflow:hidden}
-.nav-grid{display:grid;grid-template-columns:repeat(6, 1fr);gap:2vmin;padding-bottom:4vmin}
-.nav-btn{background:#050505;border:1px solid rgba(255,255,255,.15);color:#fff;padding:3vmin 2vmin;border-radius:1vmin;cursor:pointer;font-family:inherit;font-size:clamp(10px,1.4vmin,14px);letter-spacing:.15em;text-transform:uppercase;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vmin}
+.nav-grid{display:grid;grid-template-columns:repeat(3, 1fr);grid-template-rows:repeat(2, 1fr);gap:2vmin;height:30vh;padding-bottom:4vmin;}
+.nav-btn{background:#050505;border:1px solid rgba(255,255,255,.15);color:#fff;padding:2vmin;border-radius:1vmin;cursor:pointer;font-family:inherit;font-size:clamp(12px,1.5vmin,16px);letter-spacing:.15em;text-transform:uppercase;transition:all .2s;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1vmin}
 .nav-btn:hover{border-color:#fff;background:rgba(255,255,255,.05);transform:translateY(-2px)}
-.nav-btn span:first-child{font-size:clamp(20px,3vmin,32px);opacity:.8}
-@media(max-width:900px){.nav-grid{grid-template-columns:repeat(3,1fr)}.calendar-wrapper{overflow-x:auto}}
+.nav-btn span:first-child{font-size:clamp(24px,4vmin,40px);opacity:.8}
 
-/* ─── Detailed Pages (Overlays) ─── */
-.page{position:fixed;inset:0;background:#000;z-index:80;display:none;flex-direction:column;padding:4vmin;overflow-y:auto}
-.page.active{display:block;animation:fadeIn .3s ease}
-.page.hidden{display:none}
-
-/* ─── RESTORED MENTAL LAB COMPONENTS ─── */
-.pn{background:#050505;border:1px solid rgba(255,255,255,.1);border-radius:1vmin;padding:3vmin;margin-bottom:2vmin}
-.row{display:flex;justify-content:space-between;align-items:center;padding:1.5vmin 0;border-bottom:1px solid rgba(255,255,255,.05)}
-.btn{background:#111;border:1px solid rgba(255,255,255,.2);color:#fff;padding:1vmin 2vmin;border-radius:0.5vmin;cursor:pointer;font-family:inherit;font-size:clamp(10px,1.2vmin,12px);transition:all .2s}
-.btn:hover{background:#fff;color:#000}
-.btn.x{border-color:rgba(255,50,50,.5);color:rgba(255,50,50,.8)}
-.btn.x:hover{background:rgba(255,50,50,.9);color:#000}
-input, select, textarea{background:#0a0a0a;border:1px solid rgba(255,255,255,.2);color:#fff;padding:1vmin;border-radius:0.5vmin;font-family:inherit;font-size:clamp(11px,1.3vmin,14px);width:100%;margin-bottom:1vmin}
-input:focus{outline:none;border-color:#fff}
-.bar{height:0.5vmin;background:rgba(255,255,255,.1);border-radius:1vmin;overflow:hidden;margin-top:1vmin}
-.bar i{display:block;height:100%;background:#fff}
-.g2{display:grid;grid-template-columns:1fr 1fr;gap:2vmin}
-@media(max-width:700px){.g2{grid-template-columns:1fr}}
-
-/* Degree Modules */
-.degree-card{background:linear-gradient(135deg,#1a1a1a,#000);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:1vmin;padding:4vmin;margin-bottom:3vmin}
-.degree-num{font-size:clamp(32px,6vmin,64px);font-weight:700;letter-spacing:-.02em;line-height:1}
-.module-card{border:1px solid rgba(255,255,255,.1);border-radius:1vmin;padding:2.5vmin;margin-bottom:2vmin;background:#050505}
-.assess-row{display:flex;align-items:center;justify-content:space-between;padding:1vmin 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:clamp(11px,1.3vmin,14px)}
-.assess-row .name{flex:1}
-.assess-row .weight{width:50px;text-align:right;opacity:.5}
-.assess-row .score{width:60px;text-align:right;font-weight:bold}
-
-/* Analytics */
-.chart-box{background:#050505;border:1px solid rgba(255,255,255,.1);padding:3vmin;border-radius:1vmin;text-align:center}
-.chart-box h3{font-size:clamp(10px,1.3vmin,13px);letter-spacing:.2em;opacity:.6;margin-bottom:2vmin}
-
-/* Goal Ladder */
-.goal-card{border:1px solid rgba(255,255,255,.15);padding:3vmin;margin-bottom:2vmin;border-radius:1vmin;background:rgba(255,255,255,.02)}
-.goal-ms{display:flex;gap:2vmin;align-items:center;padding:1vmin 0;font-size:clamp(11px,1.3vmin,14px);border-bottom:1px dashed rgba(255,255,255,.1)}
-.goal-ms .lock{opacity:.5}
-.goal-ms .done{color:#fff;text-decoration:line-through;opacity:.5}
-.goal-ms .active{font-weight:bold}
-
-/* ─── Full Screen Calendar (Mental Lab Style) ─── */
-.cal-full{display:flex;flex-direction:column;height:100%;background:#fff;color:#000;border-radius:1vmin;overflow:hidden}
+/* Full Calendar */
+.cal-full{display:flex;flex-direction:column;height:100%;background:#fff;color:#000;border-radius:0;overflow:hidden}
 .cal-header{display:flex;justify-content:space-between;align-items:center;padding:2vmin;border-bottom:1px solid #ddd;background:#f8f8f8}
 .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);flex:1;overflow-y:auto;background:#eee;gap:1px}
 .cal-col{background:#fff;display:flex;flex-direction:column;min-height:100px}
@@ -127,13 +87,64 @@ input:focus{outline:none;border-color:#fff}
 .cal-nav-btn{background:#fff;border:1px solid #ddd;color:#000;padding:1vmin 2vmin;border-radius:4px;cursor:pointer;font-size:12px}
 .cal-nav-btn:hover{background:#f0f0f0}
 
-/* Icons */
+/* Pages */
+.page{position:fixed;inset:0;background:#000;z-index:80;display:none;flex-direction:column;padding:4vmin;overflow-y:auto}
+.page.active{display:block;animation:fadeIn .3s ease}
+
+/* Mental Lab Core CSS */
+.pn{background:var(--pn);border:1px solid rgba(255,255,255,.1);border-radius:1vmin;padding:3vmin;margin-bottom:2vmin}
+.row{display:flex;justify-content:space-between;align-items:center;padding:1.5vmin 0;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap;gap:1vmin}
+.row .f{flex:1;min-width:120px}
+.gr{font-weight:700;color:var(--ac);min-width:30px}
+.done{opacity:.4;text-decoration:line-through}
+.bar{height:0.5vmin;background:rgba(255,255,255,.1);border-radius:1vmin;overflow:hidden;margin-top:1vmin}
+.bar i{display:block;height:100%;background:var(--ac)}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:2vmin}
+@media(max-width:900px){.g2{grid-template-columns:1fr}}
+.btn{background:#111;border:1px solid rgba(255,255,255,.2);color:#fff;padding:1vmin 2vmin;border-radius:0.5vmin;cursor:pointer;font-family:inherit;font-size:clamp(10px,1.2vmin,12px);transition:all .2s}
+.btn:hover{background:#fff;color:#000}
+.btn.x{border-color:rgba(255,50,50,.5);color:rgba(255,50,50,.8)}
+.btn.x:hover{background:rgba(255,50,50,.9);color:#000}
+input, select, textarea{background:#0a0a0a;border:1px solid rgba(255,255,255,.2);color:#fff;padding:1vmin;border-radius:0.5vmin;font-family:inherit;font-size:clamp(11px,1.3vmin,14px);width:100%;margin-bottom:1vmin}
+input:focus{outline:none;border-color:#fff}
+
+/* Restored Components */
+.assess-row{display:flex;align-items:center;gap:10px;padding:8px 0;border-bottom:1px solid rgba(255,255,255,.06);flex-wrap:wrap;font-size:12px}
+.assess-row .name{flex:1;min-width:120px}
+.assess-row .weight{font-size:12px;opacity:.7;min-width:50px;text-align:right}
+.assess-row .score{width:70px;text-align:center;font-weight:600}
+.assess-row .score.done{color:var(--ac)}
+.assess-row .status{font-size:11px;min-width:70px;text-align:right;opacity:.7}
+.assess-group{background:rgba(255,255,255,.03);border-radius:8px;padding:8px 12px;margin:6px 0}
+.assess-group-head{display:flex;align-items:center;gap:10px;cursor:pointer;font-weight:600}
+.assess-group-head .name{flex:1}
+.assess-group-body{margin-top:6px;padding-left:16px}
+.assess-group-body.collapsed{display:none}
+.assess-group-body .assess-row{padding:6px 0}
+
+.degree-card{background:linear-gradient(135deg,#1a1a1a,#000);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:1vmin;padding:4vmin;margin-bottom:3vmin}
+.degree-num{font-size:clamp(32px,6vmin,64px);font-weight:700;letter-spacing:-.02em;line-height:1}
+.degree-two{display:flex;gap:20px;align-items:flex-end;margin-top:4px;flex-wrap:wrap}
+.degree-num-sm{font-size:22px;font-weight:700;letter-spacing:-.01em}
+.degree-sub{opacity:.85;font-size:13px;margin-top:4px}
+.degree-bar{height:8px;background:rgba(255,255,255,.2);border-radius:99px;margin-top:12px;overflow:hidden}
+.degree-bar i{display:block;height:100%;background:#fff;border-radius:99px;transition:width .3s}
+
+.module-card{border-left:4px solid var(--ac);border-radius:1vmin}
+.goal-card{border:1px solid rgba(255,255,255,.15);padding:3vmin;margin-bottom:2vmin;border-radius:1vmin;background:rgba(255,255,255,.02)}
+.goal-ms{display:flex;gap:2vmin;align-items:center;padding:1vmin 0;font-size:clamp(11px,1.3vmin,14px);border-bottom:1px dashed rgba(255,255,255,.1)}
+.goal-ms .lock{opacity:.5}
+.goal-ms .done{color:#fff;text-decoration:line-through;opacity:.5}
+.goal-ms .active{font-weight:bold}
+
+.chart-box{background:#050505;border:1px solid rgba(255,255,255,.1);padding:3vmin;border-radius:1vmin;text-align:center}
+.chart-box h3{font-size:clamp(10px,1.3vmin,13px);letter-spacing:.2em;opacity:.6;margin-bottom:2vmin}
+
 #toast{position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);background:#fff;color:#000;padding:1vmin 3vmin;border-radius:1vmin;z-index:300;font-weight:bold;font-size:clamp(11px,1.3vmin,13px);display:none;letter-spacing:.05em}
 #modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:200;padding:5vmin}
 #modal>div{background:#050505;border:1px solid rgba(255,255,255,.2);padding:4vmin;width:100%;max-width:500px;border-radius:1vmin;max-height:85vh;overflow-y:auto}
 #modal h2{font-size:clamp(14px,1.8vmin,18px);letter-spacing:.1em;margin-bottom:2vmin;text-transform:uppercase}
 
-/* Splash */
 .splash{position:fixed;inset:0;background:#000;z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;animation:fadeIn .4s ease-out both;cursor:pointer}
 .splash.gone{animation:fadeOut .7s ease-in forwards}
 .splash-title{font-size:clamp(14px,1.8vmin,18px);font-weight:200;letter-spacing:.6em;text-transform:uppercase;opacity:.65;margin-bottom:3vmin;text-align:center}
@@ -141,7 +152,6 @@ input:focus{outline:none;border-color:#fff}
 @keyframes loadBar{to{transform:scaleX(1)}}
 .splash-hint{font-size:clamp(9px,1.1vmin,11px);letter-spacing:.45em;text-transform:uppercase;opacity:.28;margin-top:3vmin;animation:pulse 2s infinite}
 
-/* Ambient */
 .ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;opacity:.12;z-index:0}
 .ambient span{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:drift 18s infinite ease-in-out}
 .corner{position:fixed;width:2.5vmin;height:2.5vmin;pointer-events:none;opacity:.3;animation:fadeIn 1.5s ease-out both;animation-delay:1s;z-index:10}
@@ -149,6 +159,10 @@ input:focus{outline:none;border-color:#fff}
 .corner.tr{top:2vmin;right:2vmin;border-top:1px solid #fff;border-right:1px solid #fff}
 .corner.bl{bottom:2vmin;left:2vmin;border-bottom:1px solid #fff;border-left:1px solid #fff}
 .corner.br{bottom:2vmin;right:2vmin;border-bottom:1px solid #fff;border-right:1px solid #fff}
+
+/* Utilities */
+.tag{font-size:11px;border:1px solid var(--ac);border-radius:6px;padding:1px 6px;color:var(--ac);display:inline-block;margin:1px}
+.pts{background:var(--ac);color:#000;padding:4px 12px;border-radius:99px;font-weight:600}
 </style>
 </head>
 <body>
@@ -221,7 +235,7 @@ input:focus{outline:none;border-color:#fff}
       <button class="nav-btn" onclick="openPage('analytics')"><span>📈</span><span>Analytics</span></button>
       <button class="nav-btn" onclick="openPage('projects')"><span>🎨</span><span>Projects</span></button>
       <button class="nav-btn" onclick="openPage('attributes')"><span>🧬</span><span>Attributes</span></button>
-      <button class="nav-btn" onclick="openPage('journal')"><span>📓</span><span>Journal</span></button>
+      <button class="nav-btn" onclick="openPage('protocol')"><span>📓</span><span>Schedule</span></button>
     </div>
   </div>
 </div>
@@ -236,29 +250,22 @@ input:focus{outline:none;border-color:#fff}
 </div>
 
 <!-- ───────────────────────────────────────────────────────── -->
-<!-- DETAILED PAGES (HIDDEN OVERLAYS)                          -->
+<!-- DETAILED PAGES (EXACT MENTAL LAB COMPONENTS)              -->
 <!-- ───────────────────────────────────────────────────────── -->
 
-<!-- Goals Page -->
 <div class="page" id="page-goals">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Goal Ladder</div>
-  <div class="row"><h2>Active Goals</h2><button class="btn" onclick="promptGoal()">+ New Goal</button></div>
   <div id="goals-list"></div>
 </div>
 
-<!-- Modules Page -->
 <div class="page" id="page-modules">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Degree</div>
-  
-  <div class="degree-card" id="degree-header">
-    <!-- Rendered via JS -->
-  </div>
+  <div id="degree-header-container"></div>
   <div id="modules-list"></div>
 </div>
 
-<!-- Analytics Page -->
 <div class="page" id="page-analytics">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Analytics</div>
@@ -272,40 +279,32 @@ input:focus{outline:none;border-color:#fff}
   </div>
 </div>
 
-<!-- Projects Page -->
 <div class="page" id="page-projects">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Projects</div>
-  <div class="row"><h2>Hobbies</h2><button class="btn" onclick="promptProject()">+ Add Project</button></div>
+  <div class="row"><h2>Hobbies</h2><button class="btn" onclick="addProjectPrompt()">+ Add Project</button></div>
   <div id="projects-list"></div>
 </div>
 
-<!-- Attributes Page -->
 <div class="page" id="page-attributes">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Attributes</div>
   <div id="attributes-list"></div>
 </div>
 
-<!-- Journal Page (Replacing old Schedule) -->
-<div class="page" id="page-journal">
+<div class="page" id="page-protocol">
   <button class="view-back" onclick="closePage()">Return</button>
-  <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Journal</div>
-  <div class="pn">
-    <h2>Quick Routine Log</h2>
-    <div id="journal-routine-list"></div>
-  </div>
+  <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Schedule</div>
+  <div id="protocol-list"></div>
 </div>
 
-<!-- Shop Page -->
 <div class="page" id="page-shop">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Shop</div>
-  <div class="row"><h2>Inventory</h2><span id="shop-pts" style="font-weight:bold"></span></div>
+  <div class="row"><h2>Inventory</h2><span id="shop-pts" class="pts"></span></div>
   <div id="shop-list"></div>
 </div>
 
-<!-- Settings Page -->
 <div class="page" id="page-settings">
   <button class="view-back" onclick="closePage()">Return</button>
   <div class="view-title" style="margin-top:2vmin;margin-bottom:4vmin">Settings</div>
@@ -314,8 +313,8 @@ input:focus{outline:none;border-color:#fff}
     <label>Title</label><input id="set-title" onchange="S.title=this.value;save()">
     <label>Quote</label><input id="set-quote" onchange="S.quote=this.value;save()">
     <br>
-    <button class="btn" onclick="downloadBackup()">Download Backup</button>
-    <button class="btn x" onclick="if(confirm('Reset all?')){S=fresh();save()}">Reset All</button>
+    <button class="btn" onclick="backup()">Download Backup</button>
+    <button class="btn x" onclick="if(confirm('Reset all?')){S=fresh();migrate();save()}">Reset All</button>
   </div>
 </div>
 
@@ -324,160 +323,195 @@ input:focus{outline:none;border-color:#fff}
 
 <script>
 // ═══════════════════════════════════════════════════════
-// THE HD LAB — SUBJECT CORE v12
+// EXACT MENTAL LAB CORE (Ported from v9 file)
 // ═══════════════════════════════════════════════════════
 
-const $ = id => document.getElementById(id);
-const rnd = () => Math.random();
-const esc = s => String(s??'').replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const mean = a => a.length ? a.reduce((x,y)=>x+y,0)/a.length : 0;
-const grade = v => v>=85?'A':v>=70?'B':v>=55?'C':v>=40?'D':'F';
+const $=id=>document.getElementById(id),D=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),rnd=()=>Math.random(),cl=(x,a,b)=>Math.max(a,Math.min(b,x)),pick=a=>a[rnd()*a.length|0];
+const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
+const grade=v=>{const GT=[[95.5,'A+'],[85.5,'A'],[80.5,'A-'],[75.5,'B+'],[65.5,'B'],[60.5,'B-'],[55.5,'C+'],[45.5,'C'],[40.5,'C-'],[35.5,'D+'],[25.5,'D'],[20.5,'D-'],[15.5,'E+'],[5.5,'E'],[.5,'E-']];for(const[t,g]of GT)if(v>=t)return g;return'F'};
+const flat=()=>S.attrs.flatMap(a=>a.subs);
+const subOf=id=>flat().find(s=>s.id==id);
+const attrV=a=>mean(a.subs.map(s=>s.v));
+const ovr=()=>mean(S.attrs.map(attrV));
+const pad=n=>String(n).padStart(2,'0');
+const dt=d=>new Date(d*864e5);
+const wd=d=>(d+4)%7;
+const midn=d=>{const x=dt(d);return new Date(x.getUTCFullYear(),x.getUTCMonth(),x.getUTCDate()).getTime()};
+const sn15=m=>Math.round(m/15)*15;
+const hm=ms=>{const x=new Date(ms);return pad(x.getHours())+':'+pad(x.getMinutes())};
+const ymd=d=>dt(d).toISOString().slice(0,10);
 
-let S, calDate = new Date();
+const ATTR_DEF=[{n:'Academic',subs:['Biological Chemistry','Professional Skills','Diversity of Life','Molecular Biology']},{n:'Strength',subs:['Pull-ups','Push-ups','Skill work','Grip']},{n:'Endurance',subs:['5k time','Run streak','Long runs']},{n:'Flexibility',subs:['Hamstrings','Hips','Shoulders','Overall reach']},{n:'Focus',subs:['Deep work hours','Distraction resistance']},{n:'Discipline',subs:['Consistency streak','Follow-through']},{n:'Calm',subs:['Meditation streak','Bad habit resistance']},{n:'Craft',subs:['Art','Brawlhalla','Roblox','Writing / Notes','TikTok']}];
 
-const ATTR_DEF = [
-  { n:'Academic', subs:['Biological Chemistry','Professional Skills','Diversity of Life','Molecular Biology'] },
-  { n:'Strength', subs:['Pull-ups','Push-ups','Skill work','Grip'] },
-  { n:'Endurance', subs:['5k time','Run streak','Long runs'] },
-  { n:'Flexibility', subs:['Hamstrings','Hips','Shoulders','Overall reach'] },
-  { n:'Focus', subs:['Deep work hours','Distraction resistance'] },
-  { n:'Discipline', subs:['Consistency streak','Follow-through'] },
-  { n:'Calm', subs:['Meditation streak','Bad habit resistance'] },
-  { n:'Craft', subs:['Art','Brawlhalla','Roblox','Writing / Notes','TikTok'] }
-];
-
-const MODULES_DEF = [
-  {id:'m1', n:'Biological Chemistry', type:'Year-long', credits:20, assessments:[
-      {id:'a1', n:'Exam 1', w:35, sc:null},{id:'a2', n:'Exam 2', w:35, sc:null},
-      {id:'a3', n:'Lab assessment', w:10, sc:null},{id:'a4', n:'Coursework 1', w:10, sc:null},{id:'a5', n:'Coursework 2', w:10, sc:null}
-  ]},
-  {id:'m2', n:'Professional Skills', type:'Year-long', credits:20, assessments:[
-      {id:'b1', n:'Lit review', w:25, sc:null},{id:'b2', n:'Presentation', w:25, sc:null},
-      {id:'b3', n:'Quizzes', w:20, sc:null},{id:'b4', n:'Data task', w:30, sc:null}
-  ]},
-  {id:'m3', n:'Diversity of Life', type:'Sem 1', credits:20, assessments:[
-      {id:'c1', n:'Eval Conversation', w:60, sc:null},{id:'c2', n:'Course Test', w:40, sc:null}
-  ]},
-  {id:'m4', n:'Molecular Biology', type:'Sem 1', credits:20, assessments:[
-      {id:'d1', n:'Data Analysis', w:20, sc:null},{id:'d2', n:'Practical', w:20, sc:null},
-      {id:'d3', n:'MCQ Tests', w:10, sc:90},{id:'d4', n:'Final Exam', w:50, sc:null}
-  ]}
-];
-
-function mkAttrs(){
-  return ATTR_DEF.map((a,i) => ({
-    id: 'a'+i, n: a.n, subs: a.subs.map((n,j) => ({ id:'s'+i+'_'+j, n, v:20, idle:0 }))
-  }));
+function mkAttrs(){return ATTR_DEF.map((a,i)=>({id:'a'+i,n:a.n,subs:a.subs.map((n,j)=>({id:'s'+i+'_'+j,n,v:0,g:1,idle:0}))}))}
+function mkModules(){
+  return[
+    {id:'mod1',n:'Biological Chemistry',type:'Year-long',credits:20,locked:0,target:70,assessments:[
+      {id:'a1',n:'Exam 1',w:35,score:null,due:null},
+      {id:'a2',n:'Exam 2',w:35,score:null,due:null},
+      {id:'a3',n:'Lab assessment',w:10,score:null,due:null},
+      {id:'g1',n:'Coursework 1 — Autumn quizzes',w:10,group:1,subs:[
+        {id:'a4',n:'Quiz 1',w:2.5,score:null},{id:'a5',n:'Quiz 2',w:2.5,score:null},
+        {id:'a6',n:'Quiz 3',w:2.5,score:null},{id:'a7',n:'Quiz 4',w:2.5,score:null}
+      ]},
+      {id:'g2',n:'Coursework 2 — Spring quizzes',w:10,group:1,subs:[
+        {id:'a8',n:'Quiz 5',w:2.5,score:null},{id:'a9',n:'Quiz 6',w:2.5,score:null},
+        {id:'a10',n:'Quiz 7',w:2.5,score:null},{id:'a11',n:'Quiz 8',w:2.5,score:null}
+      ]}
+    ]},
+    {id:'mod2',n:'Professional Skills',type:'Year-long',credits:20,locked:0,target:70,assessments:[
+      {id:'b1',n:'Group literature review',w:25,score:null,due:null},
+      {id:'b2',n:'Group presentation',w:25,score:null,due:null},
+      {id:'g3',n:'Regular quizzes',w:20,group:1,subs:[
+        {id:'b3',n:'Blackboard Quiz 1',w:2.5,score:null},{id:'b4',n:'Blackboard Quiz 2',w:2.5,score:null},
+        {id:'b5',n:'Blackboard Quiz 3',w:2.5,score:null},{id:'b6',n:'Blackboard Quiz 4',w:2.5,score:null},
+        {id:'b7',n:'Math Quiz',w:10,score:null}
+      ]},
+      {id:'b8',n:'Data science task',w:30,score:null,due:null}
+    ]},
+    {id:'mod3',n:'Diversity of Life',type:'Sem 1',credits:20,locked:0,target:70,assessments:[
+      {id:'c1',n:'Evaluative Conversation',w:60,score:null,due:null},
+      {id:'c2',n:'Course Test',w:40,score:null,due:null}
+    ]},
+    {id:'mod4',n:'Molecular Biology',type:'Sem 1',credits:20,locked:0,target:70,assessments:[
+      {id:'d1',n:'In-Class Data Analysis Test',w:20,score:null,due:null},
+      {id:'d2',n:'Practical Skills Test',w:20,score:null,due:null},
+      {id:'g4',n:'MCQ Tests',w:10,group:1,subs:[
+        {id:'d3',n:'MCQ Test 1',w:2,score:null},{id:'d4',n:'MCQ Test 2',w:2,score:null},
+        {id:'d5',n:'MCQ Test 3',w:2,score:null},{id:'d6',n:'MCQ Test 4',w:2,score:null},
+        {id:'d7',n:'MCQ Test 5',w:2,score:null}
+      ]},
+      {id:'d8',n:'Final Exam',w:50,score:null,due:null}
+    ]}
+  ];
 }
 
 function fresh(){
-  return {
-    v: 12, name: 'Subject', title: 'Newcomer', quote: '""',
-    pts: 50, attrs: mkAttrs(), modules: JSON.parse(JSON.stringify(MODULES_DEF)),
-    routine: [
-      { id:'r0', n:'Wake + Hydrate', time:'07:00', done:false },
-      { id:'r1', n:'Study Block', time:'09:00', done:false },
-      { id:'r2', n:'Movement', time:'17:00', done:false }
+  const A=mkAttrs();
+  return{
+    v:13, name:'Subject', title:'Newcomer', quote:'"You are the only variable in your life that refuses to stay constant."',
+    day:D(), pts:50, attrs:A, modules:mkModules(),
+    routine:[
+      {id:'r0',n:'Wake + Hydrate',time:'07:00',done:false},
+      {id:'r1',n:'Study Block',time:'09:00',done:false},
+      {id:'r2',n:'Movement',time:'17:00',done:false},
+      {id:'r3',n:'Read',time:'21:00',done:false},
+      {id:'r4',n:'Meditate',time:'22:00',done:false}
     ],
-    goals: [
-      { id:'g1', n:'Pass degree', sub:'s0_0', start:0, target:60, unit:'%', cur:0, best:0, weeks:40, sc:null, ms:[] },
-      { id:'g2', n:'20 pull-ups', sub:'s1_0', start:5, target:20, unit:'reps', cur:5, best:5, weeks:12, sc:null, ms:[] }
+    goals:[
+      {id:'g1',n:'Pass degree with 2:1',sub:'s0_0',start:0,target:60,unit:'%',cur:0,best:0,weeks:40,sc:null,ms:[]},
+      {id:'g2',n:'20 pull-ups',sub:'s1_0',start:5,target:20,unit:'reps',cur:5,best:5,weeks:12,sc:null,ms:[]},
+      {id:'g3',n:'Touch toes',sub:'s3_0',start:0,target:10,unit:'cm',cur:0,best:0,weeks:16,sc:null,ms:[]},
+      {id:'g4',n:'5k under 25m',sub:'s2_0',start:35,target:25,unit:'min',cur:35,best:35,weeks:20,sc:null,ms:[]},
+      {id:'g5',n:'30-day meditation',sub:'s6_0',start:0,target:30,unit:'days',cur:0,best:0,weeks:6,sc:null,ms:[]}
     ],
-    projects: [
-      { id:'p1', n:'Brawlhalla', sub:'s7_1', total:0, ms:[{n:'Reach Gold',done:false}] }
+    projects:[
+      {id:'p1',n:'Brawlhalla',sub:'s7_1',total:0,ms:[{n:'Reach Gold',done:false},{n:'Reach Plat',done:false}]},
+      {id:'p2',n:'Art',sub:'s7_0',total:0,ms:[{n:'30 days daily sketch',done:false},{n:'Full illustration',done:false}]},
+      {id:'p3',n:'Roblox prototyping',sub:'s7_2',total:0,ms:[{n:'Finish prototype',done:false},{n:'Publish game',done:false}]}
     ],
-    shop: [{ id:'sh0', n:'Shield', c:40, d:'Pause decay' }],
-    events: [], log: [], streak: 0
+    shop:[
+      {id:'sh0',n:'Shield',c:40,d:'Pause stat decay for 3 days'},
+      {id:'sh1',n:'Boost',c:30,d:'Double next mission XP'}
+    ],
+    events:[], log:[], streak:0
   };
+}
+
+function migrate(){
+  if(!S){ S=fresh(); }
+  S.attrs.forEach(a=>a.subs.forEach(s=>{s.v=s.v||0}));
+  S.goals.forEach(initGoal);
+  if(!S.events) S.events=[];
+  save();
 }
 
 function initGoal(g){
   if(!g.ms || !g.ms.length){
-    const n = 4, up = g.target >= g.start;
-    g.ms = Array.from({length:n}, (_,i) => {
-      const val = Math.round(g.start + (g.target - g.start) * (i+1)/n);
-      return { id:'m'+i, v:val, done: (up ? g.cur >= val : g.cur <= val) };
+    const n=4, up=g.target>=g.start;
+    g.ms=Array.from({length:n},(_,i)=>{
+      const val=Math.round(g.start+(g.target-g.start)*(i+1)/n);
+      return {id:'m'+i, v:val, done:(up?g.cur>=val:g.cur<=val)};
     });
   }
 }
 
 function save(){
-  localStorage.setItem('hdlab_v12', JSON.stringify(S));
+  localStorage.setItem('hdlab_v13', JSON.stringify(S));
   renderAll();
 }
 
 function load(){
-  try {
-    const data = localStorage.getItem('hdlab_v12');
-    if(data) S = JSON.parse(data);
-    else { S = fresh(); S.goals.forEach(initGoal); save(); }
-  } catch(e) { S = fresh(); save(); }
+  try{
+    const data=localStorage.getItem('hdlab_v13');
+    if(data) S=JSON.parse(data);
+    else S=fresh();
+  }catch(e){ S=fresh(); }
+  migrate();
 }
 
 function toast(m){
-  const t = $('toast'); t.textContent = m; t.style.display = 'block';
-  clearTimeout(t._h); t._h = setTimeout(() => t.style.display = 'none', 2500);
+  const t=$('toast'); t.textContent=m; t.style.display='block';
+  clearTimeout(t._h); t._h=setTimeout(()=>t.style.display='none', 2500);
 }
 
 // ═══════════════════════════════════════════════════════
-// RENDERERS
+// RENDERERS (Restored from Mental Lab)
 // ═══════════════════════════════════════════════════════
 
 function renderAll(){
   if(!S) return;
   renderDashboardCalendar();
   
-  // Pages (Only render if they exist on the DOM)
-  if($('goals-list')) renderGoals();
-  if($('modules-list')) renderModules();
-  if($('projects-list')) renderProjects();
-  if($('attributes-list')) renderAttributes();
+  if($('goals-list')) renderGoalsTab();
+  if($('modules-list')) renderModulesTab();
+  if($('projects-list')) renderProjectsTab();
+  if($('attributes-list')) renderAttributesTab();
+  if($('protocol-list')) renderProtocolTab();
   if($('shop-list')) renderShop();
-  if($('journal-routine-list')) renderJournal();
-  if($('page-analytics')) renderAnalytics();
-  
+  if($('page-analytics')) renderAnalyticsTab();
+
   if($('set-name')) {
-    $('set-name').value = S.name;
-    $('set-title').value = S.title;
-    $('set-quote').value = S.quote;
+    $('set-name').value=S.name;
+    $('set-title').value=S.title;
+    $('set-quote').value=S.quote;
   }
 }
 
 function renderDashboardCalendar(){
   if(!$('cal-dashboard-grid')) return;
-  const y = calDate.getFullYear(), m = calDate.getMonth();
+  const y=calDate.getFullYear(), m=calDate.getMonth();
   $('cal-month-title').textContent = calDate.toLocaleString('default',{month:'long'}) + ' ' + y;
   
-  const first = new Date(y, m, 1).getDay();
-  const days = new Date(y, m+1, 0).getDate();
-  const today = new Date();
+  const first=new Date(y,m,1).getDay();
+  const days=new Date(y,m+1,0).getDate();
+  const today=new Date();
   
   let html = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].map(x=>`<div style="text-align:center;font-size:10px;padding:1vmin;font-weight:bold;background:#f8f8f8;color:#000;border-bottom:1px solid #ddd">${x}</div>`).join('');
-  
-  for(let i=0; i<first; i++) html += `<div style="background:#fff;min-height:50px"></div>`;
-  
-  for(let i=1; i<=days; i++){
+  for(let i=0;i<first;i++) html+='<div style="background:#fff;min-height:50px"></div>';
+  for(let i=1;i<=days;i++){
     const isTd = i===today.getDate() && m===today.getMonth() && y===today.getFullYear();
     const dateStr = `${y}-${String(m+1).padStart(2,'0')}-${String(i).padStart(2,'0')}`;
-    const evs = S.events.filter(e => e.date === dateStr);
+    const evs = S.events.filter(e=>e.date===dateStr);
     html += `<div class="cal-cell ${isTd?'today':''}" style="background:#fff;color:#000;min-height:50px;border:1px solid #eee;padding:0.5vmin">
       <div style="font-size:11px;opacity:.6;margin-bottom:0.5vmin">${i}</div>
       ${evs.map(e=>`<div class="cal-event" style="background:#1a73e8">${esc(e.title)}</div>`).join('')}
     </div>`;
   }
-  $('cal-dashboard-grid').innerHTML = html;
+  $('cal-dashboard-grid').innerHTML=html;
 }
 
-function renderGoals(){
-  $('goals-list').innerHTML = S.goals.map(g => {
+function renderGoalsTab(){
+  $('goals-list').innerHTML = S.goals.map(g=>{
     initGoal(g);
-    const act = g.ms.find(m => !m.done);
+    const act=g.ms.find(m=>!m.done);
     return `<div class="goal-card">
       <div style="display:flex;justify-content:space-between;margin-bottom:2vmin">
         <div><b style="font-size:clamp(14px,1.8vmin,18px)">${esc(g.n)}</b></div>
         <div style="opacity:.5">${g.cur} / ${g.target} ${g.unit}</div>
       </div>
-      ${g.ms.map((m,i) => `
+      ${g.ms.map((m,i)=>`
         <div class="goal-ms ${m.done?'done':m===act?'active':''}">
           <span class="lock">${m.done?'[✓]':m===act?'▶':'[ ]'}</span>
           <span>Milestone ${i+1}: ${m.v} ${g.unit}</span>
@@ -491,34 +525,28 @@ function renderGoals(){
   }).join('');
 }
 
-function renderModules(){
-  // Degree Header
-  let totalEarned = 0, totalWeight = 0;
-  S.modules.forEach(m => {
-    m.assessments.forEach(a => {
-      if(a.sc !== null) { totalEarned += a.sc * a.w; totalWeight += a.w; }
+function renderModulesTab(){
+  let totalEarned=0,totalWeight=0;
+  S.modules.forEach(m=>{
+    m.assessments.forEach(a=>{
+      if(a.score!==null){ totalEarned+=a.score*a.w; totalWeight+=a.w; }
     });
   });
-  const curDeg = totalWeight > 0 ? (totalEarned/totalWeight).toFixed(1) : '0.0';
+  const curDeg = totalWeight>0 ? (totalEarned/totalWeight).toFixed(1) : '0.0';
   
-  $('degree-header').innerHTML = `
-    <h2 style="opacity:.7;font-size:14px;letter-spacing:.1em;margin-bottom:2vmin">DEGREE · 1ST CLASS (70%+)</h2>
-    <div style="display:flex;gap:4vmin;align-items:flex-end;margin-bottom:2vmin">
-      <div>
-        <div class="degree-num">${curDeg}%</div>
-        <div style="opacity:.6;font-size:12px">current grade</div>
+  $('degree-header-container').innerHTML = `
+    <div class="degree-card">
+      <h2 style="opacity:.7;font-size:14px;letter-spacing:.1em;margin-bottom:2vmin">DEGREE · 1ST CLASS (70%+)</h2>
+      <div class="degree-two">
+        <div><div class="degree-num">${curDeg}%</div><div class="degree-sub">current grade</div></div>
+        <div><div class="degree-num-sm">${(totalWeight/4).toFixed(1)}%</div><div class="degree-sub">of year graded</div></div>
       </div>
-      <div>
-        <div style="font-size:24px;font-weight:bold">${(totalWeight/4).toFixed(1)}%</div>
-        <div style="opacity:.6;font-size:12px">of year graded</div>
-      </div>
+      <div class="degree-bar"><i style="width:${Math.min(100,(curDeg/70)*100)}%"></i></div>
     </div>
-    <div class="bar" style="height:1vmin;background:rgba(255,255,255,.1)"><i style="width:${Math.min(100, (curDeg/70)*100)}%;background:#fff"></i></div>
   `;
 
-  // Module Cards
-  $('modules-list').innerHTML = S.modules.map(m => {
-    return `<div class="module-card">
+  $('modules-list').innerHTML = S.modules.map(m=>{
+    return `<div class="pn module-card">
       <div style="display:flex;justify-content:space-between;margin-bottom:2vmin;border-bottom:1px solid rgba(255,255,255,.1);padding-bottom:1vmin">
         <div><b>${esc(m.n)}</b> <span style="font-size:11px;opacity:.5">(${m.type})</span></div>
         <div style="opacity:.5">${m.credits} credits</div>
@@ -527,7 +555,7 @@ function renderModules(){
         <div class="assess-row">
           <div class="name">${esc(a.n)}</div>
           <div class="weight">${a.w}%</div>
-          <div class="score">${a.sc!==null?a.sc+'%':'—'}</div>
+          <div class="score">${a.score!==null?a.score+'%':'—'}</div>
           <button class="btn" style="padding:0.5vmin 1.5vmin;font-size:10px;margin-left:1vmin" onclick="editModuleScore('${m.id}','${a.id}')">Edit</button>
         </div>
       `).join('')}
@@ -535,8 +563,8 @@ function renderModules(){
   }).join('');
 }
 
-function renderProjects(){
-  $('projects-list').innerHTML = S.projects.map(p => `
+function renderProjectsTab(){
+  $('projects-list').innerHTML = S.projects.map(p=>`
     <div class="goal-card">
       <div style="display:flex;justify-content:space-between;margin-bottom:1vmin">
         <div><b>${esc(p.n)}</b></div>
@@ -547,9 +575,9 @@ function renderProjects(){
   `).join('');
 }
 
-function renderAttributes(){
-  const attrV = S.attrs.map(a => mean(a.subs.map(s => s.v)));
-  $('attributes-list').innerHTML = S.attrs.map((a,i) => `
+function renderAttributesTab(){
+  const attrV=S.attrs.map(a=>mean(a.subs.map(s=>s.v)));
+  $('attributes-list').innerHTML = S.attrs.map((a,i)=>`
     <div class="pn" style="display:flex;justify-content:space-between;align-items:center">
       <div><b>${esc(a.n)}</b></div>
       <div style="font-weight:bold;font-size:18px">${grade(attrV[i])} ${attrV[i].toFixed(0)}</div>
@@ -557,18 +585,8 @@ function renderAttributes(){
   `).join('');
 }
 
-function renderShop(){
-  $('shop-pts').textContent = S.pts + ' pts';
-  $('shop-list').innerHTML = S.shop.map(sh => `
-    <div class="row">
-      <div><b>${esc(sh.n)}</b><div style="font-size:11px;opacity:.5">${esc(sh.d)}</div></div>
-      <button class="btn" onclick="buy('${sh.id}')">${sh.c} pts</button>
-    </div>
-  `).join('');
-}
-
-function renderJournal(){
-  $('journal-routine-list').innerHTML = S.routine.map(r => `
+function renderProtocolTab(){
+  $('protocol-list').innerHTML = S.routine.map(r=>`
     <div class="row">
       <div><b>${esc(r.n)}</b> <span style="opacity:.5;font-size:11px">${r.time}</span></div>
       <button class="btn ${r.done?'x':'on'}" onclick="toggleRoutine('${r.id}')">${r.done?'Undo':'Done'}</button>
@@ -576,11 +594,21 @@ function renderJournal(){
   `).join('');
 }
 
-function renderAnalytics(){
-  const attrV = S.attrs.map(a => mean(a.subs.map(s => s.v)));
-  $('page-radar').innerHTML = radar(S.attrs.map(a=>a.n), attrV);
-  $('chart-overall').innerHTML = barChart(['A','P','M'], [attrV[0],attrV[1],attrV[4]]);
-  $('mission-history').innerHTML = S.log.slice(-10).reverse().map(l => `<div style="opacity:.7">> ${esc(l)}</div>`).join('') || '<div style="opacity:.5">No activity yet.</div>';
+function renderShop(){
+  if($('shop-pts')) $('shop-pts').textContent=S.pts+' pts';
+  $('shop-list').innerHTML = S.shop.map(sh=>`
+    <div class="row">
+      <div><b>${esc(sh.n)}</b><div style="font-size:11px;opacity:.5">${esc(sh.d)}</div></div>
+      <button class="btn" onclick="buy('${sh.id}')">${sh.c} pts</button>
+    </div>
+  `).join('');
+}
+
+function renderAnalyticsTab(){
+  const attrV=S.attrs.map(a=>mean(a.subs.map(s=>s.v)));
+  $('page-radar').innerHTML=radar(S.attrs.map(a=>a.n), attrV);
+  $('chart-overall').innerHTML=barChart(['Acad','Phys','Ment'], [attrV[0],attrV[1],attrV[4]]);
+  $('mission-history').innerHTML = S.log.slice(-10).reverse().map(l=>`<div style="opacity:.7">> ${esc(l)}</div>`).join('') || '<div style="opacity:.5">No activity yet.</div>';
 }
 
 // ═══════════════════════════════════════════════════════
@@ -588,136 +616,141 @@ function renderAnalytics(){
 // ═══════════════════════════════════════════════════════
 
 function toggleRoutine(id){
-  const r = S.routine.find(x => x.id === id);
-  if(r){ r.done = !r.done; save(); }
+  const r=S.routine.find(x=>x.id===id);
+  if(r){ r.done=!r.done; save(); }
 }
 
 function logGoal(id){
-  const g = S.goals.find(x => x.id === id);
-  const v = parseFloat($('gv-'+id).value);
+  const g=S.goals.find(x=>x.id===id);
+  const v=parseFloat($('gv-'+id).value);
   if(isNaN(v)) return toast('Enter a valid number');
-  g.cur = v;
-  if(v > g.best) g.best = v;
+  g.cur=v;
+  if(v>g.best) g.best=v;
   initGoal(g);
-  let advanced = false;
-  g.ms.forEach(m => {
-    if(!m.done && g.cur >= m.v){
-      m.done = true; advanced = true; S.pts += 30;
+  let adv=false;
+  g.ms.forEach(m=>{
+    if(!m.done && g.cur>=m.v){
+      m.done=true; adv=true; S.pts+=30;
       S.log.push(`Milestone: ${g.n} (${m.v} ${g.unit})`);
     }
   });
-  if(advanced) toast('Milestone Reached! +30 pts');
+  if(adv) toast('Milestone Reached! +30 pts');
   else toast('Test logged.');
   save();
 }
 
 function logProject(id){
-  const p = S.projects.find(x => x.id === id);
-  if(p){ p.total = (p.total||0) + 1; S.pts += 3; toast('Session logged. +3 pts'); save(); }
+  const p=S.projects.find(x=>x.id===id);
+  if(p){ p.total=(p.total||0)+1; S.pts+=3; toast('Session logged. +3 pts'); save(); }
 }
 
 function editModuleScore(mId, aId){
-  const mod = S.modules.find(x=>x.id===mId);
-  const ass = mod.assessments.find(x=>x.id===aId);
-  $('mb').innerHTML = `<h2>${esc(ass.n)}</h2>
-    <input type="number" id="es_v" value="${ass.sc||''}" placeholder="Score %" style="font-size:24px">
+  const mod=S.modules.find(x=>x.id===mId);
+  const ass=mod.assessments.find(x=>x.id===aId);
+  $('mb').innerHTML=`<h2>${esc(ass.n)}</h2>
+    <input type="number" id="es_v" value="${ass.score||''}" placeholder="Score %" style="font-size:24px">
     <button class="btn" onclick="saveModuleScore('${mId}','${aId}')">Save</button>`;
-  $('modal').style.display = 'flex';
+  $('modal').style.display='flex';
 }
 
 function saveModuleScore(mId, aId){
-  const mod = S.modules.find(x=>x.id===mId);
-  const ass = mod.assessments.find(x=>x.id===aId);
-  const v = $('es_v').value;
-  ass.sc = v===''?null:parseFloat(v);
-  $('modal').style.display = 'none';
+  const mod=S.modules.find(x=>x.id===mId);
+  const ass=mod.assessments.find(x=>x.id===aId);
+  const v=$('es_v').value;
+  ass.score=v===''?null:parseFloat(v);
+  $('modal').style.display='none';
   save();
 }
 
 function buy(id){
-  const item = S.shop.find(x => x.id === id);
-  if(S.pts < item.c) return toast('Not enough points');
-  S.pts -= item.c; toast('Purchased ' + item.n); save();
+  const item=S.shop.find(x=>x.id===id);
+  if(S.pts<item.c) return toast('Not enough points');
+  S.pts-=item.c; toast('Purchased '+item.n); save();
 }
 
 function promptGoal(){
-  $('mb').innerHTML = `<h2>New Goal</h2>
+  $('mb').innerHTML=`<h2>New Goal</h2>
     <input id="ng-n" placeholder="Goal name">
     <input id="ng-t" type="number" placeholder="Target value">
     <button class="btn" onclick="addGoal()">Create</button>`;
-  $('modal').style.display = 'flex';
+  $('modal').style.display='flex';
 }
 
 function addGoal(){
-  const n = $('ng-n').value, t = parseFloat($('ng-t').value);
+  const n=$('ng-n').value, t=parseFloat($('ng-t').value);
   if(!n || isNaN(t)) return toast('Fill fields');
-  S.goals.push({ id:'g'+Date.now(), n, start:0, target:t, cur:0, best:0, unit:'reps', ms:[] });
-  $('modal').style.display = 'none'; save();
+  S.goals.push({id:'g'+Date.now(), n, start:0, target:t, cur:0, best:0, unit:'reps', ms:[]});
+  $('modal').style.display='none'; save();
 }
 
 function promptProject(){
-  $('mb').innerHTML = `<h2>New Project</h2>
+  $('mb').innerHTML=`<h2>New Project</h2>
     <input id="np-n" placeholder="Project name">
     <button class="btn" onclick="addProject()">Create</button>`;
-  $('modal').style.display = 'flex';
+  $('modal').style.display='flex';
 }
 
 function addProject(){
-  const n = $('np-n').value;
+  const n=$('np-n').value;
   if(!n) return toast('Enter name');
-  S.projects.push({ id:'p'+Date.now(), n, total:0, ms:[] });
-  $('modal').style.display = 'none'; save();
+  S.projects.push({id:'p'+Date.now(), n, total:0, ms:[]});
+  $('modal').style.display='none'; save();
 }
 
 // ═══════════════════════════════════════════════════════
-// UI LOGIC (Views & Pages)
+// UI LOGIC
 // ═══════════════════════════════════════════════════════
 
+let calDate=new Date();
+
 function enter(){
-  const sp = $('splash');
-  if(sp && !sp.classList.contains('gone')){ sp.classList.add('gone'); setTimeout(() => { sp.style.display = 'none'; }, 700); }
+  const sp=$('splash');
+  if(sp && !sp.classList.contains('gone')){
+    sp.classList.add('gone');
+    setTimeout(()=>{ sp.style.display='none'; }, 700);
+  }
 }
 
 function hoverLeft(on){
-  const st = $('ringStage');
+  const st=$('ringStage');
   if(on) st.classList.add('hover-left'); else st.classList.remove('hover-left');
 }
 function hoverRight(on){
-  const st = $('ringStage');
+  const st=$('ringStage');
   if(on) st.classList.add('hover-right'); else st.classList.remove('hover-right');
 }
 
 function openView(name){
-  document.querySelectorAll('.view').forEach(v => { v.classList.remove('active'); v.classList.remove('leaving'); });
+  document.querySelectorAll('.view').forEach(v=>{ v.classList.remove('active'); v.classList.remove('leaving'); });
   hoverLeft(false); hoverRight(false);
-  const el = $('view-' + name);
+  const el=$('view-'+name);
   if(el) el.classList.add('active');
-  if(name === 'subject') renderAll();
+  if(name==='subject') renderAll();
 }
 
 function closeView(){
-  document.querySelectorAll('.view').forEach(v => {
+  document.querySelectorAll('.view').forEach(v=>{
     if(v.classList.contains('active')){
       v.classList.add('leaving');
-      setTimeout(() => { v.classList.remove('active'); v.classList.remove('leaving'); }, 300);
+      setTimeout(()=>{ v.classList.remove('active'); v.classList.remove('leaving'); }, 300);
     }
   });
-  closePage(); // ensure any open pages close
+  closePage();
 }
 
 function openPage(name){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  const el = $('page-' + name);
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  const el=$('page-'+name);
   if(el) el.classList.add('active');
   renderAll();
 }
 
 function closePage(){
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
 }
 
 function calNav(dir){
-  calDate.setMonth(calDate.getMonth() + dir);
+  calDate.setMonth(calDate.getMonth()+dir);
   renderDashboardCalendar();
 }
 
@@ -726,21 +759,21 @@ function calNav(dir){
 // ═══════════════════════════════════════════════════════
 
 function radar(labels, data){
-  const n = labels.length, c = 100, R = 70;
-  const pt = (i, r) => { const a = -Math.PI/2 + i * 2 * Math.PI / n; return [c + Math.cos(a) * r, c + Math.sin(a) * r]; };
-  const ring = f => labels.map((_,i) => pt(i, R*f).join(',')).join(' ');
-  const poly = data.map((v,i) => pt(i, R * v/100).join(',')).join(' ');
+  const n=labels.length, c=100, R=70;
+  const pt=(i,r)=>{ const a=-Math.PI/2+i*2*Math.PI/n; return [c+Math.cos(a)*r, c+Math.sin(a)*r]; };
+  const ring=f=>labels.map((_,i)=>pt(i,R*f).join(',')).join(' ');
+  const poly=data.map((v,i)=>pt(i,R*v/100).join(',')).join(' ');
   return `<svg viewBox="0 0 200 200" width="100%" height="100%" style="max-height:250px">
     <g fill="none" stroke="rgba(255,255,255,.1)"><polygon points="${ring(1)}"/><polygon points="${ring(.5)}"/></g>
     <polygon points="${poly}" fill="rgba(255,255,255,.15)" stroke="#fff" stroke-width="1.5"/>
-    ${labels.map((l,i) => { const [x,y] = pt(i, R+15); return `<text x="${x}" y="${y}" fill="rgba(255,255,255,.6)" font-size="9" text-anchor="middle" dominant-baseline="middle">${esc(l)}</text>`; }).join('')}
+    ${labels.map((l,i)=>{ const [x,y]=pt(i,R+15); return `<text x="${x}" y="${y}" fill="rgba(255,255,255,.6)" font-size="9" text-anchor="middle" dominant-baseline="middle">${esc(l)}</text>`; }).join('')}
   </svg>`;
 }
 
 function barChart(labels, data){
-  const max = Math.max(...data, 100);
+  const max=Math.max(...data, 100);
   return `<div style="display:flex;justify-content:space-around;align-items:flex-end;height:120px;padding-top:2vmin">
-    ${data.map((v,i) => `
+    ${data.map((v,i)=>`
       <div style="display:flex;flex-direction:column;align-items:center;gap:0.5vmin;width:100%">
         <div style="font-size:10px;opacity:.5">${v.toFixed(0)}</div>
         <div style="background:#fff;width:40%;height:${v/max*80}px;border-radius:2px"></div>
@@ -754,11 +787,10 @@ function barChart(labels, data){
 // INIT
 // ═══════════════════════════════════════════════════════
 
-(function buildShapes() {
-  // Perfect Split Circle
-  const R = 240, cx = 270, cy = 270;
-  const pathL = `M ${cx} ${cy - R} A ${R} ${R} 0 0 0 ${cx} ${cy + R} Z`;
-  const pathR = `M ${cx} ${cy - R} A ${R} ${R} 0 0 1 ${cx} ${cy + R} Z`;
+(function buildShapes(){
+  const R=240, cx=270, cy=270;
+  const pathL=`M ${cx} ${cy-R} A ${R} ${R} 0 0 0 ${cx} ${cy+R} Z`;
+  const pathR=`M ${cx} ${cy-R} A ${R} ${R} 0 0 1 ${cx} ${cy+R} Z`;
   $('shapeL').setAttribute('d', pathL);
   $('shapeR').setAttribute('d', pathR);
   $('shapeL').style.setProperty('--len', $('shapeL').getTotalLength());
@@ -766,18 +798,18 @@ function barChart(labels, data){
 })();
 
 (function spawnAmbient(){
-  const wrap = $('ambient');
+  const wrap=$('ambient');
   for(let i=0;i<18;i++){
-    const s = document.createElement('span');
-    s.style.left = (Math.random()*100)+'%';
-    s.style.top = (Math.random()*100)+'%';
-    s.style.animationDelay = (Math.random()*-18)+'s';
-    s.style.animationDuration = (12+Math.random()*12)+'s';
+    const s=document.createElement('span');
+    s.style.left=(Math.random()*100)+'%';
+    s.style.top=(Math.random()*100)+'%';
+    s.style.animationDelay=(Math.random()*-18)+'s';
+    s.style.animationDuration=(12+Math.random()*12)+'s';
     wrap.appendChild(s);
   }
 })();
 
-document.addEventListener('keydown', e => { if(e.key === 'Escape') { closePage(); closeView(); } });
+document.addEventListener('keydown', e=>{ if(e.key==='Escape'){ closePage(); closeView(); } });
 
 load();
 </script>
