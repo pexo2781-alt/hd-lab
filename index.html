@@ -8,6 +8,10 @@
 :root{--bg:#f4f6f2;--ac:#1f9d55;--tx:#1d2a22;--pn:#ffffff;--gb:#1a73e8;--cb:#ffffff;--ct:#202124;--cg:#e0e0e0;--ch:#f1f3f4;--cm:#70757a;--cn:#ea4335;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
+.screen{display:none}
+.screen.active{display:block}
+#landing.screen{display:none}
+#landing.screen.active{display:flex}
 
 /* ─── Landing Page ─── */
 #landing{position:fixed;inset:0;background:var(--bg);color:var(--tx);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease,pointer-events .6s}
@@ -186,7 +190,7 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:color-mix(in srgb,var(--ac) 12
 <body>
 
 <!-- Landing page -->
-<div id="landing">
+<div id="landing" class="screen active">
   <div class="land-loading" id="landLoading">
     <div class="land-title">The <b>HD</b> Lab</div>
     <div class="land-sub">Human Development Laboratory</div>
@@ -207,14 +211,14 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:color-mix(in srgb,var(--ac) 12
   </div>
 
 <!-- Academy under construction -->
-<div id="academy-view">
+<div id="academy-view" class="screen">
   <button class="aca-back" onclick="closeAcademy()">← Return</button>
   <div class="aca-title">Academy</div>
   <div class="aca-sub">Under construction</div>
 </div>
 
 <!-- The Mental Lab -->
-<div id="app">Loading…</div>
+<div id="app" class="screen">Loading…</div>
 <div id="modal" onclick="if(event.target==this)this.style.display='none'"><div class="pn card" id="mb"></div></div>
 <div id="toast"></div>
 <div id="ctx"></div>
@@ -694,6 +698,13 @@ document.addEventListener('click',()=>{const c=$('ctx');if(c)c.style.display='no
 function calTick(){if(!S||!S.cal)return;const n=Date.now(),d=D();document.querySelectorAll('.nowl').forEach(e=>e.style.top=(n-midn(d))/6e4*.8+'px');
 occs(d,d+1).forEach(o=>{const ev=o.ev;if(ev.ad||ev.rem==null||ev.rem<0)return;const k=ev.id+o.d;if(n>=o.s-ev.rem*6e4&&n<o.s&&!fired.has(k)){fired.add(k);const m=ev.t+' at '+hm(o.s);toast('⏰ '+m);try{if(Notification.permission=='granted')new Notification(S.cfg.name,{body:m})}catch(x){}}})}
 
+// ─── Screen switching ───
+function showScreen(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  const el=$(id);
+  if(el) el.classList.add('active');
+}
+
 // ─── Landing / Academy logic ───
 function renderLanding(){
   const h=(S&&S.cfg&&S.cfg.half)||{subjectIcon:'🧬',subjectName:'Subject',subjectDesc:'Your private system.',academyIcon:'🏆',academyName:'Academy',academyDesc:'The competitive half.'};
@@ -704,21 +715,38 @@ function renderLanding(){
   if($('halfAcademyName'))$('halfAcademyName').textContent=h.academyName;
   if($('halfAcademyDesc'))$('halfAcademyDesc').textContent=h.academyDesc;
 }
+
 setTimeout(()=>{const l=$('landHint');if(l)l.parentElement.classList.add('done')},1300);
+
 $('landLoading').addEventListener('click',()=>{
   if(!$('landLoading').classList.contains('done'))return;
   $('landLoading').classList.add('hidden');
   $('landChoice').classList.add('show');
 });
-$('halfSubject').addEventListener('click',()=>{
-  $('landing').classList.add('hidden');
-  setTimeout(()=>{ $('app').innerHTML=''; if(!S){try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();review();theme();save()} render(); setInterval(calTick,20000); addEventListener('resize',()=>{if(tab=='protocol')drawCal()}) },400);
-});
-$('halfAcademy').addEventListener('click',()=>{ $('academy-view').classList.add('show'); });
-function closeAcademy(){ $('academy-view').classList.remove('show'); }
 
+$('halfSubject').addEventListener('click',()=>{
+  showScreen('app');
+  if(!S){
+    try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}
+    if(!S)S=fresh();
+    migrate(); step(); review(); theme(); save();
+  }
+  render();
+  clearInterval(tmr);
+  setInterval(calTick,20000);
+});
+
+$('halfAcademy').addEventListener('click',()=>{
+  showScreen('academy-view');
+});
+
+function closeAcademy(){
+  showScreen('landing');
+}
+
+// ─── Load save and prepare landing ───
 try{ S=JSON.parse(localStorage.getItem('ml')); }catch(e){}
-if(S){ migrate(); step(); review(); theme(); renderLanding(); save(); render(); setInterval(calTick,20000); addEventListener('resize',()=>{if(tab=='protocol')drawCal()}) }
+if(S){ migrate(); step(); review(); theme(); renderLanding(); save(); }
 else { theme(); }
 </script>
 </body>
