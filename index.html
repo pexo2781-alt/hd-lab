@@ -5,9 +5,12 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>The HD Lab</title>
 <style>
+/* Force pure black immediately */
+html, body { background: #000 !important; margin: 0; padding: 0; height: 100%; overflow: hidden; }
+
 :root{--bg:#000;--ac:#fff;--tx:#fff;--pn:#050505;--gb:#1a73e8;--cb:#ffffff;--ct:#202124;--cg:#e0e0e0;--ch:#f1f3f4;--cm:#70757a;--cn:#ea4335;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,"SF Mono",Menlo,Consolas,monospace;overflow:hidden}
+body{color:var(--tx);font:14px/1.45 ui-monospace,"SF Mono",Menlo,Consolas,monospace;}
 
 /* Keyframes for HD Lab Entry */
 @keyframes fadeUp{from{opacity:0;transform:translateY(3vmin)}to{opacity:1;transform:translateY(0)}}
@@ -18,13 +21,25 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,"
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
 @keyframes drawShape{from{stroke-dashoffset:var(--len,2000)}to{stroke-dashoffset:0}}
 
-/* Home / Splash */
-#home{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2vmin;overflow-y:auto}
+/* Home / Landing Page (Isolates the flash) */
+#home{
+  position: fixed;
+  inset: 0;
+  background: #000;
+  z-index: 10;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2vmin;
+  overflow-y: auto;
+}
+
 .title-wrap{text-align:center;margin-bottom:3vmin;animation:fadeUp 1s cubic-bezier(.19,1,.22,1) both;animation-delay:.2s;position:relative;z-index:2}
-.title-pre{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.55em;text-transform:uppercase;opacity:.5;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
-.title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap;margin-bottom:2vmin}
+.title-pre{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.55em;text-transform:uppercase;opacity:.6;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
+.title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap;margin-bottom:2vmin;color:#fff;}
 .title b{font-weight:600;letter-spacing:.04em}
-.quote{font-size:clamp(11px,1.4vmin,15px);font-weight:300;letter-spacing:.12em;font-style:italic;opacity:.45;animation:fadeIn 1.5s ease-out both;animation-delay:1.2s;max-width:400px;margin:0 auto;line-height:1.5}
+.quote{font-size:clamp(11px,1.4vmin,15px);font-weight:300;letter-spacing:.12em;font-style:italic;opacity:.7;animation:fadeIn 1.5s ease-out both;animation-delay:1.2s;max-width:400px;margin:0 auto;line-height:1.5}
 
 .ring-stage{position:relative;width:min(82vmin, 680px);height:min(82vmin, 680px);animation:scaleIn 1.5s cubic-bezier(.19,1,.22,1) both;animation-delay:.8s;flex-shrink:0;border-radius:50%;box-shadow:inset 0 0 8vmin rgba(255,255,255,.02);overflow:hidden;background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px);background-size:100% 4px}
 .ring-stage svg{width:100%;height:100%;overflow:visible;display:block;position:relative;z-index:2}
@@ -54,17 +69,16 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,"
 .ring-stage.hover-left .content-panel.left .desc-text,
 .ring-stage.hover-right .content-panel.right .desc-text{opacity:1}
 
-/* Main Mental Lab Container */
-#app{display:none;height:100%;position:relative;overflow:hidden}
+/* Mental Lab App */
+#app{display:none;height:100vh;position:relative;overflow:hidden;background:#000}
 #app.active{display:block;animation:fadeIn .5s ease}
 
-/* ─── EXACT MENTAL LAB CSS (HD LAB OVERRIDES) ─── */
+/* Overrides for Mental Lab to HD Lab */
 aside{position:fixed;left:0;top:env(safe-area-inset-top,0px);bottom:0;width:158px;background:var(--pn);border-right:1px solid rgba(255,255,255,.1);padding:14px 8px;display:flex;flex-direction:column;gap:4px;z-index:5;overflow:auto}
 aside b{font-size:13px;letter-spacing:.12em;color:var(--ac);padding:0 8px 10px}
 aside button{display:flex;gap:8px;align-items:center;background:none;border:0;color:var(--tx);font:inherit;padding:10px 8px;border-radius:10px;cursor:pointer;text-align:left;opacity:.7}
 aside button.on{background:rgba(255,255,255,.15);color:var(--ac);opacity:1;font-weight:600}
 
-/* MAIN SCROLLING FIX */
 main{
   margin-left:158px;
   padding:18px 18px 40px;
@@ -73,7 +87,6 @@ main{
   overflow-y:auto;
   overflow-x:hidden;
 }
-
 @media(max-width:700px){aside{width:62px;padding:10px 4px}aside b{display:none}aside button{flex-direction:column;gap:2px;font-size:9px;text-align:center;padding:8px 2px}main{margin-left:62px;padding:12px 10px 40px}}
 h1{margin:0;font-size:20px;font-weight:600}
 h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin:0 0 8px}
@@ -234,7 +247,6 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:rgba(255,255,255,.1)}
 <div class="ambient" id="ambient"></div>
 <div class="corner tl"></div><div class="corner tr"></div><div class="corner bl"></div><div class="corner br"></div>
 
-<!-- Home Screen -->
 <div id="home">
   <div class="title-wrap">
     <div class="title-pre">Human Development Laboratory</div>
@@ -260,7 +272,6 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:rgba(255,255,255,.1)}
   </div>
 </div>
 
-<!-- Mental Lab App -->
 <div id="app"></div>
 <div id="modal" onclick="if(event.target==this)this.style.display='none'"><div class="pn card" id="mb"></div></div>
 <div id="toast"></div>
