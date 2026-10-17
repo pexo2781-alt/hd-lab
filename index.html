@@ -17,64 +17,84 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 @keyframes pulse{0%,100%{opacity:.4}50%{opacity:1}}
 @keyframes drift{0%{transform:translate(0,0)}33%{transform:translate(1vmin,-1vmin)}66%{transform:translate(-1vmin,1vmin)}100%{transform:translate(0,0)}}
 @keyframes fadeOut{to{opacity:0;pointer-events:none}}
-@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-@keyframes drawRing{from{stroke-dashoffset:var(--len,2000)}to{stroke-dashoffset:0}}
+@keyframes drawShape{from{stroke-dashoffset:var(--len,2000)}to{stroke-dashoffset:0}}
+@keyframes scanline{0%{transform:translateY(-100%)}100%{transform:translateY(100%)}}
 
-/* ─── Title ─── */
-.title-wrap{text-align:center;margin-bottom:4vmin;animation:fadeUp 1s cubic-bezier(.19,1,.22,1) both;animation-delay:.2s;position:relative;z-index:2}
-.title-pre{font-size:clamp(10px,1.4vmin,14px);letter-spacing:.55em;text-transform:uppercase;opacity:.5;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
-.title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap}
+/* ─── Title & Quote ─── */
+.title-wrap{text-align:center;margin-bottom:3vmin;animation:fadeUp 1s cubic-bezier(.19,1,.22,1) both;animation-delay:.2s;position:relative;z-index:2}
+.title-pre{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.55em;text-transform:uppercase;opacity:.5;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
+.title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap;margin-bottom:2vmin}
 .title b{font-weight:600;letter-spacing:.04em}
-.title-line{width:0;height:1px;background:linear-gradient(90deg,transparent,#fff,transparent);margin:2.5vmin auto 0;transition:width 1s cubic-bezier(.19,1,.22,1)}
-.title-line.in{width:clamp(120px,22vmin,260px)}
+.quote{
+  font-size:clamp(11px,1.4vmin,15px);font-weight:300;letter-spacing:.12em;font-style:italic;opacity:.45;
+  animation:fadeIn 1.5s ease-out both;animation-delay:1.2s;
+  max-width:400px;margin:0 auto;line-height:1.5;
+}
 
 /* ─── Ring Stage ─── */
 .ring-stage{
   position:relative;
-  width:min(85vmin, 720px);
-  height:min(85vmin, 720px);
+  width:min(82vmin, 680px);
+  height:min(82vmin, 680px);
   animation:scaleIn 1.5s cubic-bezier(.19,1,.22,1) both;
-  animation-delay:.9s;
+  animation-delay:.8s;
   flex-shrink:0;
+  border-radius:50%;
+  box-shadow:inset 0 0 8vmin rgba(255,255,255,.02);
+  overflow:hidden;
+  /* faint scanline effect over the whole lab structure */
+  background-image:linear-gradient(rgba(255,255,255,0.02) 1px,transparent 1px);
+  background-size:100% 4px;
 }
-.ring-stage svg{width:100%;height:100%;overflow:visible;display:block}
 
-/* The continuous base ring */
-.ring-base{
-  fill:none;stroke:rgba(255,255,255,.08);stroke-width:0.6vmin;
+.ring-stage svg{width:100%;height:100%;overflow:visible;display:block;position:relative;z-index:2}
+
+/* The interlocking paths */
+.ring-shape{
+  fill:rgba(10,10,10,0.6);
+  stroke:#fff;
+  stroke-width:0.5vmin;
+  stroke-linejoin:round;
+  transition:fill .3s, stroke-width .3s, filter .3s, opacity .3s;
+  backdrop-filter:blur(4px);
+}
+.shape-left{
   stroke-dasharray:var(--len,2000);
-  animation:drawRing 2s ease-out both;
+  animation:drawShape 2s cubic-bezier(.19,1,.22,1) both;
+  animation-delay:1s;
 }
-
-/* The split interactive arcs */
-.ring-arc{
-  fill:none;stroke:#fff;stroke-width:.4vmin;stroke-linecap:round;
-  transition:stroke-width .3s, opacity .3s, filter .3s;
+.shape-right{
+  stroke-dasharray:var(--len,2000);
+  animation:drawShape 2s cubic-bezier(.19,1,.22,1) both;
+  animation-delay:1.15s;
 }
-.ring-arc.left{stroke-dasharray:var(--len,1000);animation:drawRing 1.5s cubic-bezier(.19,1,.22,1) both;animation-delay:1.2s}
-.ring-arc.right{stroke-dasharray:var(--len,1000);animation:drawRing 1.5s cubic-bezier(.19,1,.22,1) both;animation-delay:1.3s}
-
-/* Rotating deco dots */
-.ring-deco{transform-origin:center;animation:spin 30s linear infinite;opacity:.2}
 
 /* ─── Interaction Zones ─── */
 .half-zone{position:absolute;top:0;bottom:0;width:50%;cursor:pointer;z-index:5}
-.half-zone.left{left:0}
-.half-zone.right{right:0}
+.half-zone.left{left:0;border-radius:50% 0 0 50%}
+.half-zone.right{right:0;border-radius:0 50% 50% 0}
 
-/* Glowing hover states */
-.ring-stage.hover-left .ring-arc.left{stroke-width:.8vmin;filter:drop-shadow(0 0 .6vmin rgba(255,255,255,.8))}
-.ring-stage.hover-left .ring-arc.right{opacity:.15}
-.ring-stage.hover-right .ring-arc.right{stroke-width:.8vmin;filter:drop-shadow(0 0 .6vmin rgba(255,255,255,.8))}
-.ring-stage.hover-right .ring-arc.left{opacity:.15}
+/* Hover states */
+.ring-stage.hover-left .shape-left{
+  fill:rgba(255,255,255,0.06);
+  stroke-width:0.8vmin;
+  filter:drop-shadow(0 0 1vmin rgba(255,255,255,.3));
+}
+.ring-stage.hover-left .shape-right{opacity:.25}
+.ring-stage.hover-right .shape-right{
+  fill:rgba(255,255,255,0.06);
+  stroke-width:0.8vmin;
+  filter:drop-shadow(0 0 1vmin rgba(255,255,255,.3));
+}
+.ring-stage.hover-right .shape-left{opacity:.25}
 
 /* ─── Content inside the halves ─── */
 .content-panel{
-  position:absolute;top:20%;bottom:20%;width:50%;
-  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;
-  padding:0 6%;
+  position:absolute;top:0;bottom:0;width:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:0 8%;
   transition:opacity .4s, transform .4s;
-  pointer-events:none;z-index:2;
+  pointer-events:none;z-index:3;
 }
 .content-panel.left{left:0}
 .content-panel.right{right:0}
@@ -82,24 +102,27 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 .ring-stage.hover-right .content-panel.left{opacity:.1;transform:scale(.95)}
 
 .big-letter{
-  font-size:clamp(60px,16vmin,180px);
+  font-size:clamp(70px,18vmin,180px);
   font-weight:200;line-height:1;letter-spacing:-0.04em;
   margin-bottom:1vmin;
   animation:fadeIn 1.5s ease-out both;animation-delay:1.5s;
   transition:transform .3s, text-shadow .3s;
 }
-.ring-stage.hover-left .content-panel.left .big-letter{text-shadow:0 0 3vmin rgba(255,255,255,.4);transform:scale(1.05)}
-.ring-stage.hover-right .content-panel.right .big-letter{text-shadow:0 0 3vmin rgba(255,255,255,.4);transform:scale(1.05)}
+.ring-stage.hover-left .content-panel.left .big-letter{text-shadow:0 0 4vmin rgba(255,255,255,.5);transform:scale(1.05)}
+.ring-stage.hover-right .content-panel.right .big-letter{text-shadow:0 0 4vmin rgba(255,255,255,.5);transform:scale(1.05)}
 
 .sub-label{
-  font-size:clamp(12px,1.6vmin,18px);letter-spacing:.45em;text-transform:uppercase;
-  opacity:.6;margin-bottom:1.5vmin;
+  font-size:clamp(12px,1.8vmin,20px);letter-spacing:.45em;text-transform:uppercase;
+  opacity:.6;margin-bottom:1.5vmin;font-weight:600;
   animation:fadeIn 1.5s ease-out both;animation-delay:1.6s;
+  transition:color .3s, text-shadow .3s;
 }
+.ring-stage.hover-left .content-panel.left .sub-label{color:#fff;text-shadow:0 0 1vmin #fff}
+.ring-stage.hover-right .content-panel.right .sub-label{color:#fff;text-shadow:0 0 1vmin #fff}
 
 .desc-text{
   font-size:clamp(11px,1.4vmin,14px);line-height:1.6;opacity:0.3;
-  max-width:20ch;letter-spacing:0.04em;
+  max-width:22ch;letter-spacing:0.04em;
   transition:opacity .4s;
 }
 .ring-stage.hover-left .content-panel.left .desc-text,
@@ -117,13 +140,6 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   .content-panel .sub-label,.content-panel .desc-text{display:none}
   .ring-stage.hover-left .content-panel.right{opacity:1;transform:none}
   .ring-stage.hover-right .content-panel.left{opacity:1;transform:none}
-}
-
-/* ─── Hint ─── */
-.hint{
-  position:fixed;bottom:3vmin;left:50%;transform:translateX(-50%);
-  font-size:clamp(9px,1.2vmin,11px);letter-spacing:.4em;text-transform:uppercase;opacity:.25;
-  animation:fadeIn 1.4s ease-out both;animation-delay:2.8s;pointer-events:none;text-align:center;
 }
 
 /* ─── Corner marks & Ambient ─── */
@@ -171,37 +187,16 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
   <div class="title-wrap">
     <div class="title-pre">Human Development Laboratory</div>
     <div class="title">The <b>HD</b> Lab</div>
-    <div class="title-line" id="titleLine"></div>
+    <div class="quote">"You are the only variable in your life that refuses to stay constant."</div>
   </div>
 
   <div class="ring-stage" id="ringStage">
     <svg viewBox="0 0 540 540" id="ringSvg">
-      <defs>
-        <!-- Mask to cut the perfect gap in the middle -->
-        <mask id="gapMask">
-          <rect x="0" y="0" width="540" height="540" fill="white" />
-          <rect x="261" y="-10" width="18" height="560" fill="black" />
-        </mask>
-      </defs>
-
-      <!-- Outer faint track -->
-      <circle class="ring-base" id="baseRing" cx="270" cy="270" r="230" />
-      
-      <!-- Deco elements (rotating dots) -->
-      <g class="ring-deco">
-        <circle cx="270" cy="30" r="1.5" fill="#fff"/>
-        <circle cx="270" cy="510" r="1.5" fill="#fff"/>
-        <circle cx="30" cy="270" r="1.5" fill="#fff"/>
-        <circle cx="510" cy="270" r="1.5" fill="#fff"/>
-      </g>
-
-      <!-- The heavy split lines -->
-      <g mask="url(#gapMask)">
-        <!-- Left Arc (Subject) -->
-        <circle class="ring-arc left" id="arcL" cx="270" cy="270" r="230" />
-        <!-- Right Arc (Academy) -->
-        <circle class="ring-arc right" id="arcR" cx="270" cy="270" r="230" />
-      </g>
+      <!-- Interlocking shapes -->
+      <!-- Left Shape (S) -->
+      <path id="shapeL" class="ring-shape shape-left" d="" />
+      <!-- Right Shape (A) -->
+      <path id="shapeR" class="ring-shape shape-right" d="" />
     </svg>
 
     <!-- Content inside left half -->
@@ -222,8 +217,6 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
     <div class="half-zone left" onclick="openView('subject')" onmouseenter="hoverLeft(true)" onmouseleave="hoverLeft(false)"></div>
     <div class="half-zone right" onclick="openView('academy')" onmouseenter="hoverRight(true)" onmouseleave="hoverRight(false)"></div>
   </div>
-
-  <div class="hint">Hover to inspect · Click to enter</div>
 </div>
 
 <!-- Views -->
@@ -254,22 +247,46 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
 </div>
 
 <script>
-// ─── Set up SVG lengths for animation ───
-(function setupSVG(){
-  const circumference = 2 * Math.PI * 230; // r=230
-  const arcLength = circumference / 2; // Half circle
+// ─── The Magic: Generating the exact interlocking paths ───
+(function buildShapes() {
+  const R = 240;       // Outer radius
+  const r = 130;       // Inner radius
+  const gap = 12;      // Gap between top/bottom cuts
+  const cx = 270, cy = 270;
 
-  // Set animation lengths
-  const base = document.getElementById('baseRing');
-  base.style.setProperty('--len', circumference);
+  // Calculate the X offset for the gap
+  const gapX = cx + gap / 2;
+  const gapXInv = cx - gap / 2;
 
-  const arcL = document.getElementById('arcL');
-  const arcR = document.getElementById('arcR');
+  // --- LEFT SHAPE (S) ---
+  const pathL = `
+    M ${gapXInv} ${cy - R}
+    A ${R} ${R} 0 0 0 ${gapXInv} ${cy + R}
+    L ${gapXInv} ${cy + r}
+    A ${r} ${r} 0 0 1 ${gapXInv} ${cy - r}
+    Z
+  `.replace(/\s+/g, ' ');
+
+  // --- RIGHT SHAPE (A) ---
+  const pathR = `
+    M ${gapX} ${cy - R}
+    A ${R} ${R} 0 0 1 ${gapX} ${cy + R}
+    L ${gapX} ${cy + r}
+    A ${r} ${r} 0 0 0 ${gapX} ${cy - r}
+    Z
+  `.replace(/\s+/g, ' ');
+
+  const sL = document.getElementById('shapeL');
+  const sR = document.getElementById('shapeR');
   
-  // Both arcs cover the full circle, but the mask hides the middle.
-  // We animate the dash offset to draw them in from top to bottom.
-  arcL.style.setProperty('--len', circumference);
-  arcR.style.setProperty('--len', circumference);
+  sL.setAttribute('d', pathL);
+  sR.setAttribute('d', pathR);
+
+  // Set up stroke drawing animation
+  const lenL = sL.getTotalLength();
+  const lenR = sR.getTotalLength();
+  sL.style.setProperty('--len', lenL);
+  sR.style.setProperty('--len', lenR);
 })();
 
 // Ambient particles
@@ -284,12 +301,6 @@ body{display:flex;flex-direction:column;align-items:center;justify-content:cente
     wrap.appendChild(s);
   }
 })();
-
-// Title fade in
-setTimeout(() => {
-  const line = document.getElementById('titleLine');
-  if(line) line.classList.add('in');
-}, 1300);
 
 // Splash gate
 function enter(){
