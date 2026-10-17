@@ -19,7 +19,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,"
 @keyframes drawShape{from{stroke-dashoffset:var(--len,2000)}to{stroke-dashoffset:0}}
 
 /* Home / Splash */
-#home{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2vmin}
+#home{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:2vmin;overflow-y:auto}
 .title-wrap{text-align:center;margin-bottom:3vmin;animation:fadeUp 1s cubic-bezier(.19,1,.22,1) both;animation-delay:.2s;position:relative;z-index:2}
 .title-pre{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.55em;text-transform:uppercase;opacity:.5;margin-bottom:1.5vmin;animation:fadeIn 1.2s ease-out both;animation-delay:.5s}
 .title{font-size:clamp(40px,8vmin,92px);font-weight:200;letter-spacing:.1em;text-transform:uppercase;line-height:1;animation:fadeUp 1.2s cubic-bezier(.19,1,.22,1) both;animation-delay:.35s;white-space:nowrap;margin-bottom:2vmin}
@@ -55,43 +55,52 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 ui-monospace,"
 .ring-stage.hover-right .content-panel.right .desc-text{opacity:1}
 
 /* Main Mental Lab Container */
-#app{display:none;height:100%;position:relative}
+#app{display:none;height:100%;position:relative;overflow:hidden}
 #app.active{display:block;animation:fadeIn .5s ease}
 
-/* ─── EXACT MENTAL LAB CSS (Overrides) ─── */
-:root{--bg:#000;--ac:#fff;--tx:#fff;--pn:#050505;--gb:#1a73e8;--cb:#ffffff;--ct:#202124;--cg:#e0e0e0;--ch:#f1f3f4;--cm:#70757a;--cn:#ea4335}
+/* ─── EXACT MENTAL LAB CSS (HD LAB OVERRIDES) ─── */
 aside{position:fixed;left:0;top:env(safe-area-inset-top,0px);bottom:0;width:158px;background:var(--pn);border-right:1px solid rgba(255,255,255,.1);padding:14px 8px;display:flex;flex-direction:column;gap:4px;z-index:5;overflow:auto}
 aside b{font-size:13px;letter-spacing:.12em;color:var(--ac);padding:0 8px 10px}
 aside button{display:flex;gap:8px;align-items:center;background:none;border:0;color:var(--tx);font:inherit;padding:10px 8px;border-radius:10px;cursor:pointer;text-align:left;opacity:.7}
-aside button.on{background:rgba(255,255,255,.1);color:var(--ac);opacity:1;font-weight:600}
-main{margin-left:158px;padding:18px 18px 40px;max-width:1000px}
+aside button.on{background:rgba(255,255,255,.15);color:var(--ac);opacity:1;font-weight:600}
+
+/* MAIN SCROLLING FIX */
+main{
+  margin-left:158px;
+  padding:18px 18px 40px;
+  max-width:1000px;
+  height:100%;
+  overflow-y:auto;
+  overflow-x:hidden;
+}
+
 @media(max-width:700px){aside{width:62px;padding:10px 4px}aside b{display:none}aside button{flex-direction:column;gap:2px;font-size:9px;text-align:center;padding:8px 2px}main{margin-left:62px;padding:12px 10px 40px}}
 h1{margin:0;font-size:20px;font-weight:600}
 h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ac);margin:0 0 8px}
 .sub{opacity:.6;font-size:12px}
-.pn{background:var(--pn);border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 2px 10px #0000000a}
+.pn{background:var(--pn);border:1px solid rgba(255,255,255,.15);border-radius:16px;padding:14px;margin:10px 0;box-shadow:0 2px 10px rgba(255,255,255,.02)}
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 @media(max-width:900px){.g2{grid-template-columns:1fr}}
 .hd{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
-.pts{background:var(--ac);color:#000;padding:4px 12px;border-radius:99px;font-weight:600}
+.pts{background:var(--ac);color:var(--bg);padding:4px 12px;border-radius:99px;font-weight:600}
 button.b,select,input,textarea{font:inherit;background:var(--pn);color:var(--tx);border:1px solid rgba(255,255,255,.2);border-radius:8px;padding:6px 9px}
 button.b{cursor:pointer;color:var(--ac);border-color:var(--ac)}
-button.b:hover,button.b.on{background:var(--ac);color:#000}
+button.b:hover,button.b.on{background:var(--ac);color:var(--bg)}
 button.x{color:#d64550;border-color:#d64550}
 button.x:hover{background:#d64550;color:#fff}
 input[type=color]{padding:0;height:30px;width:48px}
 .bar{height:5px;background:rgba(255,255,255,.1);border-radius:9px;overflow:hidden}
 .bar i{display:block;height:100%;background:var(--ac)}
-.row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.05);flex-wrap:wrap}
+.row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid rgba(255,255,255,.1);flex-wrap:wrap}
 .row .f{flex:1;min-width:120px}
 .gr{font-weight:700;color:var(--ac);min-width:30px}
 .done{opacity:.4;text-decoration:line-through}
 .card{border:2px solid var(--ac)}
 .card.r1{border-color:#e0b020}.card.r2{border-color:#9b6bd8}.card.r3{border-color:#3a9ad9}
 table{width:100%;border-collapse:collapse}
-td,th{padding:6px 4px;text-align:left;border-bottom:1px solid rgba(255,255,255,.05)}
+td,th{padding:6px 4px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
 tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:rgba(255,255,255,.1)}
-#modal{position:fixed;inset:0;background:rgba(0,0,0,.8);display:none;align-items:center;justify-content:center;z-index:9;padding:16px}
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:9;padding:16px}
 #modal>div{max-width:440px;width:100%;max-height:85vh;overflow:auto;margin:0}
 #toast{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--ac);color:var(--bg);padding:8px 14px;border-radius:10px;z-index:20;display:none;font-weight:bold}
 .tag{font-size:11px;border:1px solid var(--ac);border-radius:6px;padding:1px 6px;color:var(--ac);display:inline-block;margin:1px}
@@ -161,15 +170,15 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:rgba(255,255,255,.1)}
 .sess-grid div.on{background:var(--ac)}
 .today-card{border-left:4px solid var(--ac)}
 .phase-card{border-left:4px solid #e0b020;background:linear-gradient(90deg,rgba(224,176,32,.1),var(--pn))}
-.tutorial-overlay{position:fixed;inset:0;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
-.tutorial-box{background:var(--pn);border:2px solid var(--ac);border-radius:16px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 60px #0004}
+.tutorial-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
+.tutorial-box{background:var(--pn);border:2px solid var(--ac);border-radius:16px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 60px rgba(255,255,255,.05)}
 .tutorial-box h2{font-size:16px;letter-spacing:.08em;margin:0 0 12px}
 .tutorial-box p{line-height:1.6}
 .tutorial-dots{display:flex;gap:6px;margin:16px 0;justify-content:center}
 .tutorial-dots span{width:8px;height:8px;border-radius:99px;background:rgba(255,255,255,.2)}
 .tutorial-dots span.on{background:var(--ac);width:24px}
-.month-snap{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05);font-size:13px}
-.cmp-row{display:grid;grid-template-columns:1fr 80px 80px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.05)}
+.month-snap{display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1);font-size:13px}
+.cmp-row{display:grid;grid-template-columns:1fr 80px 80px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.1)}
 .cmp-bar{height:6px;background:rgba(255,255,255,.1);border-radius:9px;position:relative;overflow:hidden}
 .cmp-bar i{position:absolute;top:0;height:100%;border-radius:9px}
 .degree-card{background:linear-gradient(135deg,#1a1a1a,#000);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:16px;padding:20px;margin:10px 0;box-shadow:0 4px 20px rgba(255,255,255,.05)}
@@ -203,6 +212,8 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:rgba(255,255,255,.1)}
 .splash-bar{width:14vmin;max-width:140px;height:1px;background:#fff;transform:scaleX(0);transform-origin:left;animation:loadBar 1.3s ease-out both;animation-delay:.2s}
 @keyframes loadBar{to{transform:scaleX(1)}}
 .splash-hint{font-size:clamp(9px,1.1vmin,11px);letter-spacing:.45em;text-transform:uppercase;opacity:.28;margin-top:3vmin;animation:pulse 2s infinite}
+
+/* Ambient */
 .ambient{position:fixed;inset:0;pointer-events:none;overflow:hidden;opacity:.12;z-index:0}
 .ambient span{position:absolute;width:2px;height:2px;background:#fff;border-radius:50%;animation:drift 18s infinite ease-in-out}
 .corner{position:fixed;width:2.5vmin;height:2.5vmin;pointer-events:none;opacity:.3;animation:fadeIn 1.5s ease-out both;animation-delay:1s;z-index:10}
@@ -249,7 +260,7 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:rgba(255,255,255,.1)}
   </div>
 </div>
 
-<!-- Mental Lab App (Hidden initially) -->
+<!-- Mental Lab App -->
 <div id="app"></div>
 <div id="modal" onclick="if(event.target==this)this.style.display='none'"><div class="pn card" id="mb"></div></div>
 <div id="toast"></div>
@@ -269,8 +280,8 @@ const GT=[[95.5,'A+'],[85.5,'A'],[80.5,'A-'],[75.5,'B+'],[65.5,'B'],[60.5,'B-'],
 const grade=v=>{for(const[t,g]of GT)if(v>=t)return g;return'F'};
 let S,ref,tab='home',tmr,cv='week',cd=D(),cq='',csb=null,drag=null,gsT=null,edv=null;
 const fired=new Set();
-const LBL={home:'Lab',modules:'Modules',protocol:'Schedule',goals:'Goal Ladder',projects:'Projects',board:'Ranking',analytics:'Analytics',shop:'Shop',settings:'Settings',pts:'Points',routine:'Routine Protocol',missions:'Missions',trial:'Trial',ghost:'Ghost Me',inst:'Instructor Notes',room:'Special Room',rival:'Rival',exam:'Entrance Exam',tag:'Subject of the Lab',rar:'Legendary,Epic,Rare,Common',phase:'Phase'};
-const ICO={home:'🧬',modules:'🎓',protocol:'📅',goals:'🎯',projects:'🎨',board:'🏆',analytics:'📈',shop:'🛒',settings:'⚙️'};
+const LBL={home:'Lab',modules:'Modules',protocol:'Schedule',goals:'Goal Ladder',projects:'Projects',analytics:'Analytics',shop:'Shop',settings:'Settings',pts:'Points',routine:'Routine Protocol',missions:'Missions',trial:'Trial',ghost:'Ghost Me',inst:'Instructor Notes',room:'Special Room',rival:'Rival',exam:'Entrance Exam',tag:'Subject of the Lab',rar:'Legendary,Epic,Rare,Common',phase:'Phase'};
+const ICO={home:'🧬',modules:'🎓',protocol:'📅',goals:'🎯',projects:'🎨',analytics:'📈',shop:'🛒',settings:'⚙️'};
 const ARCHETYPES=[{name:'Scholar',hi:[0,4],lo:[1,6]},{name:'Athlete',hi:[1,2],lo:[0,6]},{name:'Artist',hi:[7,5],lo:[1,2]},{name:'Strategist',hi:[4,3],lo:[6,7]},{name:'Monk',hi:[5,3],lo:[1,2]},{name:'Gamer',hi:[7,4],lo:[2,1]},{name:'Grinder',hi:[3,1],lo:[7,5]},{name:'Wanderer',hi:[2,6],lo:[0,4]}];
 const HOBBIES=['Art','Chess','Cooking','Guitar','Piano','Photography','Filmmaking','Woodworking','Gardening','Running','Climbing','Swimming','Cycling','Martial arts','Yoga','Writing','Poetry','DJing','Music production','3D printing','Origami','Lockpicking','Speedrunning','Streaming','Game design','Roblox','Brawlhalla','Speedcubing','Birdwatching','Astronomy','Pottery','Calligraphy','Leatherwork','Knitting','Fencing','Archery','Skateboarding','Parkour','Boxing','Baking','Mixology','Language learning','Bonsai','Aquascaping','Puzzle design','Urban sketching'];
 const NM="Aiko Tanaka,Kenji Mori,Yuki Hayashi,Min-jun Park,Seo-yeon Kim,Wei Zhang,Mei Chen,Hao Liu,Priya Sharma,Arjun Patel,Ananya Iyer,Rohan Gupta,Fatima Hassan,Omar Khalil,Layla Mansour,Yusuf Demir,Elif Kaya,Mohammed Rahman,Aisha Okafor,Chidi Eze,Amara Nwosu,Kwame Mensah,Zuri Kamau,Thandiwe Dlamini,Sipho Ndlovu,Lars Johansson,Freya Lindqvist,Mikael Virtanen,Ingrid Solberg,Pieter Vandenberg,Sofia Rossi,Luca Bianchi,Giulia Romano,Mateo Garcia,Valentina Torres,Diego Morales,Camila Fernandez,Joao Silva,Beatriz Costa,Pedro Almeida,Carlos Mendoza,Lucia Herrera,Emma Clarke,Oliver Hughes,Charlotte Ashworth,Jack Sullivan,Siobhan Doyle,Liam Brennan,Hannah Fischer,Felix Wagner,Clara Becker,Jonas Keller,Anya Volkov,Dmitri Petrov,Katya Ivanova,Tomasz Nowak,Zofia Kowalski,Milos Horvat,Ioana Popescu,Andrei Marinescu,Eleni Papadakis,Nikos Karras,Tariq Aziz,Samira Haddad,Reza Tehrani,Shirin Farahani,Noa Levi,Eitan Cohen,Tenzin Dorje,Linh Tran,Bao Pham,Thanh Vo,Somchai Prasert,Siti Abdullah,Budi Santoso,Dewi Lestari,Jose Reyes,Maria Santos,Kai Nakamura,Malia Kealoha,Aroha Parata,Jarrah Williams,Ayesha Siddiqui,Imran Qureshi,Sunita Rao,Vikram Singh,Kavya Nair,Tashi Lama,Naledi Moyo,Tendai Chikwanha,Abebe Tesfaye,Selam Haile,Idris Abdi,Nia Banda,Femi Adeyemi,Ngozi Obi,Kofi Boateng,Ama Owusu,Yaw Asante,Zainab Bello,Hamza Yilmaz,Leyla Aksoy,Mehmet Ozturk,Ali Mirza,Hana Novak,Sven Eriksen,Astrid Nilsen,Henrik Madsen,Katrine Jensen,Emil Hansen,Carmen Ortega,Javier Navarro,Rosa Delgado,Andres Castillo,Paola Rivera,Santiago Cruz,Ximena Vargas,Tomas Quispe,Isabela Rocha,Rafael Duarte,Thiago Barros,Nadia Benali,Karim Bouzid,Yasmine Cherif,Soren Dahl,Mia Thompson,Noah Bennett,Ava Mitchell,Ethan Brooks,Zoe Carter,Caleb Foster,Grace Whitfield,Isaac Goldberg,Rebecca Stein,Amir Nazari,Parisa Rahimi,Ji-woo Choi,Hyun Jung,Da-eun Lim,Sung Yoon,Xiu-ying Huang,Bo Lin,Jun Zhao,Lan Xu,Tuan Le,Mai Do,Aditi Banerjee,Sanjay Mehta,Deepa Menon,Farhan Chowdhury".split(',');
@@ -515,7 +526,7 @@ return`<div class="degree-card"><h2>Degree · 1st Class (70%+)</h2><div class="d
 <div class="row" style="margin:8px 0;padding:8px 0;border-bottom:2px solid var(--ac)"><div class="f"><b>Modules</b><div class="sub">Log assessments. Each sub syncs to its module.</div></div><button class="b" onclick="addModulePrompt()">+ Add module</button></div>
 ${S.modules.map(mod=>{const cur=moduleGradedAvg(mod),status=moduleStatus(mod),credit=mod.credits||20,pct=modulePercentGraded(mod);
 const curStr=cur!=null?cur.toFixed(1)+'%':'—';
-const stateTag=mod.locked?'<span class="tag">locked</span>':status==='complete'?'<span class="tag" style="border-color:var(--ac);background:var(--ac);color:#fff">complete</span>':status==='partial'?'<span class="tag">in progress</span>':'<span class="tag" style="opacity:.5">not started</span>';
+const stateTag=mod.locked?'<span class="tag">locked</span>':status==='complete'?'<span class="tag" style="border-color:var(--ac);background:var(--ac);color:#000">complete</span>':status==='partial'?'<span class="tag">in progress</span>':'<span class="tag" style="opacity:.5">not started</span>';
 return`<div class="pn module-card ${mod.locked?'locked':''}"><div class="hd"><div><h2>${esc(mod.n)}</h2><div class="sub">${esc(mod.type)} · ${credit} credits · ${pct.toFixed(0)}% graded ${stateTag}</div></div><div style="text-align:right"><b style="font-size:18px">${curStr}</b><div class="sub">target ${mod.target||70}%</div></div></div>
 ${mod.locked?'<div class="sub">Locked.</div>':`<div style="margin-top:8px">${mod.assessments.map(a=>a.group?groupRowHTML(a,mod.id,expandedGroups):assessRowHTML(a,mod.id)).join('')}</div>
 <div class="sub" style="margin-top:8px">Total weight: ${(mod.assessments.reduce((s,a)=>s+a.w,0)).toFixed(1)}% ${Math.abs(mod.assessments.reduce((s,a)=>s+a.w,0)-100)>0.1?'<span class="warn-text">(does not sum to 100%)</span>':''}</div>
@@ -563,7 +574,6 @@ return`<div class="pn"><h2>${esc(g.n)}</h2>${g.why?`<div class="sub" style="font
 +(S.missions.length?`<div class="pn"><h2>Side missions</h2>${S.missions.map(m=>{const s=subOf(m.sub),dn=m.done===D();return`<div class="row"><div class="f ${dn?'done':''}">${esc(m.n)}${m.dir?' <span class="tag">directive</span>':''}<div class="sub">${s?esc(s.n):'-'} | +${Math.round(m.pts*S.diff)} pts</div></div><button class="b ${dn?'on':''}" onclick="dMis('${m.id}')">${dn?'Done':'Complete'}</button></div>`}).join('')}</div>`:'')}
 function vProjects(){return`<div class="row" style="margin:8px 0;padding:8px 0;border-bottom:2px solid var(--ac)"><div class="f"><b>Projects</b><div class="sub">Hobbies.</div></div><button class="b" onclick="addProjectPrompt()">+ Add project</button></div>`+S.projects.map(p=>{const s=subOf(p.sub),recent=Array.from({length:21},(_,i)=>D()-20+i),stk=p.sessions?(()=>{let n=0,d=D();while(p.sessions.includes(d)){n++;d--}return n})():0;
 return`<div class="pn proj"><h3>${esc(p.n)}</h3><div class="sub">${s?esc(s.n):'-'} | sessions: ${p.total||0} | streak: ${stk}</div><div class="sess-grid">${recent.map(d=>`<div class="${p.sessions?.includes(d)?'on':''}" title="${ymd(d)}"></div>`).join('')}</div>${p.milestones?.length?`<div style="margin:8px 0">${p.milestones.map((m,i)=>`<div class="row"><span style="width:22px">${m.done?'✅':'○'}</span><div class="f ${m.done?'done':''}">${esc(m.n)}</div>${!m.done?`<button class="b" onclick="projMilestone('${p.id}',${i})">Complete</button>`:''}</div>`).join('')}</div>`:''}<p><button class="b" onclick="projectSession('${p.id}')">+ Log session</button> <button class="b x" onclick="if(confirm('Delete?')){S.projects=S.projects.filter(x=>x.id!='${p.id}');save();render()}">Delete</button></p></div>`}).join('')||'<div class="pn">No projects yet.</div>'}
-function vBoard(){return`<div class="pn"><h2>${L('board')} — Phase ${S.phase}</h2><div class="sub">Top ${S.cfg.phase.topN} advance.</div><table><tr><th>#</th><th>Name</th><th>Type</th><th>Score</th></tr>${board().map(e=>`<tr class="cl ${e.me?'me':''}" onclick="showN('${e.id}')"><td>${e.rk}</td><td>${esc(e.n)}${e.id==S.rival?' ⚔':''}${e.p?.nw?' <span class="tag">new</span>':''}</td><td>${e.g}</td><td>${e.ov.toFixed(1)} (${grade(e.ov)})</td></tr>`).join('')}</table></div>`}
 function vAn(){const C=['#1f9d55','#3a9ad9','#e0b020','#9b6bd8','#d64550','#888','#2e8b8b','#8e24aa'],h=S.hs.slice(-60),at=S.attrs.map(attrV),ago=(S.hs.length>1?(S.hs.find(x=>x.d>=D()-30)||S.hs[0]).a:at).map(x=>x??0),gh=ghost(),ms=S.log.filter(l=>['mission','session','benchmark','trial','project'].includes(l.k)),cnt=Array.from({length:14},(_,i)=>ms.filter(l=>l.d==D()-13+i).length),mx=Math.max(1,...cnt);
 const snaps=S.monthSnaps||[];
 return`<div class="g2"><div class="pn"><h2>Radar</h2><div style="text-align:center">${radar([at,ago,gh],S.attrs.map(a=>a.n))}</div><div class="sub">Solid: now. Dashed: 30d ago + ghost.</div></div><div class="pn"><h2>Growth</h2>${chart([{d:h.map(x=>x.ov),c:'var(--ac)'}])}<h2 style="margin-top:12px">Rank</h2>#${board().find(e=>e.me).rk} / 100 | streak ${S.best}</div></div>
@@ -608,7 +618,7 @@ function showTutorial(){if(S.tutorialDone)return;const steps=[
 const renderTut=()=>{const s=steps[idx];$('tutorial').innerHTML=`<div class="tutorial-overlay"><div class="tutorial-box"><h2>${esc(s.t)}</h2><p>${esc(s.b)}</p><div class="tutorial-dots">${steps.map((_,i)=>`<span class="${i===idx?'on':''}"></span>`).join('')}</div><p style="text-align:right;margin:0"><button class="b" onclick="advTut()">${idx<steps.length-1?'Next':'Begin'}</button></p></div></div>`};
 window.advTut=()=>{idx++;if(idx>=steps.length){S.tutorialDone=1;save();$('tutorial').innerHTML=''}else renderTut()};
 renderTut()}
-function render(){if(!S)return;const V={home:vHome,modules:vModules,protocol:vProto,goals:vGoals,projects:vProjects,board:vBoard,analytics:vAn,shop:vShop,settings:vSet};
+function render(){if(!S)return;const V={home:vHome,modules:vModules,protocol:vProto,goals:vGoals,projects:vProjects,analytics:vAn,shop:vShop,settings:vSet};
 $('app').innerHTML=`<aside><b>🧬 ${esc(S.cfg.name)}</b>${Object.keys(V).map(k=>`<button class="${k==tab?'on':''}" onclick="tab='${k}';render();scrollTo(0,0)"><span>${ICO[k]}</span>${L(k)}</button>`).join('')}</aside><main class="${S.room?'room':''}"><div class="hd"><div><h1>${esc(S.cfg.name)}</h1><div class="sub">${L('tag')} | <span class="phase-badge">Phase ${S.phase}</span></div></div><span class="pts">${S.pts} ${L('pts')}</span></div>${S.exam||tab=='settings'?V[tab]():vExam()}</main>`;
 if(tab=='protocol'&&S.exam)drawCal();clearInterval(tmr);tmr=setInterval(()=>document.querySelectorAll('.cd').forEach(e=>e.textContent=fmt(+e.dataset.due-Date.now())),1000);calTick();
 if(!S.tutorialDone)showTutorial()}
