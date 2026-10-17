@@ -10,7 +10,7 @@
 body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-apple-system,"Segoe UI",sans-serif}
 
 /* ─── Landing Page ─── */
-#landing{position:fixed;inset:0;background:#000;color:#fff;z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease,pointer-events .6s}
+#landing{position:fixed;inset:0;background:var(--bg);color:var(--tx);z-index:100;display:flex;align-items:center;justify-content:center;flex-direction:column;transition:opacity .6s ease,pointer-events .6s}
 #landing.hidden{opacity:0;pointer-events:none}
 .land-loading{display:flex;flex-direction:column;align-items:center;gap:20px;transition:opacity .5s ease}
 .land-loading.hidden{opacity:0;pointer-events:none;display:none}
@@ -18,7 +18,7 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-app
 .land-title b{font-weight:600}
 .land-sub{font-size:clamp(9px,1.3vmin,13px);letter-spacing:.5em;text-transform:uppercase;opacity:.5;text-align:center}
 .land-bar{width:min(280px,60vw);height:1px;background:rgba(255,255,255,.15);position:relative;overflow:hidden}
-.land-bar i{position:absolute;top:0;left:0;height:100%;width:0;background:#fff;animation:loadBar 1.2s ease-out forwards}
+.land-bar i{position:absolute;top:0;left:0;height:100%;width:0;background:var(--ac);animation:loadBar 1.2s ease-out forwards}
 @keyframes loadBar{0%{width:0}60%{width:70%}100%{width:100%}}
 .land-hint{font-size:11px;letter-spacing:.4em;text-transform:uppercase;opacity:.3;margin-top:20px;animation:pulse 2s infinite;display:none}
 .land-loading.done .land-hint{display:block}
@@ -28,9 +28,9 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-app
 .land-choice.show{display:flex;animation:fadeUp .8s ease-out both}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 .land-half{flex:1;border:1px solid rgba(255,255,255,.15);border-radius:12px;padding:6vmin 4vmin;cursor:pointer;transition:all .3s ease;text-align:center;background:rgba(255,255,255,.02)}
-.land-half:hover{border-color:#1f9d55;background:rgba(31,157,85,.08);transform:scale(1.05)}
+.land-half:hover{border-color:var(--ac);background:color-mix(in srgb,var(--ac) 8%,transparent);transform:scale(1.05)}
 .land-half h2{font-size:clamp(20px,3vmin,32px);font-weight:300;letter-spacing:.3em;text-transform:uppercase;margin:0 0 2vmin;transition:letter-spacing .3s}
-.land-half:hover h2{letter-spacing:.4em;color:#1f9d55}
+.land-half:hover h2{letter-spacing:.4em;color:var(--ac)}
 .land-half p{font-size:clamp(11px,1.3vmin,14px);opacity:.5;line-height:1.7;margin:0}
 .land-half:hover p{opacity:.9}
 .land-half .icon{font-size:clamp(40px,6vmin,72px);margin-bottom:3vmin;opacity:.6}
@@ -38,10 +38,10 @@ body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 system-ui,-app
 @media(max-width:700px){.land-choice{flex-direction:column;width:90vw}.land-half{padding:5vmin 4vmin}}
 
 /* ─── Academy Under Construction ─── */
-#academy-view{position:fixed;inset:0;background:#000;color:#fff;z-index:99;display:none;align-items:center;justify-content:center;flex-direction:column;padding:5vmin;text-align:center}
+#academy-view{position:fixed;inset:0;background:var(--bg);color:var(--tx);z-index:99;display:none;align-items:center;justify-content:center;flex-direction:column;padding:5vmin;text-align:center}
 #academy-view.show{display:flex;animation:fadeIn .5s ease}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
-.aca-back{position:absolute;top:3vmin;left:3vmin;font-size:11px;letter-spacing:.4em;text-transform:uppercase;opacity:.5;cursor:pointer;background:none;border:0;color:#fff;font-family:inherit;padding:1vmin}
+.aca-back{position:absolute;top:3vmin;left:3vmin;font-size:11px;letter-spacing:.4em;text-transform:uppercase;opacity:.5;cursor:pointer;background:none;border:0;color:var(--tx);font-family:inherit;padding:1vmin}
 .aca-back:hover{opacity:1}
 .aca-title{font-size:clamp(40px,8vmin,96px);font-weight:200;letter-spacing:.2em;text-transform:uppercase;margin-bottom:3vmin}
 .aca-sub{font-size:clamp(11px,1.4vmin,14px);letter-spacing:.4em;text-transform:uppercase;opacity:.4}
@@ -193,19 +193,18 @@ tr.cl{cursor:pointer}tr.cl:hover,tr.me{background:color-mix(in srgb,var(--ac) 12
     <div class="land-bar"><i></i></div>
     <div class="land-hint" id="landHint">Click to enter</div>
   </div>
-  <div class="land-choice" id="landChoice">
+   <div class="land-choice" id="landChoice">
     <div class="land-half" id="halfSubject">
-      <div class="icon">🧬</div>
-      <h2>Subject</h2>
-      <p>Your private system. Goals, modules, habits, projects. The curriculum you build for yourself.</p>
+      <div class="icon" id="halfSubjectIcon">🧬</div>
+      <h2 id="halfSubjectName">Subject</h2>
+      <p id="halfSubjectDesc">Your private system. Goals, modules, habits, projects.</p>
     </div>
     <div class="land-half" id="halfAcademy">
-      <div class="icon">🏆</div>
-      <h2>Academy</h2>
-      <p>The competitive half. Ranking, exams, the 99. Where you are placed against others.</p>
+      <div class="icon" id="halfAcademyIcon">🏆</div>
+      <h2 id="halfAcademyName">Academy</h2>
+      <p id="halfAcademyDesc">The competitive half. Ranking, exams, the 99.</p>
     </div>
   </div>
-</div>
 
 <!-- Academy under construction -->
 <div id="academy-view">
@@ -339,7 +338,7 @@ const acad=S.attrs.find(a=>a.n==='Academic'||a.n==='Academic ');
 if(acad&&acad.subs&&acad.subs.length===4){const targetNames=['Biological Chemistry','Professional Skills','Diversity of Life','Molecular Biology'];acad.subs.forEach((s,i)=>{if(targetNames[i])s.n=targetNames[i]})}
 S.attrs.forEach(a=>{a.subs.forEach(s=>{s.idle??=0;s.g??=rg()})})}
 S.projects??=[];S.goals.forEach(g=>{g.why??='';g.endOnPhase??=0});S.monthSnaps??=[];S.phaseHistory??=[];S.tutorialDone??=0;
-S.modules??=mkModules();S.degreeTarget??=70;S.upcoming??=JSON.parse(JSON.stringify(SEED_UPCOMING));S.changelog??=JSON.parse(JSON.stringify(SEED_CHANGELOG));
+S.modules??=mkModules();S.degreeTarget??=70;S.upcoming??=JSON.parse(JSON.stringify(SEED_UPCOMING));S.changelog??=JSON.parse(JSON.stringify(SEED_CHANGELOG));S.cfg.half??={subjectIcon:'🧬',subjectName:'Subject',subjectDesc:'Your private system. Goals, modules, habits, projects.',academyIcon:'🏆',academyName:'Academy',academyDesc:'The competitive half. Ranking, exams, the 99.'};
 const keep=oldNpcs.filter(p=>oldNpcNames.includes(p.n));
 if(keep.length){keep.forEach(p=>{if(!p.arch)p.arch=pick(ARCHETYPES).name;if(!p.hobbies)p.hobbies=Array.from({length:4},()=>pick(HOBBIES)).filter((v,i,a)=>a.indexOf(v)===i);if(!p.goals)p.goals=mkNpcGoals();if(!p.activity)p.activity=[]});S.npcs=keep;if(S.npcs.length<99)S.npcs=S.npcs.concat(mkNpcs(99-S.npcs.length,S.npcs,S.phase||1))}else{S.npcs=mkNpcs(99,[],S.phase||1)}
 S.routine.forEach((r,i)=>{r.st??='fixed';r.lk??='';r.sub??='s3_0'});
@@ -426,7 +425,7 @@ function chart(ser,h=120){const n=Math.max(...ser.map(s=>s.d.length));if(n<2)ret
 function showN(id){const e=board().find(x=>x.id==id),p=e.p;
 const cmpHtml=p?S.attrs.map((a,i)=>`<div class="cmp-row"><div><b style="font-size:12px">${esc(a.n)}</b><div class="cmp-bar" style="margin-top:4px"><i style="width:${e.at[i]}%;background:var(--ac);opacity:.5"></i></div><div class="cmp-bar" style="margin-top:2px"><i style="width:${attrV(S.attrs[i])}%;background:#3a9ad9;opacity:.7"></i></div></div><div class="sub" style="text-align:right;font-size:11px">${e.at[i].toFixed(0)}</div><div class="sub" style="text-align:right;font-size:11px">${attrV(S.attrs[i]).toFixed(0)}</div></div>`).join(''):'';
 $('mb').innerHTML=`<h2>${esc(e.n)}</h2><div class="sub">#${e.rk} | ${esc(S.cfg.gen.split(',')[e.g-1]||'Type '+e.g)} | ${grade(e.ov)} ${e.ov.toFixed(1)}${p?' | '+esc(p.p)+' | '+esc(p.arch||'')+' | mood: '+esc(p.mood):' | You'}</div>${radar([e.at],S.attrs.map(a=>a.n))}${S.attrs.map((a,i)=>`<div class="row"><b class="f">${esc(a.n)}</b><span>${e.at[i].toFixed(0)}</span><span class="gr">${grade(e.at[i])}</span></div>`).join('')}${p?.hobbies?`<div class="sub" style="margin-top:8px"><b>Hobbies:</b> ${p.hobbies.map(h=>esc(h)).join(', ')}</div>`:''}${p?.goals?.length?`<div class="sub" style="margin-top:8px"><b>Goals:</b> ${p.goals.map(g=>esc(g)).join(', ')}</div>`:''}${p?.activity?.length?`<div style="margin-top:8px"><b class="sub">Recent:</b>${p.activity.slice(-3).reverse().map(a=>`<div class="sub">${esc(a.msg)}</div>`).join('')}</div>`:''}${p?`<div style="margin-top:14px"><h2 style="font-size:11px">Comparison</h2>${cmpHtml}</div>`:''}${p?`<p><button class="b" onclick="S.rival='${p.id}';S.beat=0;save();$('modal').style.display='none';render()">Set as ${L('rival')}</button></p>`:''}`;$('modal').style.display='flex'}
-function up(p,v,num){const k=p.split('.');let o=S;k.slice(0,-1).forEach(x=>o=o[x]);o[k.at(-1)]=num?+v:v;theme();save();render()}
+function up(p,v,num){const k=p.split('.');let o=S;k.slice(0,-1).forEach(x=>o=o[x]);o[k.at(-1)]=num?+v:v;theme();save();render();if(typeof renderLanding==='function')renderLanding()}
 const del=(arr,i)=>{S[arr].splice(i,1);save();render()},delSub=(a,i)=>{S.attrs[a].subs.splice(i,1);save();render()},addSub=a=>{S.attrs[a].subs.push({id:'s'+Date.now(),n:'New sub',v:0,g:1,idle:0});save();render()};
 function add(w){const u='x'+Date.now();if(w=='attrs')S.attrs.push({id:u,n:'New attribute',subs:[{id:u+'s',n:'New sub',v:0,g:1,idle:0}]});
 if(w=='routine')S.routine.push({id:u,n:'New block',note:'',color:'#1f9d55',time:'09:00',days:[0,1,2,3,4,5,6],st:'fixed',lk:'',sub:'s3_0'});
@@ -581,6 +580,15 @@ function vSet(){const c=S.cfg,so=flat().map(s=>[s.id,s.n]);return`<div class="pn
 <div class="pn"><h2>Calendar theme</h2><p>Accent <input type="color" value="${c.ct.gb}" onchange="up('cfg.ct.gb',this.value)"> Background <input type="color" value="${c.ct.cb}" onchange="up('cfg.ct.cb',this.value)"> Text <input type="color" value="${c.ct.ct}" onchange="up('cfg.ct.ct',this.value)"> Grid <input type="color" value="${c.ct.cg}" onchange="up('cfg.ct.cg',this.value)"> Now <input type="color" value="${c.ct.cn}" onchange="up('cfg.ct.cn',this.value)"></p><button class="b" onclick="S.cfg.ct={...CT0};theme();save();render()">Reset</button></div>
 <div class="pn"><h2>Stat rules</h2><p>Decay/week ${inp('cfg.decay',c.decay,1,'70px')}</p><p>Decay floor % ${inp('cfg.fp',c.fp,1,'70px')}</p><div class="sub">Decay after 14 days idle. Academic auto-syncs from Modules.</div></div>
 <div class="pn"><h2>Profile</h2><p>Name ${inp('name',S.name)}</p><p>Title ${inp('title',S.title)}</p><p>Quote ${inp('quote',S.quote)}</p><p>Type ${genSel('pg',S.gen,"up('gen',this.value,1)")}</p><p>Type names ${inp('cfg.gen',c.gen)}</p></div>
+<div class="pn"><h2>Landing page</h2>
+<p class="sub">Two halves shown on the entry screen.</p>
+<p>Subject icon ${inp('cfg.half.subjectIcon',c.half.subjectIcon,0,'60px')}</p>
+<p>Subject name ${inp('cfg.half.subjectName',c.half.subjectName)}</p>
+<p>Subject description <input value="${esc(c.half.subjectDesc)}" style="width:100%" onchange="S.cfg.half.subjectDesc=this.value;save();renderLanding()"></p>
+<p>Academy icon ${inp('cfg.half.academyIcon',c.half.academyIcon,0,'60px')}</p>
+<p>Academy name ${inp('cfg.half.academyName',c.half.academyName)}</p>
+<p>Academy description <input value="${esc(c.half.academyDesc)}" style="width:100%" onchange="S.cfg.half.academyDesc=this.value;save();renderLanding()"></p>
+</div>
 <div class="pn"><h2>Rename labels</h2>${Object.keys(LBL).map(k=>`<p class="sub">${k}${inp('cfg.L.'+k,c.L[k]??LBL[k])}</p>`).join('')}</div>
 <div class="pn"><h2>Attributes</h2>${S.attrs.map((a,i)=>`<div class="row" style="background:color-mix(in srgb,var(--ac) 6%,transparent)">${inp('attrs.'+i+'.n',a.n,0,'70%')}<button class="b x" onclick="delAttr(${i})">x</button></div>${a.subs.map((s,j)=>`<div class="row" style="padding-left:16px">${inp('attrs.'+i+'.subs.'+j+'.n',s.n,0,'70%')}<button class="b x" onclick="delSubSafe(${i},${j})">x</button></div>`).join('')}<button class="b" onclick="addSub(${i})">+ sub</button>`).join('')}<p><button class="b" onclick="add('attrs')">+ attribute</button></p></div>
 <div class="pn"><h2>Goals editing</h2>${S.goals.map((g,i)=>`<div class="row">${inp('goals.'+i+'.n',g.n)}${sel('goals.'+i+'.sub',g.sub,so)}unit${inp('goals.'+i+'.unit',g.unit,0,'70px')}from${inp('goals.'+i+'.start',g.start,1,'60px')}to${inp('goals.'+i+'.target',g.target,1,'60px')}weeks${inp('goals.'+i+'.weeks',g.weeks,1,'55px')}<div style="width:100%" class="sub">Why<input value="${esc(g.why||'')}" style="width:100%" onchange="up('goals.${i}.why',this.value)"></div><div style="width:100%" class="sub">Anchors<input value="${esc((g.an||[]).map(a=>a.join(':')).join(', '))}" style="width:100%" onchange="setAn(${i},this.value)"></div><span class="sub">milestones</span>${inp('goals.'+i+'.mn',g.mn||4,1,'50px')}<label class="sub" style="margin-left:8px"><input type="checkbox" ${g.endOnPhase?'checked':''} onchange="up('goals.${i}.endOnPhase',this.checked?1:0)"> End on phase</label><button class="b" onclick="rebuild(${i})">Rebuild</button><button class="b x" onclick="del('goals',${i})">x</button></div>`).join('')||'<div class="sub">No goals yet.</div>'}</div>
@@ -687,7 +695,16 @@ function calTick(){if(!S||!S.cal)return;const n=Date.now(),d=D();document.queryS
 occs(d,d+1).forEach(o=>{const ev=o.ev;if(ev.ad||ev.rem==null||ev.rem<0)return;const k=ev.id+o.d;if(n>=o.s-ev.rem*6e4&&n<o.s&&!fired.has(k)){fired.add(k);const m=ev.t+' at '+hm(o.s);toast('⏰ '+m);try{if(Notification.permission=='granted')new Notification(S.cfg.name,{body:m})}catch(x){}}})}
 
 // ─── Landing / Academy logic ───
-setTimeout(()=>{const l=$('landHint');if(l)l.parentElement.classList.add('done')},2600);
+function renderLanding(){
+  const h=(S&&S.cfg&&S.cfg.half)||{subjectIcon:'🧬',subjectName:'Subject',subjectDesc:'Your private system.',academyIcon:'🏆',academyName:'Academy',academyDesc:'The competitive half.'};
+  if($('halfSubjectIcon'))$('halfSubjectIcon').textContent=h.subjectIcon;
+  if($('halfSubjectName'))$('halfSubjectName').textContent=h.subjectName;
+  if($('halfSubjectDesc'))$('halfSubjectDesc').textContent=h.subjectDesc;
+  if($('halfAcademyIcon'))$('halfAcademyIcon').textContent=h.academyIcon;
+  if($('halfAcademyName'))$('halfAcademyName').textContent=h.academyName;
+  if($('halfAcademyDesc'))$('halfAcademyDesc').textContent=h.academyDesc;
+}
+setTimeout(()=>{const l=$('landHint');if(l)l.parentElement.classList.add('done')},1300);
 $('landLoading').addEventListener('click',()=>{
   if(!$('landLoading').classList.contains('done'))return;
   $('landLoading').classList.add('hidden');
@@ -695,14 +712,14 @@ $('landLoading').addEventListener('click',()=>{
 });
 $('halfSubject').addEventListener('click',()=>{
   $('landing').classList.add('hidden');
-  setTimeout(()=>{ $('app').innerHTML=''; if(!S){try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();review();theme();save();render();setInterval(calTick,20000);addEventListener('resize',()=>{if(tab=='protocol')drawCal()})} },400);
+  setTimeout(()=>{ $('app').innerHTML=''; if(!S){try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();review();theme();save()} render(); setInterval(calTick,20000); addEventListener('resize',()=>{if(tab=='protocol')drawCal()}) },400);
 });
 $('halfAcademy').addEventListener('click',()=>{ $('academy-view').classList.add('show'); });
 function closeAcademy(){ $('academy-view').classList.remove('show'); }
 
-// Load existing save so we know if we're resuming
 try{ S=JSON.parse(localStorage.getItem('ml')); }catch(e){}
-if(S){ migrate(); step(); review(); theme(); save(); render(); setInterval(calTick,20000); addEventListener('resize',()=>{if(tab=='protocol')drawCal()}) }
+if(S){ migrate(); step(); review(); theme(); renderLanding(); save(); render(); setInterval(calTick,20000); addEventListener('resize',()=>{if(tab=='protocol')drawCal()}) }
+else { theme(); }
 </script>
 </body>
 </html>
