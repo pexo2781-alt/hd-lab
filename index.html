@@ -130,7 +130,7 @@ input[type=color]{padding:0;height:30px;width:48px}
 const $=id=>document.getElementById(id),D=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),rnd=()=>Math.random(),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
-let S,ref,tab='home',tmr,cv='week',cd=D(),cq='',csb=null,drag=null,gsT=null,edv=null;
+let S,tab='home',tmr,cv='week',cd=D(),cq='',csb=null,drag=null,gsT=null,edv=null;
 const fired=new Set();
 const LBL={home:'Calendar',profile:'Profile',modules:'Modules',analytics:'Analytics',settings:'Settings'};
 const ICO={home:'📅',profile:'👤',modules:'🎓',analytics:'📈',settings:'⚙️'};
@@ -156,7 +156,7 @@ const toast=m=>{const t=$('toast');t.textContent=m;t.style.display='block';clear
 const L=k=>esc(S.cfg.L[k]??LBL[k]??k);
 function theme(){const r=document.documentElement.style,c=S.cfg;['bg','ac','tx','pn'].forEach(k=>r.setProperty('--'+k,c[k]));document.title=c.name;themeCal()}
 function themeCal(){const r=document.documentElement.style,t=S.cfg.ct||CT0;['gb','cb','ct','cg','cn'].forEach(k=>r.setProperty('--'+k,t[k]));r.setProperty('--ch','color-mix(in srgb,'+t.ct+' 7%,'+t.cb+')');r.setProperty('--cm','color-mix(in srgb,'+t.ct+' 55%,'+t.cb+')')}
-function mkCal(rt){const cals=[{id:'c_habit',n:'Habits',color:'#0b8043',on:1},{id:'c_task',n:'Tasks',color:'#1a73e8',on:1},{id:'c_other',n:'Personal',color:'#8e24aa',on:1}];return{cals,ev:[]}}
+function mkCal(){const cals=[{id:'c_habit',n:'Habits',color:'#0b8043',on:1},{id:'c_task',n:'Tasks',color:'#1a73e8',on:1},{id:'c_other',n:'Personal',color:'#8e24aa',on:1}];return{cals,ev:[]}}
 const DEF_ETYPES=[{id:'et_habit',n:'Habit',streak:1},{id:'et_task',n:'Task',streak:1},{id:'et_other',n:'Other',streak:0}];
 function fresh(){const f={v:12,name:'Mutant',title:'Nobody',quote:"The quiet hours are the loudest.",day:D(),rt:{},rtb:{},best:0,modules:[],degreeTarget:70,hs:[],log:[],made:Date.now(),lastBackup:0,tutorialDone:0,monthSnaps:[],cfg:{name:'Mr Calendar',bg:'#f4f6f2',ac:'#1f9d55',tx:'#1d2a22',pn:'#ffffff',L:{...LBL},ct:{...CT0},etypes:DEF_ETYPES.map(e=>({...e}))}};f.cal=mkCal();return f}
 function migrate(){const f=fresh();
@@ -168,7 +168,7 @@ if(S.cal&&S.cal.cals)S.cal.cals=S.cal.cals.filter(c=>['c_habit','c_task','c_othe
 ['attrs','goals','projects','missions','diff','heat','notes','eff','shield','boost','trials','trial','offer','scars','shop','pts','gen','room','npcs','rival','beat','phase','phaseHistory','legacy','season','exam','routine','gd'].forEach(k=>{delete S[k]});
 if(S.cfg){['gen','phase','cut','sn','fl','decay','fp'].forEach(k=>{delete S.cfg[k]})}
 S.v=12;LOG('system','Migrated to Mr Calendar. Stats, goals, projects, exam removed.')}
-if(!S.cal)S.cal=mkCal(S.rt);if(!S.cfg.etypes||!S.cfg.etypes.length)S.cfg.etypes=DEF_ETYPES.map(e=>({...e}))}
+if(!S.cal)S.cal=mkCal();if(!S.cfg.etypes||!S.cfg.etypes.length)S.cfg.etypes=DEF_ETYPES.map(e=>({...e}))}
 function etOf(id){return S.cfg.etypes.find(e=>e.id===id)||S.cfg.etypes[0]}
 function etStreak(ev){const t=etOf(ev.etype);return t?t.streak:0}
 function monthSnapshot(){const today=new Date(),dom=today.getUTCDate(),monthKey=today.getUTCFullYear()+'-'+pad(today.getUTCMonth()+1);if(dom!==1)return;if(S.monthSnaps.some(m=>m.k===monthKey))return;S.monthSnaps.push({k:monthKey,d:D(),st:streak(),best:S.best,rate:frac(D())});S.monthSnaps=S.monthSnaps.slice(-36);LOG('snapshot','Monthly snapshot recorded: '+monthKey)}
@@ -179,7 +179,7 @@ function degreeCurrent(){const active=S.modules.filter(m=>!m.locked);let earned=
 function degreeCompleted(){const all=S.modules.filter(m=>!m.locked);let gradedWeight=0,totalWeight=0;all.forEach(m=>{if(!m.assessments)return;let mGraded=0,mTotal=0;m.assessments.forEach(a=>{if(a.group){a.subs.forEach(s=>{mTotal+=s.w;if(s.score!=null)mGraded+=s.w})}else{mTotal+=a.w;if(a.score!=null)mGraded+=a.w}});if(mTotal>0){gradedWeight+=mGraded*m.credits/mTotal;totalWeight+=m.credits}});return totalWeight>0?gradedWeight/totalWeight*100:0}
 function step(){const t=D();S.day=t;monthSnapshot()}
 function snap(){const e={d:D(),r:frac(D())},l=S.hs.at(-1);if(l&&l.d==D())S.hs[S.hs.length-1]=e;else S.hs.push(e);S.hs=S.hs.slice(-400)}
-const save=(()=>{let h;return()=>{snap();clearTimeout(h);h=setTimeout(async()=>{try{localStorage.setItem('ml',JSON.stringify(S))}catch(e){}try{ref&&await ref.set({j:JSON.stringify(S)})}catch(e){}},400)}})();
+const save=()=>{snap();try{localStorage.setItem('ml',JSON.stringify(S))}catch(e){}};
 const evOf=id=>S.cal.ev.find(x=>x.id==id),calOf=ev=>S.cal.cals.find(c=>c.id==ev.cal),vis=ev=>calOf(ev)?.on!==0,ecol=ev=>ev.color||calOf(ev)?.color||'#1a73e8';
 function occs(a,b){const r=[];S.cal.ev.forEach(ev=>{const bd=dn(ev.s),du=ev.e-ev.s,x=dt(bd),tod=ev.ad?0:ev.s-midn(bd);
 if(!ev.rep||ev.rep=='none'){if(bd>=a&&bd<=b)r.push({ev,d:bd,s:ev.s,e:ev.e});return}
@@ -240,7 +240,6 @@ save();render();toast('Deleted')}
 function vAn(){const days=Array.from({length:30},(_,i)=>D()-29+i);
 const rates=days.map(d=>{const s=streakSlots(d);return s.length?s.filter(o=>o.ev.done[d]).length/s.length*100:null});
 const valid=rates.filter(x=>x!=null);
-const hs=S.hs.slice(-90);
 const perCal=S.cal.cals.map(c=>{let tot=0,done=0;days.forEach(d=>{occs(d,d).forEach(o=>{if(o.ev.cal===c.id&&etStreak(o.ev)){tot++;if(o.ev.done[d])done++}})});return{n:c.n,c:c.color,pct:tot?done/tot*100:0,tot}});
 return`<div class="g2"><div class="pn"><h2>Streak</h2><b class="streak-big">${streak()}</b> <span class="sub">days · best ${S.best}</span></div><div class="pn"><h2>30-day completion</h2><b class="streak-big">${valid.length?mean(valid).toFixed(0):'—'}%</b><div class="sub">avg across days with slots</div></div></div>
 <div class="pn"><h2>Daily completion (30d)</h2>${chart([{d:rates.map(r=>r??0),c:'var(--ac)'}])}</div>
@@ -282,9 +281,7 @@ function drawBar(){const vs=mob()?['day','agenda']:['day','week','month','year',
 function mini(d0,big){const x=dt(d0),f=Math.floor(Date.UTC(x.getUTCFullYear(),x.getUTCMonth(),1)/864e5),off=(wd(f)+6)%7,dim=new Date(Date.UTC(x.getUTCFullYear(),x.getUTCMonth()+1,0)).getUTCDate();let h=['M','T','W','T','F','S','S'].map(c=>`<i class="mh">${c}</i>`).join('');for(let i=0;i<off;i++)h+='<i></i>';
 for(let i=0;i<dim;i++){const d=f+i;h+=`<i class="${d==D()?'td':''} ${!big&&d==cd?'sd':''}" onclick="cd=${d};if(cv=='year')cv='day';drawCal()">${i+1}${big&&occs(d,d).some(o=>vis(o.ev))?'<u></u>':''}</i>`}return h}
 function drawSb(){const s=$('csb');if(!sbOn()){s.style.display='none';return}const x=dt(cd);s.style.display='block';
-s.innerHTML=`<div class="hd"><b>${MN[x.getUTCMonth()].slice(0,3)} ${x.getUTCFullYear()}</b><span><button class="b" onclick="cd=Math.floor(Date.UTC(${x.getUTCFullYear()},${x.getUTCMonth()-1},1)/864e5);drawCal()">‹</button><button class="b" onclick="cd=Math.floor(Date.UTC(${x.getUTCFullYear()},${x.getUTCMonth()+1},1)/864e5);drawCal()">›</button></span></div><div class="mg">${mini(cd)}</div><h2 style="margin-top:14px;color:var(--ct)">Calendars</h2>
-${S.cal.cals.map((c,i)=>`<div class="cr"><input type="checkbox" ${c.on!==0?'checked':''} style="accent-color:${c.color}" onchange="S.cal.cals[${i}].on=this.checked?1:0;save();drawMain()"><i class="dot" style="background:${c.color}"></i><input value="${esc(c.n)}" class="cn" onchange="S.cal.cals[${i}].n=this.value;save()"><input type="color" value="${c.color}" class="cc" onchange="S.cal.cals[${i}].color=this.value;save();drawMain()">${c.id!='c_other'?`<span style="cursor:pointer;color:#d93025" onclick="delCal(${i})">×</span>`:''}</div>`).join('')}
-<button class="b" style="margin-top:8px" onclick="S.cal.cals.push({id:'c'+Date.now(),n:'New calendar',color:'#039be5',on:1});save();drawSb()">+ Add calendar</button></div>`}
+s.innerHTML=`<div class="hd"><b>${MN[x.getUTCMonth()].slice(0,3)} ${x.getUTCFullYear()}</b><span><button class="b" onclick="cd=Math.floor(Date.UTC(${x.getUTCFullYear()},${x.getUTCMonth()-1},1)/864e5);drawCal()">‹</button><button class="b" onclick="cd=Math.floor(Date.UTC(${x.getUTCFullYear()},${x.getUTCMonth()+1},1)/864e5);drawCal()">›</button></span></div><div class="mg">${mini(cd)}</div>`}
 function drawMain(){const m=$('cmain');if(!m)return;if(cq){m.innerHTML=results();return}m.innerHTML=({day:vTime,week:vTime,month:vMonth,year:vYear,agenda:vAgenda})[cv]();const g=$('gs');if(g)g.scrollTop=gsT??336}
 function vTime(){const n=cv=='week'?7:1,a=cv=='week'?wsd(cd):cd,days=Array.from({length:n},(_,i)=>a+i),all=occs(a,a+n-1).filter(o=>vis(o.ev)),gt=`grid-template-columns:48px repeat(${n},minmax(0,1fr))`;
 const head=days.map(d=>`<div class="dh ${d==D()?'td':''}" onclick="cd=${d};cv='day';drawCal()">${WD[wd(d)]}<b>${dt(d).getUTCDate()}</b></div>`).join(''),adr=days.map(d=>`<div class="adc">${all.filter(o=>o.ev.ad&&o.d<=d&&d<=o.d).map(o=>pill(o,d)).join('')}</div>`).join('');
@@ -305,12 +302,12 @@ $('mb').innerHTML=`<h2>${isNew?'New event':'Edit event'}</h2><input id="f_t" pla
 ${!isNew&&ev.rep&&ev.rep!='none'?`<div class="row">Apply to <select id="f_sc"><option value="one">This only</option><option value="all">All</option></select></div>`:''}<div class="row"><input type="date" id="f_d" value="${ymd(d)}"><label><input type="checkbox" id="f_a" ${ev.ad?'checked':''} onchange="$('f_tm').style.display=this.checked?'none':'flex'"> All day</label></div>
 <div class="row" id="f_tm" style="display:${ev.ad?'none':'flex'}"><input type="time" id="f_s" value="${hm(ev.s)}"> to <input type="time" id="f_e" value="${hm(ev.e)}"></div>
 <div class="row">Type <select id="f_et">${o(S.cfg.etypes.map(t=>[t.id,t.n]),ev.etype)}</select> Calendar <select id="f_c">${o(S.cal.cals.map(c=>[c.id,c.n]),ev.cal)}</select></div>
-<div class="row"><span class="sw" style="background:conic-gradient(#ccc,#eee,#ccc);border-color:${!ev.color?'#000':'transparent'}" onclick="pickC('')"></span>${EVC.map(c=>`<span class="sw" data-c="${c}" style="background:${c};border-color:${ev.color==c?'#000':'transparent'}" onclick="pickC('${c}')"></span>`).join('')}</div>
+<div class="row" style="align-items:center"><span class="sub" style="margin-right:4px">Colour:</span><span class="sw" style="background:conic-gradient(#ccc,#eee,#ccc);border-color:${!ev.color?'#000':'transparent'}" onclick="pickC('')" title="Use calendar colour"></span>${EVC.map(c=>`<span class="sw" data-c="${c}" style="background:${c};border-color:${ev.color==c?'#000':'transparent'}" onclick="pickC('${c}')"></span>`).join('')}<input type="color" id="f_cc" value="${ev.color||'#1a73e8'}" style="height:26px;width:38px;border-radius:6px;cursor:pointer;margin-left:4px" onchange="pickC(this.value)" title="Custom colour"></div>
 <input id="f_l" placeholder="Location" value="${esc(ev.loc)}" style="width:100%;margin:4px 0"><textarea id="f_dc" placeholder="Description" rows="3" style="width:100%">${esc(ev.desc)}</textarea>
 <div class="row">Repeat <select id="f_r" onchange="$('f_wk').style.display=this.value=='weekly'?'inline':'none'">${o(RP.map(r=>[r,r]),ev.rep||'none')}</select><span id="f_wk" style="display:${ev.rep=='weekly'?'inline':'none'}">${WD.map((w,i)=>`<label><input type="checkbox" id="wk${i}" ${(ev.wk||[]).includes(i)?'checked':''}>${w[0]}</label>`).join(' ')}</span></div>
 <div class="row">Reminder <select id="f_rm">${o(RM,ev.rem)}</select></div>
 <p><button class="b" onclick="saveEd()">Save</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button>${isNew?'':` <button class="b x" onclick="delEv('${ev.id}')">Delete</button>`}</p>`;$('modal').style.display='flex'}
-function pickC(c){edv.color=c;document.querySelectorAll('#mb .sw').forEach(s=>s.style.borderColor=(s.dataset.c||'')==c?'#000':'transparent')}
+function pickC(c){edv.color=c;document.querySelectorAll('#mb .sw').forEach(s=>s.style.borderColor=(s.dataset.c||'')==c?'#000':'transparent');const cc=$('f_cc');if(cc&&c)cc.value=c}
 function saveEd(){const ev=edv,d=Math.floor(Date.parse($('f_d').value)/864e5);if(isNaN(d))return toast('Pick date');ev.t=$('f_t').value||'(No title)';ev.ad=$('f_a').checked?1:0;const tm=v=>{const[a,b]=v.split(':').map(Number);return(a*60+(b||0))*6e4};
 if(ev.ad){ev.s=midn(d);ev.e=midn(d+1)}else{ev.s=midn(d)+tm($('f_s').value||'09:00');ev.e=midn(d)+tm($('f_e').value||'10:00');if(ev.e<=ev.s)ev.e=ev.s+30*6e4}
 ev.etype=$('f_et').value;ev.cal=$('f_c').value;ev.loc=$('f_l').value;ev.desc=$('f_dc').value;ev.rep=$('f_r').value;ev.rem=+$('f_rm').value;
@@ -337,6 +334,5 @@ if(g.mode=='mv'){ev.s+=k;ev.e+=k;shiftEv(ev,g.dd)}else if(g.mode=='rb')ev.e=Math
 document.addEventListener('click',()=>{const c=$('ctx');if(c)c.style.display='none'});
 function calTick(){if(!S||!S.cal)return;const n=Date.now(),d=D();document.querySelectorAll('.nowl').forEach(e=>e.style.top=(n-midn(d))/6e4*.8+'px');
 occs(d,d+1).forEach(o=>{const ev=o.ev;if(ev.ad||ev.rem==null||ev.rem<0)return;const k=ev.id+o.d;if(n>=o.s-ev.rem*6e4&&n<o.s&&!fired.has(k)){fired.add(k);const m=ev.t+' at '+hm(o.s);toast('⏰ '+m);try{if(Notification.permission=='granted')new Notification(S.cfg.name,{body:m})}catch(x){}}})}
-(async()=>{try{if(window.claude){const[u,d]=await Promise.all([claude.use('user'),claude.use('db')]);if(u&&d){ref=d.collection('data/users/'+await u.id()).doc('save');const s=await ref.get();if(s.exists)S=JSON.parse(s.data().j)}}}catch(e){}
-if(!S)try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();theme();save();render();setInterval(calTick,20000);addEventListener('resize',()=>{if(tab=='home')drawCal()})})();
+(async()=>{if(!S)try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();theme();save();render();setInterval(calTick,20000);addEventListener('resize',()=>{if(tab=='home')drawCal()})})();
 </script></body></html>
