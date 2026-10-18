@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>The Mental Lab</title>
+<title>Mr Calendar</title>
 <style>
 :root{--bg:#f4f6f2;--ac:#1f9d55;--tx:#1d2a22;--pn:#ffffff;--gb:#1a73e8;--cb:#ffffff;--ct:#202124;--cg:#e0e0e0;--ch:#f1f3f4;--cm:#70757a;--cn:#ea4335;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
@@ -31,17 +31,12 @@ input[type=color]{padding:0;height:30px;width:48px}
 .bar i{display:block;height:100%;background:var(--ac)}
 .row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid color-mix(in srgb,var(--tx) 8%,transparent);flex-wrap:wrap}
 .row .f{flex:1;min-width:120px}
-.gr{font-weight:700;color:var(--ac);min-width:30px}
 .done{opacity:.4;text-decoration:line-through}
 .card{border:2px solid var(--ac)}
-table{width:100%;border-collapse:collapse}
-td,th{padding:6px 4px;text-align:left;border-bottom:1px solid color-mix(in srgb,var(--tx) 8%,transparent)}
 #modal{position:fixed;inset:0;background:#0007;display:none;align-items:center;justify-content:center;z-index:9;padding:16px}
 #modal>div{max-width:440px;width:100%;max-height:85vh;overflow:auto;margin:0}
 #toast{position:fixed;top:calc(10px + env(safe-area-inset-top,0px));left:50%;transform:translateX(-50%);background:var(--tx);color:var(--bg);padding:8px 14px;border-radius:10px;z-index:20;display:none}
 .tag{font-size:11px;border:1px solid var(--ac);border-radius:6px;padding:1px 6px;color:var(--ac);display:inline-block;margin:1px}
-.tag.warn{border-color:#d64550;color:#d64550}
-.warnbox{border-color:#d64550;background:color-mix(in srgb,#d64550 8%,var(--pn))}
 .gc{background:var(--cb);color:var(--ct);border:1px solid var(--cg);border-radius:16px;overflow:hidden;margin:10px 0}
 .gc select,.gc input:not([type=checkbox]),.gc button{color:var(--ct);background:var(--cb);border-color:var(--cg)}
 .cbar{display:flex;gap:8px;align-items:center;padding:8px 12px;border-bottom:1px solid var(--cg);flex-wrap:wrap}
@@ -91,18 +86,6 @@ td,th{padding:6px 4px;text-align:left;border-bottom:1px solid color-mix(in srgb,
 #ctx div{padding:7px 18px;cursor:pointer;font-size:13px}
 #ctx div:hover{background:var(--ch)}
 .sw{display:inline-block;width:22px;height:22px;border-radius:99px;cursor:pointer;border:3px solid transparent;margin:2px}
-.exam-q{background:color-mix(in srgb,var(--ac) 5%,transparent);border-left:3px solid var(--ac);padding:10px 12px;margin:10px 0;border-radius:6px}
-.exam-q p{margin:0 0 8px;font-weight:600}
-.exam-opts{display:flex;flex-direction:column;gap:6px}
-.exam-opts label{display:flex;gap:8px;align-items:center;padding:6px 8px;border-radius:6px;cursor:pointer;border:1px solid color-mix(in srgb,var(--tx) 12%,transparent)}
-.exam-opts label:hover{background:color-mix(in srgb,var(--ac) 8%,transparent)}
-.exam-opts input[type=radio]{accent-color:var(--ac)}
-.proj{border-left:4px solid var(--ac);padding-left:12px;margin:12px 0}
-.proj h3{margin:0 0 4px;font-size:15px}
-.sess-grid{display:flex;gap:3px;margin:6px 0}
-.sess-grid div{width:12px;height:12px;border-radius:3px;background:color-mix(in srgb,var(--ac) 20%,transparent)}
-.sess-grid div.on{background:var(--ac)}
-.today-card{border-left:4px solid var(--ac)}
 .tutorial-overlay{position:fixed;inset:0;background:#000a;display:flex;align-items:center;justify-content:center;z-index:50;padding:16px}
 .tutorial-box{background:var(--pn);border:2px solid var(--ac);border-radius:16px;padding:24px;max-width:420px;width:100%;box-shadow:0 20px 60px #0004}
 .tutorial-box h2{font-size:16px;letter-spacing:.08em;margin:0 0 12px}
@@ -134,6 +117,7 @@ td,th{padding:6px 4px;text-align:left;border-bottom:1px solid color-mix(in srgb,
 .assess-group-body.collapsed{display:none}
 .assess-group-body .assess-row{padding:6px 0}
 .warn-text{color:#d64550;font-size:12px;margin-top:4px}
+.streak-big{font-size:38px;font-weight:700;line-height:1;color:var(--ac)}
 </style>
 </head>
 <body>
@@ -143,25 +127,16 @@ td,th{padding:6px 4px;text-align:left;border-bottom:1px solid color-mix(in srgb,
 <div id="ctx"></div>
 <div id="tutorial"></div>
 <script>
-const $=id=>document.getElementById(id),D=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),rnd=()=>Math.random(),cl=(x,a,b)=>Math.max(a,Math.min(b,x)),pick=a=>a[rnd()*a.length|0];
+const $=id=>document.getElementById(id),D=()=>Math.floor((Date.now()-new Date().getTimezoneOffset()*6e4)/864e5),rnd=()=>Math.random(),cl=(x,a,b)=>Math.max(a,Math.min(b,x));
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const mean=a=>a.length?a.reduce((x,y)=>x+y,0)/a.length:0;
-const GT=[[95.5,'A+'],[85.5,'A'],[80.5,'A-'],[75.5,'B+'],[65.5,'B'],[60.5,'B-'],[55.5,'C+'],[45.5,'C'],[40.5,'C-'],[35.5,'D+'],[25.5,'D'],[20.5,'D-'],[15.5,'E+'],[5.5,'E'],[.5,'E-']];
-const grade=v=>{for(const[t,g]of GT)if(v>=t)return g;return'F'};
 let S,ref,tab='home',tmr,cv='week',cd=D(),cq='',csb=null,drag=null,gsT=null,edv=null;
 const fired=new Set();
-const LBL={home:'Lab',profile:'Profile',modules:'Modules',goals:'Goal Ladder',projects:'Projects',analytics:'Analytics',settings:'Settings',routine:'Routine Protocol',missions:'Missions',exam:'Entrance Exam',tag:'Subject of the Lab'};
-const ICO={home:'🧬',profile:'👤',modules:'🎓',goals:'🎯',projects:'🎨',analytics:'📈',settings:'⚙️'};
-const ATTR_DEF=[{n:'Academic',subs:['Biological Chemistry','Professional Skills','Diversity of Life','Molecular Biology']},{n:'Strength',subs:['Pull-ups','Push-ups','Skill work','Grip']},{n:'Endurance',subs:['5k time','Run streak','Long runs']},{n:'Flexibility',subs:['Hamstrings','Hips','Shoulders','Overall reach']},{n:'Focus',subs:['Deep work hours','Distraction resistance']},{n:'Discipline',subs:['Consistency streak','Follow-through']},{n:'Calm',subs:['Meditation streak','Bad habit resistance']},{n:'Craft',subs:['Art','Brawlhalla','Roblox','Writing / Notes','TikTok']}];
-const EXAM_QS={'Module 1':{q:'Current grade in this module?',opts:[['Failing',10],['3rd',30],['2:2',50],['2:1',70],['1st',85],['N/A',40]]},'Module 2':{q:'Current grade in this module?',opts:[['Failing',10],['3rd',30],['2:2',50],['2:1',70],['1st',85],['N/A',40]]},'Module 3':{q:'Current grade in this module?',opts:[['Failing',10],['3rd',30],['2:2',50],['2:1',70],['1st',85],['N/A',40]]},'Module 4':{q:'Current grade in this module?',opts:[['Failing',10],['3rd',30],['2:2',50],['2:1',70],['1st',85],['N/A',40]]},'Pull-ups':{q:'Max clean pull-ups in one set?',opts:[['0',5],['1-2',20],['3-5',35],['6-9',50],['10-14',70],['15-19',85],['20+',95]]},'Push-ups':{q:'Max clean push-ups in one set?',opts:[['0-5',5],['6-15',20],['16-25',35],['26-40',55],['41-60',75],['60+',90]]},'Skill work':{q:'Best calisthenics skill held?',opts:[['None yet',5],['Wall handstand',25],['L-sit',40],['Back lever',60],['Front lever',75],['Muscle-up',85],['Full planche',95]]},'Grip':{q:'Dead hang time?',opts:[['<15s',5],['15-30s',25],['30-60s',45],['1-2min',65],['2min+',85]]},'5k time':{q:'Fastest 5k time?',opts:[['Never run',5],['>35min',20],['30-35',35],['26-30',50],['22-26',70],['18-22',85],['<18',95]]},'Run streak':{q:'Longest run streak (days)?',opts:[['0',5],['1-3',20],['4-14',35],['15-30',55],['31-90',75],['90+',90]]},'Long runs':{q:'Longest single run?',opts:[['<2km',5],['2-5km',25],['5-10km',50],['10-15km',70],['15km+',88]]},'Hamstrings':{q:'Can you touch your toes?',opts:[['No',10],['Fingertips to shins',30],['Toes',50],['Palms to floor',70],['Palms + hold 30s',85]]},'Hips':{q:'Deep squat hold?',opts:[['Cannot squat',10],['<30s',30],['30-60s',50],['1-2min',70],['2min+ heels down',85]]},'Shoulders':{q:'Overhead mobility?',opts:[['Very limited',10],['Arms to ears only',35],['Hands overhead',55],['Wall test pass',75],['Full range + pass',90]]},'Overall reach':{q:'Overall flexibility?',opts:[['Very stiff',10],['Below average',30],['Average',50],['Above average',70],['Very flexible',88]]},'Deep work hours':{q:'Hours of deep work per day?',opts:[['0',5],['0.5-1',25],['1-2',40],['2-4',60],['4-6',80],['6+',92]]},'Distraction resistance':{q:'How well do you resist distraction?',opts:[['Very poorly',10],['Poorly',30],['Average',50],['Well',70],['Very well',88]]},'Consistency streak':{q:'Longest habit streak?',opts:[['Never tracked',5],['1-3 days',20],['4-14',35],['15-30',55],['31-90',75],['90+',90]]},'Follow-through':{q:'How often do you finish what you start?',opts:[['Rarely',10],['Sometimes',30],['Half the time',50],['Usually',70],['Almost always',88]]},'Meditation streak':{q:'Current meditation practice?',opts:[['None',5],['Tried once',20],['Occasional',40],['Most days',65],['Daily',85],['Daily 20min+',95]]},'Bad habit resistance':{q:'How well do you resist bad habits?',opts:[['Very poorly',10],['Poorly',30],['Average',50],['Well',70],['Very well',88]]},'Art':{q:'Your art skill level?',opts:[['Never drawn',5],['Beginner',25],['Hobbyist',45],['Intermediate',65],['Advanced',85],['Pro',95]]},'Brawlhalla':{q:'Current Brawlhalla rank?',opts:[['Bronze',10],['Silver',30],['Gold',50],['Platinum',70],['Diamond',88],['Masters',95]]},'Roblox':{q:'Roblox dev experience?',opts:[['Never',5],['Followed a tutorial',25],['Made one game',45],['Multiple prototypes',65],['Published + players',85]]},'Writing / Notes':{q:'Note-taking / writing practice?',opts:[['Never',5],['Rarely',25],['Sometimes',45],['Regularly',65],['Daily',85]]},'TikTok':{q:'Content creation experience?',opts:[['Never posted',5],['Tried once',25],['Occasional posts',45],['Regular posts',65],['Growing audience',85]]}};
+const LBL={home:'Calendar',profile:'Profile',modules:'Modules',analytics:'Analytics',settings:'Settings'};
+const ICO={home:'📅',profile:'👤',modules:'🎓',analytics:'📈',settings:'⚙️'};
 const CT0={gb:'#1a73e8',cb:'#ffffff',ct:'#202124',cg:'#e0e0e0',cn:'#ea4335'};
 const WD=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
 const wd=d=>(d+4)%7;
-const flat=()=>S.attrs.flatMap(a=>a.subs);
-const subOf=id=>flat().find(s=>s.id==id);
-const attrV=a=>mean(a.subs.map(s=>s.v));
-const ovr=()=>mean(S.attrs.map(attrV));
-const supp=()=>Math.min(.3,streak()*.02);
 const dn=ms=>Math.floor((ms-new Date(ms).getTimezoneOffset()*6e4)/864e5);
 const dt=d=>new Date(d*864e5);
 const midn=d=>{const x=dt(d);return new Date(x.getUTCFullYear(),x.getUTCMonth(),x.getUTCDate()).getTime()};
@@ -174,186 +149,68 @@ const wsd=d=>d-((wd(d)+6)%7);
 const shiftD=(ms,k)=>{const x=new Date(ms);x.setDate(x.getDate()+k);return x.getTime()};
 const MN='January,February,March,April,May,June,July,August,September,October,November,December'.split(',');
 const EVC=['#d50000','#e67c73','#f4511e','#f6bf26','#33b679','#0b8043','#039be5','#3f51b5','#7986cb','#8e24aa','#616161'];
-const TY=['habit','mission','other'];
 const RP=['none','daily','weekly','monthly','yearly'];
 const RM=[[-1,'No reminder'],[0,'At start'],[10,'10 minutes before'],[30,'30 minutes before'],[60,'1 hour before'],[1440,'1 day before']];
-const rg=()=>.7+rnd()*.7;
 const LOG=(k,m)=>{S.log.push({d:D(),k,m});S.log=S.log.slice(-400)};
 const toast=m=>{const t=$('toast');t.textContent=m;t.style.display='block';clearTimeout(t._h);t._h=setTimeout(()=>t.style.display='none',2800)};
 const L=k=>esc(S.cfg.L[k]??LBL[k]??k);
 function theme(){const r=document.documentElement.style,c=S.cfg;['bg','ac','tx','pn'].forEach(k=>r.setProperty('--'+k,c[k]));document.title=c.name;themeCal()}
 function themeCal(){const r=document.documentElement.style,t=S.cfg.ct||CT0;['gb','cb','ct','cg','cn'].forEach(k=>r.setProperty('--'+k,t[k]));r.setProperty('--ch','color-mix(in srgb,'+t.ct+' 7%,'+t.cb+')');r.setProperty('--cm','color-mix(in srgb,'+t.ct+' 55%,'+t.cb+')')}
-function mkAttrs(){return ATTR_DEF.map((a,i)=>({id:'a'+i,n:a.n,subs:a.subs.map((n,j)=>({id:'s'+i+'_'+j,n,v:0,g:rg(),idle:0}))}))}
-function mkCal(R,rt){const cals=[{id:'c_habit',n:'Habits',color:'#0b8043',on:1},{id:'c_mission',n:'Missions',color:'#1a73e8',on:1},{id:'c_other',n:'Personal',color:'#8e24aa',on:1}];const t0=midn(D());return{cals,ev:(R||[]).map((r,i)=>{const[hh,mm]=(r.time||'09:00').split(':').map(Number),s=t0+(hh*60+(mm||0))*6e4,all=(r.days||[0,1,2,3,4,5,6]).length==7,done={};if(rt)Object.keys(rt).forEach(d=>{if(rt[d].includes(r.id))done[d]=1});return{id:'e'+i+'_'+Date.now(),t:r.n,s,e:s+30*6e4,ad:0,cal:'c_habit',color:r.color||'',loc:'',desc:r.note||'',rep:all?'daily':'weekly',wk:all?[]:(r.days||[]).slice(),rem:10,guests:'',type:'habit',done,paid:{},ex:[],st:r.st||'fixed',tg:r.tg||'',lk:r.lk||'maint',sub:r.sub||'s3_0'}})}};
-const NEW_ROUTINE=[{n:'Wake + hydrate',time:'06:30',days:[0,1,2,3,4,5,6],color:'#1f9d55',st:'fixed',lk:'maint',sub:'s3_0'},{n:'Study block (degree)',time:'09:00',days:[0,1,2,3,4],color:'#3a9ad9',st:'fixed',lk:'',sub:'s0_0'},{n:'Movement (calisthenics / run)',time:'07:00',days:[1,3,5],color:'#e0b020',st:'floating',lk:'',sub:'s1_0'},{n:'Mobility / flexibility',time:'20:00',days:[0,2,4,6],color:'#9b6bd8',st:'floating',lk:'',sub:'s3_0'},{n:'Deep work / Craft',time:'14:00',days:[0,1,2,3,4,5,6],color:'#d64550',st:'floating',lk:'',sub:'s7_0'},{n:'Read / educational input',time:'21:00',days:[0,1,2,3,4,5,6],color:'#5a6b60',st:'floating',lk:'',sub:'s0_1'},{n:'Meditate',time:'22:00',days:[0,1,2,3,4,5,6],color:'#2e8b8b',st:'fixed',lk:'',sub:'s6_0'},{n:'Plan tomorrow + sleep target',time:'22:30',days:[0,1,2,3,4,5,6],color:'#8e24aa',st:'fixed',lk:'maint',sub:'s3_0'}];
-function mkModules(){
-  return[
-    {id:'mod1',n:'Biological Chemistry',type:'Year-long',credits:20,locked:0,target:70,assessments:[
-      {id:'a1',n:'Exam 1',w:35,score:null,due:null},
-      {id:'a2',n:'Exam 2',w:35,score:null,due:null},
-      {id:'a3',n:'Lab assessment',w:10,score:null,due:null},
-      {id:'g1',n:'Coursework 1 — Autumn quizzes',w:10,group:1,subs:[
-        {id:'a4',n:'Quiz 1',w:2.5,score:null},{id:'a5',n:'Quiz 2',w:2.5,score:null},
-        {id:'a6',n:'Quiz 3',w:2.5,score:null},{id:'a7',n:'Quiz 4',w:2.5,score:null}
-      ]},
-      {id:'g2',n:'Coursework 2 — Spring quizzes',w:10,group:1,subs:[
-        {id:'a8',n:'Quiz 5',w:2.5,score:null},{id:'a9',n:'Quiz 6',w:2.5,score:null},
-        {id:'a10',n:'Quiz 7',w:2.5,score:null},{id:'a11',n:'Quiz 8',w:2.5,score:null}
-      ]}
-    ]},
-    {id:'mod2',n:'Professional Skills',type:'Year-long',credits:20,locked:0,target:70,assessments:[
-      {id:'b1',n:'Group literature review',w:25,score:null,due:null},
-      {id:'b2',n:'Group presentation',w:25,score:null,due:null},
-      {id:'g3',n:'Regular quizzes',w:20,group:1,subs:[
-        {id:'b3',n:'Blackboard Quiz 1',w:2.5,score:null},{id:'b4',n:'Blackboard Quiz 2',w:2.5,score:null},
-        {id:'b5',n:'Blackboard Quiz 3',w:2.5,score:null},{id:'b6',n:'Blackboard Quiz 4',w:2.5,score:null},
-        {id:'b7',n:'Math Quiz',w:10,score:null}
-      ]},
-      {id:'b8',n:'Data science task',w:30,score:null,due:null}
-    ]},
-    {id:'mod3',n:'Diversity of Life',type:'Sem 1',credits:20,locked:0,target:70,assessments:[
-      {id:'c1',n:'Evaluative Conversation',w:60,score:null,due:null},
-      {id:'c2',n:'Course Test',w:40,score:null,due:null}
-    ]},
-    {id:'mod4',n:'Molecular Biology',type:'Sem 1',credits:20,locked:0,target:70,assessments:[
-      {id:'d1',n:'In-Class Data Analysis Test',w:20,score:null,due:null},
-      {id:'d2',n:'Practical Skills Test',w:20,score:null,due:null},
-      {id:'g4',n:'MCQ Tests',w:10,group:1,subs:[
-        {id:'d3',n:'MCQ Test 1',w:2,score:null},{id:'d4',n:'MCQ Test 2',w:2,score:null},
-        {id:'d5',n:'MCQ Test 3',w:2,score:null},{id:'d6',n:'MCQ Test 4',w:2,score:null},
-        {id:'d7',n:'MCQ Test 5',w:2,score:null}
-      ]},
-      {id:'d8',n:'Final Exam',w:50,score:null,due:null}
-    ]}
-  ];
-}
-function fresh(){const A=mkAttrs();const R=NEW_ROUTINE.map((r,i)=>({id:'r'+i,...r}));const f={v:11,exam:0,name:'Mutant',title:'Nobody',quote:"The relentless voice won't stop bothering me.",day:D(),attrs:A,routine:R,rt:{},rtb:{},best:0,missions:[],goals:[],projects:[],modules:mkModules(),degreeTarget:70,gd:{},shield:0,boost:0,hs:[],notes:[],log:[],adh:{},eff:0,diff:1,heat:0,noteDay:0,made:Date.now(),lastBackup:0,tutorialDone:0,monthSnaps:[],cfg:{name:'The Mental Lab',bg:'#f4f6f2',ac:'#1f9d55',tx:'#1d2a22',pn:'#ffffff',L:{...LBL},ct:{...CT0},decay:1.5,fp:85}};f.cal=mkCal(R);return f}
+function mkCal(rt){const cals=[{id:'c_habit',n:'Habits',color:'#0b8043',on:1},{id:'c_task',n:'Tasks',color:'#1a73e8',on:1},{id:'c_other',n:'Personal',color:'#8e24aa',on:1}];return{cals,ev:[]}}
+const DEF_ETYPES=[{id:'et_habit',n:'Habit',streak:1},{id:'et_task',n:'Task',streak:1},{id:'et_other',n:'Other',streak:0}];
+function fresh(){const f={v:12,name:'Mutant',title:'Nobody',quote:"The quiet hours are the loudest.",day:D(),rt:{},rtb:{},best:0,modules:[],degreeTarget:70,hs:[],log:[],made:Date.now(),lastBackup:0,tutorialDone:0,monthSnaps:[],cfg:{name:'Mr Calendar',bg:'#f4f6f2',ac:'#1f9d55',tx:'#1d2a22',pn:'#ffffff',L:{...LBL},ct:{...CT0},etypes:DEF_ETYPES.map(e=>({...e}))}};f.cal=mkCal();return f}
 function migrate(){const f=fresh();
-if(S.v<11){const oldL={...(S.cfg?.L||{})},oldBg=S.cfg?.bg,oldAc=S.cfg?.ac,oldTx=S.cfg?.tx,oldPn=S.cfg?.pn,oldCt=S.cfg?.ct;
+if(S.v<12){
 for(const k in f)if(S[k]===undefined)S[k]=f[k];for(const k in f.cfg)if(S.cfg[k]===undefined)S.cfg[k]=f.cfg[k];
-S.cfg.L={...f.cfg.L,...oldL};if(oldBg)S.cfg.bg=oldBg;if(oldAc)S.cfg.ac=oldAc;if(oldTx)S.cfg.tx=oldTx;if(oldPn)S.cfg.pn=oldPn;if(oldCt)S.cfg.ct=oldCt;
-if(!S.attrs||!S.attrs.length){S.attrs=mkAttrs()}else{S.attrs.forEach(a=>{a.subs.forEach(s=>{s.idle??=0;s.g??=rg()})})}
-S.projects??=[];S.goals.forEach(g=>{g.why??='';g.endOnPhase??=0});S.monthSnaps??=[];S.tutorialDone??=0;
-S.modules??=mkModules();S.degreeTarget??=70;
-S.routine.forEach((r,i)=>{r.st??='fixed';r.lk??='';r.sub??='s3_0'});
-if(S.cal?.ev)S.cal.ev.forEach(e=>{e.ex??=[];e.st??='fixed';e.tg??='';e.lk??=''});
-if(S.cal&&S.cal.cals)S.cal.cals=S.cal.cals.filter(c=>['c_habit','c_mission','c_other'].includes(c.id));
-delete S.npcs;delete S.rival;delete S.beat;delete S.phase;delete S.phaseHistory;delete S.legacy;delete S.season;
-delete S.trial;delete S.trials;delete S.offer;delete S.scars;delete S.shop;delete S.pts;delete S.gen;delete S.room;
-if(S.cfg){delete S.cfg.gen;delete S.cfg.phase;delete S.cfg.cut;delete S.cfg.sn;delete S.cfg.fl;}
-S.v=11;LOG('system','Migrated: modules and academic subs now linked by ID.')}
-if(!S.cal&&S.routine)S.cal=mkCal(S.routine,S.rt);
-linkAcadSubs();S.goals.forEach(initGoal);syncDegreeSub()}
-function linkAcadSubs(){const acad=S.attrs.find(a=>a.n==='Academic');if(!acad)return;
-const modIds=new Set(S.modules.map(m=>m.id));
-acad.subs.forEach(s=>{if(s.mod&&modIds.has(s.mod))return;
-const m=S.modules.find(x=>x.n===s.n)||S.modules.find(x=>!acad.subs.some(o=>o.mod===x.id));
-if(m){s.mod=m.id;if(!s.n||s.n==='New sub')s.n=m.n}});
-S.modules.forEach(m=>{if(!acad.subs.some(s=>s.mod===m.id))acad.subs.push({id:'s'+Date.now()+Math.floor(rnd()*999),n:m.n,v:0,g:1,idle:0,mod:m.id})})}
-function monthSnapshot(){const today=new Date(),dom=today.getUTCDate(),monthKey=today.getUTCFullYear()+'-'+pad(today.getUTCMonth()+1);if(dom!==1)return;if(S.monthSnaps.some(m=>m.k===monthKey))return;S.monthSnaps.push({k:monthKey,d:D(),ov:ovr(),at:S.attrs.map(attrV),rk:0,st:streak()});S.monthSnaps=S.monthSnaps.slice(-36);LOG('snapshot','Monthly snapshot recorded: '+monthKey)}
+if(!S.cfg.etypes||!S.cfg.etypes.length)S.cfg.etypes=DEF_ETYPES.map(e=>({...e}));
+if(S.cal&&S.cal.ev)S.cal.ev.forEach(e=>{if(!e.etype){e.etype=e.type==='habit'?'et_habit':e.type==='mission'?'et_task':e.type==='other'?'et_other':'et_other'}});
+if(S.cal&&S.cal.cals)S.cal.cals=S.cal.cals.filter(c=>['c_habit','c_task','c_other'].includes(c.id));
+['attrs','goals','projects','missions','diff','heat','notes','eff','shield','boost','trials','trial','offer','scars','shop','pts','gen','room','npcs','rival','beat','phase','phaseHistory','legacy','season','exam','routine','gd'].forEach(k=>{delete S[k]});
+if(S.cfg){['gen','phase','cut','sn','fl','decay','fp'].forEach(k=>{delete S.cfg[k]})}
+S.v=12;LOG('system','Migrated to Mr Calendar. Stats, goals, projects, exam removed.')}
+if(!S.cal)S.cal=mkCal(S.rt);if(!S.cfg.etypes||!S.cfg.etypes.length)S.cfg.etypes=DEF_ETYPES.map(e=>({...e}))}
+function etOf(id){return S.cfg.etypes.find(e=>e.id===id)||S.cfg.etypes[0]}
+function etStreak(ev){const t=etOf(ev.etype);return t?t.streak:0}
+function monthSnapshot(){const today=new Date(),dom=today.getUTCDate(),monthKey=today.getUTCFullYear()+'-'+pad(today.getUTCMonth()+1);if(dom!==1)return;if(S.monthSnaps.some(m=>m.k===monthKey))return;S.monthSnaps.push({k:monthKey,d:D(),st:streak(),best:S.best,rate:frac(D())});S.monthSnaps=S.monthSnaps.slice(-36);LOG('snapshot','Monthly snapshot recorded: '+monthKey)}
 function moduleGradedAvg(m){if(!m.assessments||!m.assessments.length)return null;let earned=0,totalWeight=0;m.assessments.forEach(a=>{if(a.group){a.subs.forEach(s=>{if(s.score!=null){earned+=s.score*s.w;totalWeight+=s.w}})}else if(a.score!=null){earned+=a.score*a.w;totalWeight+=a.w}});return totalWeight>0?earned/totalWeight:null}
 function modulePercentGraded(m){if(!m.assessments||!m.assessments.length)return 0;let total=0,graded=0;m.assessments.forEach(a=>{if(a.group){a.subs.forEach(s=>{total+=s.w;if(s.score!=null)graded+=s.w})}else{total+=a.w;if(a.score!=null)graded+=a.w}});return total>0?graded/total*100:0}
 function moduleStatus(m){if(m.locked)return'locked';const c=moduleGradedAvg(m);if(c==null)return'none';let graded=0,total=0;m.assessments.forEach(a=>{if(a.group){a.subs.forEach(s=>{total++;if(s.score!=null)graded++})}else{total++;if(a.score!=null)graded++}});if(graded===0)return'none';if(graded<total)return'partial';return'complete'}
 function degreeCurrent(){const active=S.modules.filter(m=>!m.locked);let earned=0,denom=0;active.forEach(m=>{const g=moduleGradedAvg(m);if(g!=null){earned+=g*m.credits;denom+=m.credits}});return denom>0?earned/denom:null}
 function degreeCompleted(){const all=S.modules.filter(m=>!m.locked);let gradedWeight=0,totalWeight=0;all.forEach(m=>{if(!m.assessments)return;let mGraded=0,mTotal=0;m.assessments.forEach(a=>{if(a.group){a.subs.forEach(s=>{mTotal+=s.w;if(s.score!=null)mGraded+=s.w})}else{mTotal+=a.w;if(a.score!=null)mGraded+=a.w}});if(mTotal>0){gradedWeight+=mGraded*m.credits/mTotal;totalWeight+=m.credits}});return totalWeight>0?gradedWeight/totalWeight*100:0}
-function syncDegreeSub(){const acad=S.attrs.find(a=>a.n==='Academic');if(!acad)return;acad.subs.forEach(s=>{const mod=s.mod?S.modules.find(m=>m.id===s.mod):S.modules.find(m=>m.n===s.n);if(mod){s.mod=mod.id;const g=moduleGradedAvg(mod);if(g!=null)s.v=cl(g,0,99)}else{s.v=0}})}
-function step(){const t=D();let k=Math.min(t-S.day,60),c=S.day;
-while(k-->0){S.attrs.forEach(a=>a.subs.forEach(s=>{if(a.n==='Academic')return;if(++s.idle>14){if(S.shield>0)S.shield--;else s.v=Math.max(s.fl||1,s.v-S.cfg.decay/7)}}));
-{const sl=occs(c,c).filter(o=>o.ev.type=='habit'||o.ev.type=='mission'),dd_=sl.filter(o=>o.ev.done[c]).length;if(sl.length){S.adh[c]=[sl.length,dd_];if(dd_<sl.length)LOG('deviation',dd_+'/'+sl.length+' scheduled slots completed on '+new Date(c*864e5).toISOString().slice(5,10))}}
-S.goals.forEach(g=>{const m=g.ms?.find(x=>!x.done);if(m?.mis&&t>=m.mis.begun+m.mis.weeks*7){m.mis.begun=t;LOG('mission',g.n+': mission window ended. Re-planned.')}});c++}
-S.day=t;monthSnapshot();syncDegreeSub()}
-function snap(){if(!S.exam)return;const e={d:D(),ov:ovr(),a:S.attrs.map(attrV),r:frac(D())},l=S.hs.at(-1);if(l&&l.d==D())S.hs[S.hs.length-1]=e;else S.hs.push(e);S.hs=S.hs.slice(-400)}
+function step(){const t=D();S.day=t;monthSnapshot()}
+function snap(){const e={d:D(),r:frac(D())},l=S.hs.at(-1);if(l&&l.d==D())S.hs[S.hs.length-1]=e;else S.hs.push(e);S.hs=S.hs.slice(-400)}
 const save=(()=>{let h;return()=>{snap();clearTimeout(h);h=setTimeout(async()=>{try{localStorage.setItem('ml',JSON.stringify(S))}catch(e){}try{ref&&await ref.set({j:JSON.stringify(S)})}catch(e){}},400)}})();
-function defAn(g){return[[20,0],[50,.4],[70,.65],[85,.85],[95,1]].map(a=>[a[0],+(g.start+(g.target-g.start)*a[1]).toFixed(1)])}
-function scoreOf(an,v){const a=[...an].sort((x,y)=>x[0]-y[0]);for(let i=0;i<a.length-1;i++){const[s1,v1]=a[i],[s2,v2]=a[i+1];if(v1!=v2&&(v-v1)*(v-v2)<=0)return s1+(s2-s1)*(v-v1)/(v2-v1)}const L=a.at(-1),hi=L[1]>=a[0][1]?v>L[1]:v<L[1];return hi?Math.min(99,L[0]+Math.abs(v-L[1])/Math.abs(L[1]||1)*10):Math.max(1,a[0][0]*.6)}
-function initGoal(g){g.an??=defAn(g);g.peak??=0;g.sc??=null;g.eff??=0;g.why??='';g.endOnPhase??=0;if(!g.ms){const n=g.mn||4,up=g.target>=g.start;g.ms=Array.from({length:n},(_,i)=>({id:'m'+i+Date.now().toString(36),v:Math.round(g.start+(g.target-g.start)*(i+1)/n),done:0,mis:null}));g.ms.forEach(m=>{if(up?g.cur>=m.v:g.cur<=m.v)m.done=D()});const m=g.ms.find(x=>!x.done);if(m)activate(g,m)}}
-function activate(g,m){const gap=Math.abs(m.v-g.cur),per=Math.abs(g.target-g.start)/Math.max(1,g.weeks)||1,t=midn(D())+18*36e5;m.mis={weeks:cl(Math.round(gap/per),1,4),begun:D()};
-S.cal.ev.push({id:'a'+Date.now().toString(36)+m.id,t:'Train: '+g.n,s:t,e:t+45*6e4,ad:0,cal:'c_mission',color:'',loc:'',desc:'Toward '+m.v+' '+g.unit,rep:'weekly',wk:[1,3,5],rem:10,guests:'',type:'mission',st:'fixed',tg:'Session toward '+m.v+' '+g.unit,lk:g.id,auto:1,mid:m.id,done:{},paid:{},ex:[],sub:g.sub})}
-function purge(m){S.cal.ev=S.cal.ev.filter(e=>!(e.auto&&e.mid==m.id))}
-function resub(id){const acad=S.attrs.find(a=>a.n==='Academic');if(acad&&acad.subs.some(s=>s.id==id)){syncDegreeSub();return}
-const s=subOf(id),gs=S.goals.filter(x=>x.sub==id&&x.sc!=null);if(s&&gs.length){s.t=mean(gs.map(x=>x.sc));s.v=cl(s.t,1,99);s.fl=mean(gs.map(x=>x.peak))*S.cfg.fp/100;s.idle=0}}
-function logGoal(id){const g=S.goals.find(x=>x.id==id),v=parseFloat($('gv'+id).value);if(isNaN(v))return;const up=g.target>=g.start,nb=up?v>g.best:v<g.best;g.cur=v;if(nb)g.best=v;
-g.sc=scoreOf(g.an,v);g.peak=Math.max(g.peak||0,g.sc);g.eff=(g.eff||0)+5;S.eff+=5;resub(g.sub);let adv=0;
-for(const m of g.ms){if(m.done)continue;if(up?v>=m.v:v<=m.v){m.done=D();adv++;purge(m);LOG('milestone',g.n+': milestone '+m.v+' '+g.unit+' reached.')}else break}
-const nx=g.ms.find(m=>!m.done);if(nx){if(!nx.mis||adv)activate(g,nx)}else if(adv)LOG('goal','Goal achieved: '+g.n);
-LOG('benchmark',g.n+': '+v+' '+g.unit+' = score '+g.sc.toFixed(0));toast('Test logged: score '+g.sc.toFixed(0));save();render()}
-function setAn(i,str){const p=str.split(',').map(x=>x.split(':').map(Number)).filter(q=>q.length==2&&!q.some(isNaN));if(p.length<2)return toast('Need at least 2 anchors like 50:8, 70:15');const g=S.goals[i];g.an=p;if(g.sc!=null){g.sc=scoreOf(g.an,g.cur);g.peak=Math.max(g.peak,g.sc);resub(g.sub)}save();render()}
-function rebuild(i){const g=S.goals[i];S.cal.ev=S.cal.ev.filter(e=>!(e.auto&&g.ms?.some(m=>m.id==e.mid)));g.ms=null;initGoal(g);save();render()}
 const evOf=id=>S.cal.ev.find(x=>x.id==id),calOf=ev=>S.cal.cals.find(c=>c.id==ev.cal),vis=ev=>calOf(ev)?.on!==0,ecol=ev=>ev.color||calOf(ev)?.color||'#1a73e8';
-function occs(a,b){const r=[];S.cal.ev.forEach(ev=>{if(ev.st=='anchored'&&evOf(ev.anc))return;const bd=dn(ev.s),du=ev.e-ev.s,x=dt(bd),span=ev.ad?Math.max(0,dn(ev.e-1)-bd):0,tod=ev.ad?0:ev.s-midn(bd);
-if(!ev.rep||ev.rep=='none'){if(bd+span>=a&&bd<=b)r.push({ev,d:bd,span,s:ev.s,e:ev.e});return}
-for(let d=Math.max(bd,a-span);d<=b;d++){const y=dt(d),ok=ev.rep=='daily'||(ev.rep=='weekly'&&(ev.wk&&ev.wk.length?ev.wk.includes(wd(d)):(d-bd)%7==0))||(ev.rep=='monthly'&&y.getUTCDate()==x.getUTCDate())||(ev.rep=='yearly'&&y.getUTCDate()==x.getUTCDate()&&y.getUTCMonth()==x.getUTCMonth());if(ok&&!(ev.ex||[]).includes(d)){const s=midn(d)+tod;r.push({ev,d,span,s,e:s+du})}}});return r}
-function splitOcc(ev,d){const n=JSON.parse(JSON.stringify(ev)),tod=ev.s-midn(dn(ev.s)),du=ev.e-ev.s;ev.ex=[...(ev.ex||[]),d];n.id='e'+Date.now()+Math.floor(rnd()*99);n.rep='none';n.wk=[];n.ex=[];n.auto=0;n.s=ev.ad?midn(d):midn(d)+tod;n.e=n.s+du;n.done=ev.done[d]?{[d]:1}:{};n.paid=ev.paid[d]?{[d]:1}:{};S.cal.ev.push(n);return n}
-function frac(d){const o=occs(d,d).filter(o=>o.ev.type=='habit'||o.ev.type=='mission');return o.length?o.filter(o=>o.ev.done[d]).length/o.length:0}
+function occs(a,b){const r=[];S.cal.ev.forEach(ev=>{const bd=dn(ev.s),du=ev.e-ev.s,x=dt(bd),tod=ev.ad?0:ev.s-midn(bd);
+if(!ev.rep||ev.rep=='none'){if(bd>=a&&bd<=b)r.push({ev,d:bd,s:ev.s,e:ev.e});return}
+for(let d=Math.max(bd,a);d<=b;d++){const y=dt(d),ok=ev.rep=='daily'||(ev.rep=='weekly'&&(ev.wk&&ev.wk.length?ev.wk.includes(wd(d)):(d-bd)%7==0))||(ev.rep=='monthly'&&y.getUTCDate()==x.getUTCDate())||(ev.rep=='yearly'&&y.getUTCDate()==x.getUTCDate()&&y.getUTCMonth()==x.getUTCMonth());if(ok&&!(ev.ex||[]).includes(d)){const s=midn(d)+tod;r.push({ev,d,s,e:s+du})}}});return r}
+function splitOcc(ev,d){const n=JSON.parse(JSON.stringify(ev)),tod=ev.s-midn(dn(ev.s)),du=ev.e-ev.s;ev.ex=[...(ev.ex||[]),d];n.id='e'+Date.now()+Math.floor(rnd()*99);n.rep='none';n.wk=[];n.ex=[];n.s=ev.ad?midn(d):midn(d)+tod;n.e=n.s+du;n.done=ev.done[d]?{[d]:1}:{};S.cal.ev.push(n);return n}
+function streakSlots(d){return occs(d,d).filter(o=>etStreak(o.ev))}
+function frac(d){const o=streakSlots(d);return o.length?o.filter(o=>o.ev.done[d]).length/o.length:0}
 function streak(){let d=D(),n=0;if(frac(d)<1)d--;while(frac(d)>=1&&n<3000){n++;d--}return n}
-function gain(s,xp){const g=xp*.2*s.g*Math.pow(Math.max(.02,1-s.v/100),1.5)*S.diff*(1+supp())*(S.boost?2:1);S.boost=0;const cap=s.t!=null?s.t+3:99;s.v=Math.min(99,Math.max(s.v,Math.min(s.v+g,cap)));s.idle=0;return g}
-function markDone(id,d){const ev=evOf(id);if(!ev||d>D())return;if(ev.done[d])delete ev.done[d];else{ev.done[d]=1;
-if(!ev.paid[d]){ev.paid[d]=1;const w=ev.type=='mission'?3:1,gl=S.goals.find(x=>x.id==ev.lk);S.eff+=w;if(gl)gl.eff=(gl.eff||0)+w;
-if(ev.type=='mission'){const s=subOf(ev.sub),g=s?gain(s,5):0;LOG('mission',ev.t+(s?' | '+s.n+' +'+g.toFixed(2):''));toast(s?s.n+' +'+g.toFixed(2):'Done')}}}
-if(ev.type=='habit'&&frac(d)>=1&&!S.rtb[d]){S.rtb[d]=1;const s=subOf('s3_0')||flat()[0];if(s){s.v=Math.min(99,s.v+.35);s.idle=0}const n=streak();S.best=Math.max(S.best,n);LOG('routine','Routine complete. Streak '+n+'.');toast('Routine complete. Streak '+n)}
-$('modal').style.display='none';save();drawCal()}
-function dMis(id){const m=S.missions.find(x=>x.id==id);if(!m||m.done===D())return;const s=subOf(m.sub);let g=s?gain(s,6):0;m.done=D();LOG('mission',m.n+(s?' | '+s.n+' +'+g.toFixed(2):''));toast(s?s.n+' +'+g.toFixed(2):'Done');save();render()}
-function projectSession(id){const p=S.projects.find(x=>x.id==id);if(!p)return;const s=subOf(p.sub);p.sessions=(p.sessions||[]).concat([D()]);p.total=(p.total||0)+1;if(s){s.v=Math.min(99,s.v+.2);s.idle=0}LOG('project',p.n+' session logged. Total: '+p.total);save();render()}
-function projMilestone(pid,i){const p=S.projects.find(x=>x.id==pid);if(!p)return;p.milestones[i].done=D();const s=subOf(p.sub);if(s){s.v=Math.min(99,s.v+1);s.idle=0}LOG('project',p.n+': milestone "'+p.milestones[i].n+'" reached.');save();render()}
-function radar(arrs,names,sz=220){const n=names.length,c=sz/2,R=c-36,pt=(i,r)=>{const a=-Math.PI/2+i*2*Math.PI/n;return[c+Math.cos(a)*r,c+Math.sin(a)*r]},ring=f=>names.map((_,i)=>pt(i,R*f).join(',')).join(' ');
-return`<svg viewBox="0 0 ${sz} ${sz}" width="100%" style="max-width:260px"><g fill="none" stroke="var(--tx)" opacity=".18"><polygon points="${ring(1)}"/><polygon points="${ring(.66)}"/><polygon points="${ring(.33)}"/></g>${arrs.map((v,k)=>`<polygon points="${v.map((x,i)=>pt(i,R*x/100).join(',')).join(' ')}" fill="var(--ac)" fill-opacity="${k?0:.25}" stroke="var(--ac)" stroke-width="2" ${k?'stroke-dasharray="4 3" opacity=".6"':''}/>`).join('')}${names.map((x,i)=>{const[p,q]=pt(i,R+17);return`<text x="${p}" y="${q}" fill="var(--tx)" font-size="9" text-anchor="middle" dominant-baseline="middle">${esc(x.slice(0,12))}</text>`}).join('')}</svg>`}
+function markDone(id,d){const ev=evOf(id);if(!ev||d>D())return;if(ev.done[d])delete ev.done[d];else{ev.done[d]=1;if(!S.rtb[d]&&frac(d)>=1){S.rtb[d]=1;const n=streak();S.best=Math.max(S.best,n);LOG('routine','Day complete. Streak '+n+'.');toast('Day complete. Streak '+n)}}
+$('modal').style.display='none';save();drawCal();if(tab=='profile'||tab=='analytics')render()}
 function chart(ser,h=120){const n=Math.max(...ser.map(s=>s.d.length));if(n<2)return'<div class="sub">Not enough data yet.</div>';const W=300;return`<svg viewBox="0 0 ${W} ${h}" width="100%" style="background:color-mix(in srgb,var(--tx) 4%,transparent);border-radius:10px">${ser.map(s=>`<polyline fill="none" stroke="${s.c}" stroke-width="2" points="${s.d.map((v,i)=>[(i*W/(n-1)).toFixed(1),(h-4-cl(v,0,100)/100*(h-8)).toFixed(1)].join(',')).join(' ')}"/>`).join('')}</svg>`}
 function up(p,v,num){const k=p.split('.');let o=S;k.slice(0,-1).forEach(x=>o=o[x]);o[k.at(-1)]=num?+v:v;theme();save();render()}
-const del=(arr,i)=>{S[arr].splice(i,1);save();render()},delSub=(a,i)=>{S.attrs[a].subs.splice(i,1);save();render()},addSub=a=>{S.attrs[a].subs.push({id:'s'+Date.now(),n:'New sub',v:0,g:1,idle:0});save();render()};
-function add(w){const u='x'+Date.now();if(w=='attrs')S.attrs.push({id:u,n:'New attribute',subs:[{id:u+'s',n:'New sub',v:0,g:1,idle:0}]});
-if(w=='routine')S.routine.push({id:u,n:'New block',note:'',color:'#1f9d55',time:'09:00',days:[0,1,2,3,4,5,6],st:'fixed',lk:'',sub:'s3_0'});
-if(w=='missions')S.missions.push({id:u,n:'New mission',sub:flat()[0]?.id,xp:5,pts:5,done:null});save();render()}
-function addGoalPrompt(){const subs=flat();
-$('mb').innerHTML=`<h2>New goal</h2>
-<div class="row"><span class="f">Name</span><input id="ng_n" placeholder="e.g. 20 pull-ups" style="flex:1"></div>
-<div class="row"><span class="f">Sub-attribute</span><select id="ng_sub">${subs.map(s=>`<option value="${s.id}">${esc(s.n)}</option>`).join('')}</select></div>
-<div class="row"><span class="f">Unit</span><input id="ng_unit" placeholder="reps / min / % / days" style="width:140px"></div>
-<div class="row"><span class="f">From</span><input id="ng_start" type="number" step="any" value="1" style="width:90px"><span class="sub" style="margin:0 8px">to</span><input id="ng_target" type="number" step="any" value="10" style="width:90px"></div>
-<div class="row"><span class="f">Weeks</span><input id="ng_weeks" type="number" value="8" style="width:80px"><span class="sub" style="margin-left:8px">milestones</span><input id="ng_mn" type="number" value="4" style="width:60px;margin-left:6px"></div>
-<div class="row"><span class="f">Why</span><input id="ng_why" placeholder="Because..." style="flex:1"></div>
-<div class="row"><span class="f">End on phase advance?</span><input type="checkbox" id="ng_end"></div>
-<p><button class="b" onclick="addGoalConfirm()">Create</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
-function addGoalConfirm(){const n=$('ng_n').value.trim();if(!n)return toast('Name required');
-const g={id:'x'+Date.now(),n,sub:$('ng_sub').value,unit:$('ng_unit').value||'reps',start:+$('ng_start').value||1,target:+$('ng_target').value||10,weeks:+$('ng_weeks').value||8,mn:+$('ng_mn').value||4,begun:D(),cur:+$('ng_start').value||1,best:+$('ng_start').value||1,why:$('ng_why').value||'',endOnPhase:$('ng_end').checked?1:0};
-S.goals.push(g);initGoal(g);save();$('modal').style.display='none';render();toast('Goal created: '+n)}
-function addProjectPrompt(){const subs=flat();
-$('mb').innerHTML=`<h2>New project</h2>
-<div class="row"><span class="f">Name</span><input id="np_n" placeholder="e.g. Brawlhalla" style="flex:1"></div>
-<div class="row"><span class="f">Sub-attribute</span><select id="np_sub">${subs.map(s=>`<option value="${s.id}">${esc(s.n)}</option>`).join('')}</select></div>
-<div class="row"><span class="f">First milestone (optional)</span><input id="np_m1" placeholder="e.g. Reach Gold" style="flex:1"></div>
-<p><button class="b" onclick="addProjectConfirm()">Create</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
-function addProjectConfirm(){const n=$('np_n').value.trim();if(!n)return toast('Name required');
-const m1=$('np_m1').value.trim();const p={id:'p'+Date.now(),n,sub:$('np_sub').value,milestones:m1?[{n:m1,done:0}]:[],sessions:[],total:0};
-S.projects.push(p);save();$('modal').style.display='none';render();toast('Project created: '+n)}
-function exam(){S.name=$('exn').value||S.name;flat().forEach(s=>{const el=document.querySelector(`input[name="q_${s.id}"]:checked`);if(el){s.v=+el.value;s.idle=0}});S.exam=1;S.hs=[];S.made=Date.now();S.noteDay=0;syncDegreeSub();review();save();render()}
-function vExam(){return`<div class="pn card"><h1>${L('exam')}</h1><p class="sub">Answer honestly. Academic subs will sync from Modules tab.</p><p>Name <input id="exn" value="${esc(S.name)}"></p>${S.attrs.map(a=>`<h2>${esc(a.n)}</h2>${a.subs.map(s=>{const q=EXAM_QS[s.n]||{q:'Current level?',opts:[['Low',20],['Medium',50],['High',80]]};return`<div class="exam-q"><p>${esc(q.q)}</p><div class="exam-opts">${q.opts.map((o,i)=>`<label><input type="radio" name="q_${s.id}" value="${o[1]}" ${i==1?'checked':''}><span>${esc(o[0])}</span></label>`).join('')}</div></div>`}).join('')}`).join('')}<p><button class="b" onclick="exam()">Submit exam</button></p></div>`}
-function vHome(){const calPanel=`<div id="calroot"></div>`;
-return`${calPanel}`}
-function vProfile(){const at=S.attrs.map(attrV),st=streak();
-return`<div class="pn card"><div class="hd"><h2>Subject</h2></div><h1>${esc(S.name)}</h1><div><span class="tag">${esc(S.title)}</span><span class="tag">${ovr().toFixed(0)} · ${grade(ovr())}</span></div><p class="sub">"${esc(S.quote)}"</p><div style="text-align:center">${radar([at],S.attrs.map(a=>a.n))}</div><div class="sub">Overall: ${grade(ovr())} ${ovr().toFixed(1)}</div></div>
-<div class="pn"><h2>Streak</h2><b style="font-size:22px">${st}</b> days <span class="sub">| best ${S.best} | effort ${S.eff}</span></div>
-<div class="pn"><h2>Attributes</h2>${S.attrs.map((a,i)=>`<div class="row"><span class="gr">${at[i].toFixed(0)}</span><div class="f"><b>${esc(a.n)}</b> <span class="sub">${grade(at[i])}</span><div class="bar"><i style="width:${at[i]}%"></i></div>${a.subs.map(s=>`<div class="sub">${esc(s.n)} ${s.v.toFixed(0)} (${grade(s.v)})</div>`).join('')}</div></div>`).join('')}</div>
-<div class="pn"><h2>Log</h2>${S.log.slice(-8).reverse().map(l=>`<div class="sub"><span class="tag">${esc(l.k)}</span> ${esc(l.m)}</div>`).join('')||'<div class="sub">Quiet.</div>'}</div>`}
-function assessRowHTML(assess, modId){
-  const sc=assess.score;
-  return`<div class="assess-row"><div class="name">${esc(assess.n)}${assess.due?`<div class="sub">due ${assess.due}</div>`:''}</div><div class="weight">${assess.w}%</div><div class="score ${sc!=null?'done':''}">${sc!=null?sc+'%':'—'}</div><div class="status">${sc!=null?'Done':'Not yet'}</div><button class="b" onclick="editScore('${modId}','${assess.id}',null)">${sc!=null?'Edit':'Log'}</button><button class="b x" onclick="delAssess('${modId}','${assess.id}',null)">×</button></div>`;
-}
-function groupRowHTML(group, modId, expandedGroups){
-  const expanded=expandedGroups.has(group.id);
-  let gs=0,gw=0,done=0,total=group.subs.length;
-  group.subs.forEach(s=>{if(s.score!=null){gs+=s.score*s.w;gw+=s.w;done++}});
-  const cur=gw>0?(gs/gw).toFixed(1)+'%':'—';
-  return`<div class="assess-group"><div class="assess-group-head" onclick="toggleGroup('${group.id}')"><span>${expanded?'▾':'▸'}</span><div class="name">${esc(group.n)}</div><div class="weight">${group.w}%</div><div class="sub">${done}/${total} | ${cur}</div></div><div class="assess-group-body ${expanded?'':'collapsed'}">${group.subs.map(s=>`<div class="assess-row"><div class="name" style="padding-left:8px">${esc(s.n)}</div><div class="weight">${s.w}%</div><div class="score ${s.score!=null?'done':''}">${s.score!=null?s.score+'%':'—'}</div><button class="b" onclick="editScore('${modId}','${group.id}','${s.id}')">${s.score!=null?'Edit':'Log'}</button><button class="b x" onclick="delAssess('${modId}','${group.id}','${s.id}')">×</button></div>`).join('')}</div></div>`;
-}
+const inp=(p,v,num,w)=>`<input value="${esc(v)}" ${num?'type="number"':''} style="width:${w||'100%'}" onchange="up('${p}',this.value,${!!num})">`;
+function vHome(){return`<div class="pn" style="border-left:4px solid var(--ac)"><div class="hd"><h2>Today</h2><span class="sub">${new Date().toDateString()}</span></div><b class="streak-big">${streak()}</b> <span class="sub">day streak · best ${S.best}</span></div><div id="calroot"></div>`}
+function vProfile(){const st=streak();
+return`<div class="pn card"><div class="hd"><h2>Profile</h2></div><h1>${esc(S.name)}</h1><div><span class="tag">${esc(S.title)}</span></div><p class="sub">"${esc(S.quote)}"</p><p><button class="b" onclick="editIdentity()">Edit identity</button></p></div>
+<div class="pn"><h2>Streak</h2><b class="streak-big">${st}</b> <span class="sub">days · best ${S.best}</span><p class="sub">A day counts when every slot marked "counts toward streak" is done.</p></div>
+<div class="pn"><h2>Log</h2>${S.log.slice(-10).reverse().map(l=>`<div class="sub"><span class="tag">${esc(l.k)}</span> ${esc(l.m)}</div>`).join('')||'<div class="sub">Quiet.</div>'}</div>`}
+function editIdentity(){$('mb').innerHTML=`<h2>Identity</h2><div class="row"><span class="f">Name</span><input id="id_n" value="${esc(S.name)}" style="flex:1"></div><div class="row"><span class="f">Title</span><input id="id_t" value="${esc(S.title)}" style="flex:1"></div><div class="row"><span class="f">Quote</span><input id="id_q" value="${esc(S.quote)}" style="flex:1"></div><p><button class="b" onclick="S.name=$('id_n').value||'Mutant';S.title=$('id_t').value||'Nobody';S.quote=$('id_q').value||'';save();$('modal').style.display='none';render()">Save</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
+function assessRowHTML(assess, modId){const sc=assess.score;
+return`<div class="assess-row"><div class="name">${esc(assess.n)}${assess.due?`<div class="sub">due ${assess.due}</div>`:''}</div><div class="weight">${assess.w}%</div><div class="score ${sc!=null?'done':''}">${sc!=null?sc+'%':'—'}</div><div class="status">${sc!=null?'Done':'Not yet'}</div><button class="b" onclick="editScore('${modId}','${assess.id}',null)">${sc!=null?'Edit':'Log'}</button><button class="b x" onclick="delAssess('${modId}','${assess.id}',null)">×</button></div>`}
+function groupRowHTML(group, modId, expandedGroups){const expanded=expandedGroups.has(group.id);let gs=0,gw=0,done=0,total=group.subs.length;group.subs.forEach(s=>{if(s.score!=null){gs+=s.score*s.w;gw+=s.w;done++}});const cur=gw>0?(gs/gw).toFixed(1)+'%':'—';
+return`<div class="assess-group"><div class="assess-group-head" onclick="toggleGroup('${group.id}')"><span>${expanded?'▾':'▸'}</span><div class="name">${esc(group.n)}</div><div class="weight">${group.w}%</div><div class="sub">${done}/${total} | ${cur}</div></div><div class="assess-group-body ${expanded?'':'collapsed'}">${group.subs.map(s=>`<div class="assess-row"><div class="name" style="padding-left:8px">${esc(s.n)}</div><div class="weight">${s.w}%</div><div class="score ${s.score!=null?'done':''}">${s.score!=null?s.score+'%':'—'}</div><button class="b" onclick="editScore('${modId}','${group.id}','${s.id}')">${s.score!=null?'Edit':'Log'}</button><button class="b x" onclick="delAssess('${modId}','${group.id}','${s.id}')">×</button></div>`).join('')}</div></div>`}
 let expandedGroups=new Set();
 function toggleGroup(id){if(expandedGroups.has(id))expandedGroups.delete(id);else expandedGroups.add(id);render()}
 function vModules(){const deg=S.degreeTarget||70,current=degreeCurrent(),completed=degreeCompleted();
 const currentStr=current!=null?current.toFixed(1)+'%':'—';
-const completedStr=completed.toFixed(1)+'%';
 const progPct=current!=null?cl((current/deg)*100,0,100):0;
 const visibleModules=S.modules.filter(m=>!m.locked);
-return`<div class="degree-card"><h2>Degree · 1st Class (70%+)</h2><div class="degree-two"><div><div class="degree-num">${currentStr}</div><div class="degree-sub">current grade</div></div><div><div class="degree-num-sm">${completedStr}</div><div class="degree-sub">of year graded</div></div></div><div class="degree-bar"><i style="width:${progPct}%"></i></div><div class="degree-sub" style="margin-top:8px">${current!=null?`${Math.abs(current-deg).toFixed(1)}% ${current>=deg?'above':'below'} target`:''} · ${visibleModules.length} modules</div></div>
-<div class="row" style="margin:8px 0;padding:8px 0;border-bottom:2px solid var(--ac)"><div class="f"><b>Modules</b><div class="sub">Log assessments. Each sub syncs to its module.</div></div><button class="b" onclick="addModulePrompt()">+ Add module</button></div>
+return`<div class="degree-card"><h2>Degree · 1st Class (70%+)</h2><div class="degree-two"><div><div class="degree-num">${currentStr}</div><div class="degree-sub">current grade</div></div><div><div class="degree-num-sm">${completed.toFixed(1)}%</div><div class="degree-sub">of year graded</div></div></div><div class="degree-bar"><i style="width:${progPct}%"></i></div><div class="degree-sub" style="margin-top:8px">${current!=null?`${Math.abs(current-deg).toFixed(1)}% ${current>=deg?'above':'below'} target`:''} · ${visibleModules.length} modules</div></div>
+<div class="row" style="margin:8px 0;padding:8px 0;border-bottom:2px solid var(--ac)"><div class="f"><b>Modules</b><div class="sub">Log assessment scores.</div></div><button class="b" onclick="addModulePrompt()">+ Add module</button></div>
 ${S.modules.map(mod=>{const cur=moduleGradedAvg(mod),status=moduleStatus(mod),credit=mod.credits||20,pct=modulePercentGraded(mod);
 const curStr=cur!=null?cur.toFixed(1)+'%':'—';
 const stateTag=mod.locked?'<span class="tag">locked</span>':status==='complete'?'<span class="tag" style="border-color:var(--ac);background:var(--ac);color:#fff">complete</span>':status==='partial'?'<span class="tag">in progress</span>':'<span class="tag" style="opacity:.5">not started</span>';
@@ -362,85 +219,59 @@ ${mod.locked?'<div class="sub">Locked.</div>':`<div style="margin-top:8px">${mod
 <div class="sub" style="margin-top:8px">Total weight: ${(mod.assessments.reduce((s,a)=>s+a.w,0)).toFixed(1)}% ${Math.abs(mod.assessments.reduce((s,a)=>s+a.w,0)-100)>0.1?'<span class="warn-text">(does not sum to 100%)</span>':''}</div>
 <p><button class="b" onclick="addAssessPrompt('${mod.id}')">+ Add assessment</button> <button class="b x" onclick="delModule('${mod.id}')">Delete</button></p>`}
 </div>`}).join('')}
-<div class="pn"><h2>Add a module</h2><p class="sub">For Semester 2 or any new ones.</p><button class="b" onclick="addModulePrompt()">+ New module</button></div>`;
-}
-function delModule(id){if(!confirm('Delete module?'))return;const acad=S.attrs.find(a=>a.n==='Academic');if(acad)acad.subs=acad.subs.filter(s=>s.mod!==id);S.modules=S.modules.filter(m=>m.id!==id);syncDegreeSub();save();render()}
+<div class="pn"><h2>Add a module</h2><p class="sub">For Semester 2 or any new ones.</p><button class="b" onclick="addModulePrompt()">+ New module</button></div>`}
+function delModule(id){if(!confirm('Delete module?'))return;S.modules=S.modules.filter(m=>m.id!==id);save();render()}
 function addModulePrompt(){$('mb').innerHTML=`<h2>New module</h2><div class="row"><span class="f">Name</span><input id="nm_n" placeholder="e.g. Cell Biology" style="flex:1"></div><div class="row"><span class="f">Type</span><input id="nm_t" value="Sem 2" style="width:140px"></div><div class="row"><span class="f">Credits</span><input id="nm_c" type="number" value="20" style="width:80px"></div><div class="row"><span class="f">Target %</span><input id="nm_tg" type="number" value="70" style="width:80px"></div><p><button class="b" onclick="addModuleConfirm()">Create</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
-function addModuleConfirm(){const n=$('nm_n').value.trim();if(!n)return toast('Name required');const id='mod'+Date.now();const m={id,n,type:$('nm_t').value,credits:+$('nm_c').value||20,locked:0,target:+$('nm_tg').value||70,assessments:[]};S.modules.push(m);const acad=S.attrs.find(a=>a.n==='Academic');if(acad)acad.subs.push({id:'s'+Date.now(),n,v:0,g:1,idle:0,mod:id});syncDegreeSub();save();$('modal').style.display='none';render();toast('Module created: '+n)}
+function addModuleConfirm(){const n=$('nm_n').value.trim();if(!n)return toast('Name required');S.modules.push({id:'mod'+Date.now(),n,type:$('nm_t').value,credits:+$('nm_c').value||20,locked:0,target:+$('nm_tg').value||70,assessments:[]});save();$('modal').style.display='none';render();toast('Module created: '+n)}
 function addAssessPrompt(modId){const mod=S.modules.find(m=>m.id==modId);if(!mod)return;
 $('mb').innerHTML=`<h2>New assessment</h2><div class="row"><span class="f">Name</span><input id="na_n" placeholder="e.g. Essay" style="flex:1"></div><div class="row"><span class="f">Weight %</span><input id="na_w" type="number" step="0.1" value="10" style="width:80px"></div><div class="row"><span class="f">Due (optional)</span><input id="na_d" placeholder="e.g. Week 8" style="flex:1"></div><p><button class="b" onclick="addAssessConfirm('${modId}')">Create</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
 function addAssessConfirm(modId){const mod=S.modules.find(m=>m.id==modId);if(!mod)return;const n=$('na_n').value.trim();if(!n)return toast('Name required');mod.assessments.push({id:'a'+Date.now(),n,w:+$('na_w').value||10,score:null,due:$('na_d').value||null});save();$('modal').style.display='none';render();toast('Assessment added: '+n)}
-function editScore(modId,groupId,subId){
-const mod=S.modules.find(m=>m.id==modId);if(!mod)return toast('Module not found');
-let target=null,label='';
-if(groupId&&subId){const grp=mod.assessments.find(a=>a.id==groupId);if(grp){target=grp.subs.find(s=>s.id==subId);label=grp.n+' — '+(target?.n||'')}}
-else if(groupId&&!subId){target=mod.assessments.find(a=>a.id==groupId);label=target?.n||''}
-else if(!groupId&&subId){target=mod.assessments.find(a=>a.id==subId);label=target?.n||''}
-if(!target){toast('Assessment not found');return}
-const current=target.score??'';
-$('mb').innerHTML=`<h2>${esc(label)}</h2><p>Score (%):</p><div class="row"><input id="es_v" type="number" step="0.1" min="0" max="100" value="${current}" style="width:120px;font-size:20px;font-weight:600"></div><p class="sub">Leave blank to mark ungraded.</p><p><button class="b" onclick="saveScore('${modId}','${groupId||''}','${subId||''}')">Save</button> <button class="b" onclick="clearScore('${modId}','${groupId||''}','${subId||''}')">Clear</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
 function findTarget(modId,groupId,subId){const mod=S.modules.find(m=>m.id==modId);if(!mod)return null;if(groupId&&subId){const grp=mod.assessments.find(a=>a.id==groupId);return grp?grp.subs.find(s=>s.id==subId):null}if(groupId&&!subId)return mod.assessments.find(a=>a.id==groupId);if(!groupId&&subId)return mod.assessments.find(a=>a.id==subId);return null}
-function saveScore(modId,groupId,subId){const target=findTarget(modId,groupId,subId);if(!target)return toast('Not found');const v=$('es_v').value;const score=v===''?null:parseFloat(v);if(score!==null&&(isNaN(score)||score<0||score>100))return toast('Score 0-100');target.score=score;syncDegreeSub();save();$('modal').style.display='none';render();toast(score!=null?'Logged: '+score+'%':'Cleared')}
-function clearScore(modId,groupId,subId){const target=findTarget(modId,groupId,subId);if(!target)return toast('Not found');target.score=null;syncDegreeSub();save();$('modal').style.display='none';render();toast('Cleared')}
+function editScore(modId,groupId,subId){const target=findTarget(modId,groupId,subId);if(!target){toast('Not found');return}
+const mod=S.modules.find(m=>m.id==modId);let label=target.n;if(groupId){const g=mod.assessments.find(a=>a.id==groupId);if(g&&subId)label=g.n+' — '+target.n}
+$('mb').innerHTML=`<h2>${esc(label)}</h2><p>Score (%):</p><div class="row"><input id="es_v" type="number" step="0.1" min="0" max="100" value="${target.score??''}" style="width:120px;font-size:20px;font-weight:600"></div><p class="sub">Leave blank to mark ungraded.</p><p><button class="b" onclick="saveScore('${modId}','${groupId||''}','${subId||''}')">Save</button> <button class="b" onclick="clearScore('${modId}','${groupId||''}','${subId||''}')">Clear</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button></p>`;$('modal').style.display='flex'}
+function saveScore(modId,groupId,subId){const target=findTarget(modId,groupId,subId);if(!target)return toast('Not found');const v=$('es_v').value;const score=v===''?null:parseFloat(v);if(score!==null&&(isNaN(score)||score<0||score>100))return toast('Score 0-100');target.score=score;save();$('modal').style.display='none';render();toast(score!=null?'Logged: '+score+'%':'Cleared')}
+function clearScore(modId,groupId,subId){const target=findTarget(modId,groupId,subId);if(!target)return toast('Not found');target.score=null;save();$('modal').style.display='none';render();toast('Cleared')}
 function delAssess(modId,groupId,subId){const mod=S.modules.find(m=>m.id==modId);if(!mod)return;if(!confirm('Delete?'))return;
 if(groupId&&subId){const grp=mod.assessments.find(a=>a.id==groupId);if(grp)grp.subs=grp.subs.filter(s=>s.id!=subId)}
 else if(groupId&&!subId){mod.assessments=mod.assessments.filter(a=>a.id!=groupId)}
 else if(!groupId&&subId){mod.assessments=mod.assessments.filter(a=>a.id!=subId)}
-syncDegreeSub();save();render();toast('Deleted')}
-function vGoals(){const noise=S.cal.ev.filter(e=>e.type=='habit'&&!e.lk),maint=S.cal.ev.filter(e=>e.lk=='maint').length;
-return`<div class="row" style="margin:8px 0;padding:8px 0;border-bottom:2px solid var(--ac)"><div class="f"><b>Goal Ladder</b><div class="sub">GOAL → MILESTONE → MISSION → SLOT</div></div><button class="b" onclick="addGoalPrompt()">+ Add goal</button></div>`+S.goals.map(g=>{const s=subOf(g.sub),act=g.ms.find(m=>!m.done),slots=S.cal.ev.filter(e=>e.lk==g.id),pr=cl((g.cur-g.start)/(g.target-g.start),0,1),dl=m=>Math.max(0,m.mis.begun+m.mis.weeks*7-D());
-return`<div class="pn"><h2>${esc(g.n)}</h2>${g.why?`<div class="sub" style="font-style:italic;margin-bottom:4px">"${esc(g.why)}"</div>`:''}<div class="sub">${s?esc(s.n):'-'} | ${g.start} to ${g.target} ${esc(g.unit)} | now ${g.cur} | best ${g.best} | score ${g.sc!=null?g.sc.toFixed(0):'untested'} | effort ${g.eff||0}${g.endOnPhase?' | <span class="tag warn">ends on phase</span>':''}</div><div class="bar"><i style="width:${pr*100}%"></i></div>
-<div style="margin:8px 0">${g.ms.map((m,i)=>`<div class="row"><span style="width:22px">${m.done?'✅':m===act?'▶':'🔒'}</span><div class="f ${m.done?'done':''}">Milestone ${i+1}: ${m.v} ${esc(g.unit)}${m===act&&m.mis?`<div class="sub">Mission: ${m.mis.weeks}-week block | ${dl(m)} days left</div>`:''}</div></div>`).join('')}</div>
-<div class="sub"><b>Slots:</b> ${slots.map(e=>esc(e.t)+' ('+(e.rep&&e.rep!='none'?e.rep:'once')+')').join(', ')||'none. Add one in Lab.'}</div>
-<p><input id="gv${g.id}" type="number" step="any" placeholder="Test result (${esc(g.unit)})" style="width:170px"> <button class="b" onclick="logGoal('${g.id}')">Log test</button> <button class="b x" onclick="if(confirm('Delete?')){S.cal.ev=S.cal.ev.filter(e=>e.lk!='${g.id}');S.goals=S.goals.filter(x=>x.id!='${g.id}');save();render()}">Delete</button></p>
-<div class="sub">Anchors: ${g.an.map(a=>a[0]+' = '+a[1]).join(' | ')}</div></div>`}).join('')||'<div class="pn">No goals yet.</div>'
-+`<div class="pn"><h2>Maintenance and noise</h2><div class="sub">${maint} maintenance slots. ${noise.length?'<b>Noise:</b> '+noise.map(e=>esc(e.t)).join(', '):'No noise.'}</div></div>`
-+(S.missions.length?`<div class="pn"><h2>Side missions</h2>${S.missions.map(m=>{const s=subOf(m.sub),dn=m.done===D();return`<div class="row"><div class="f ${dn?'done':''}">${esc(m.n)}${m.dir?' <span class="tag">directive</span>':''}<div class="sub">${s?esc(s.n):'-'}</div></div><button class="b ${dn?'on':''}" onclick="dMis('${m.id}')">${dn?'Done':'Complete'}</button></div>`}).join('')}</div>`:'')}
-function vProjects(){return`<div class="row" style="margin:8px 0;padding:8px 0;border-bottom:2px solid var(--ac)"><div class="f"><b>Projects</b><div class="sub">Hobbies.</div></div><button class="b" onclick="addProjectPrompt()">+ Add project</button></div>`+S.projects.map(p=>{const s=subOf(p.sub),recent=Array.from({length:21},(_,i)=>D()-20+i),stk=p.sessions?(()=>{let n=0,d=D();while(p.sessions.includes(d)){n++;d--}return n})():0;
-return`<div class="pn proj"><h3>${esc(p.n)}</h3><div class="sub">${s?esc(s.n):'-'} | sessions: ${p.total||0} | streak: ${stk}</div><div class="sess-grid">${recent.map(d=>`<div class="${p.sessions?.includes(d)?'on':''}" title="${ymd(d)}"></div>`).join('')}</div>${p.milestones?.length?`<div style="margin:8px 0">${p.milestones.map((m,i)=>`<div class="row"><span style="width:22px">${m.done?'✅':'○'}</span><div class="f ${m.done?'done':''}">${esc(m.n)}</div>${!m.done?`<button class="b" onclick="projMilestone('${p.id}',${i})">Complete</button>`:''}</div>`).join('')}</div>`:''}<p><button class="b" onclick="projectSession('${p.id}')">+ Log session</button> <button class="b x" onclick="if(confirm('Delete?')){S.projects=S.projects.filter(x=>x.id!='${p.id}');save();render()}">Delete</button></p></div>`}).join('')||'<div class="pn">No projects yet.</div>'}
-function vAn(){const C=['#1f9d55','#3a9ad9','#e0b020','#9b6bd8','#d64550','#888','#2e8b8b','#8e24aa'],h=S.hs.slice(-60),at=S.attrs.map(attrV),ago=(S.hs.length>1?(S.hs.find(x=>x.d>=D()-30)||S.hs[0]).a:at).map(x=>x??0),ms=S.log.filter(l=>['mission','session','benchmark','project'].includes(l.k)),cnt=Array.from({length:14},(_,i)=>ms.filter(l=>l.d==D()-13+i).length),mx=Math.max(1,...cnt);
-const snaps=S.monthSnaps||[];
-return`<div class="g2"><div class="pn"><h2>Radar</h2><div style="text-align:center">${radar([at,ago],S.attrs.map(a=>a.n))}</div><div class="sub">Solid: now. Dashed: 30d ago.</div></div><div class="pn"><h2>Growth</h2>${chart([{d:h.map(x=>x.ov),c:'var(--ac)'}])}<h2 style="margin-top:12px">Streak</h2>${S.best} best</div></div>
-${snaps.length?`<div class="pn"><h2>Monthly history</h2>${snaps.slice().reverse().map(s=>`<div class="month-snap"><span>${esc(s.k)}</span><span class="sub">${grade(s.ov)} ${s.ov.toFixed(0)}</span></div>`).join('')}</div>`:''}
-<div class="pn"><h2>Attributes</h2>${chart(S.attrs.map((a,i)=>({d:h.map(x=>x.a[i]??0),c:C[i%8]})))}<div>${S.attrs.map((a,i)=>`<span class="tag" style="border-color:${C[i%8]};color:${C[i%8]}">${esc(a.n)}</span>`).join('')}</div></div>
-<div class="g2"><div class="pn"><h2>Activity, 14d</h2><div style="display:flex;gap:3px;align-items:flex-end;height:80px">${cnt.map(c=>`<div style="flex:1;background:var(--ac);height:${Math.max(3,c/mx*100)}%;border-radius:3px;opacity:${c?1:.2}"></div>`).join('')}</div></div><div class="pn"><h2>Routine %</h2>${chart([{d:h.map(x=>x.r*100),c:'#3a9ad9'}])}</div></div>
-<div class="pn"><h2>Mission history</h2>${ms.slice(-15).reverse().map(l=>`<div class="sub"><span class="tag">${esc(l.k)}</span> ${esc(l.m)}</div>`).join('')||'<div class="sub">Nothing yet.</div>'}</div>`}
-const inp=(p,v,num,w)=>`<input value="${esc(v)}" ${num?'type="number"':''} style="width:${w||'100%'}" onchange="up('${p}',this.value,${!!num})">`,sel=(p,v,opts)=>`<select onchange="up('${p}',this.value)">${opts.map(o=>`<option value="${esc(o[0])}" ${o[0]==v?'selected':''}>${esc(o[1])}</option>`).join('')}</select>`;
-function vSet(){const c=S.cfg,so=flat().map(s=>[s.id,s.n]);return`<div class="pn"><h2>Look and names</h2><p>Lab name ${inp('cfg.name',c.name)}</p><p>Colours: Background <input type="color" value="${c.bg}" onchange="up('cfg.bg',this.value)"> Accent <input type="color" value="${c.ac}" onchange="up('cfg.ac',this.value)"> Text <input type="color" value="${c.tx}" onchange="up('cfg.tx',this.value)"> Panel <input type="color" value="${c.pn}" onchange="up('cfg.pn',this.value)"></p><p><button class="b" onclick="S.tutorialDone=0;save();location.reload()">Replay tutorial</button></p></div>
-<div class="pn"><h2>Degree settings</h2><p>Degree target % ${inp('degreeTarget',S.degreeTarget,1,'80px')}</p></div>
+save();render();toast('Deleted')}
+function vAn(){const days=Array.from({length:30},(_,i)=>D()-29+i);
+const rates=days.map(d=>{const s=streakSlots(d);return s.length?s.filter(o=>o.ev.done[d]).length/s.length*100:null});
+const valid=rates.filter(x=>x!=null);
+const hs=S.hs.slice(-90);
+const perCal=S.cal.cals.map(c=>{let tot=0,done=0;days.forEach(d=>{occs(d,d).forEach(o=>{if(o.ev.cal===c.id&&etStreak(o.ev)){tot++;if(o.ev.done[d])done++}})});return{n:c.n,c:c.color,pct:tot?done/tot*100:0,tot}});
+return`<div class="g2"><div class="pn"><h2>Streak</h2><b class="streak-big">${streak()}</b> <span class="sub">days · best ${S.best}</span></div><div class="pn"><h2>30-day completion</h2><b class="streak-big">${valid.length?mean(valid).toFixed(0):'—'}%</b><div class="sub">avg across days with slots</div></div></div>
+<div class="pn"><h2>Daily completion (30d)</h2>${chart([{d:rates.map(r=>r??0),c:'var(--ac)'}])}</div>
+<div class="pn"><h2>Per-calendar completion (30d)</h2>${perCal.map(p=>`<div class="row"><div class="f">${esc(p.n)}<div class="sub">${p.tot} slots</div></div><div class="bar" style="flex:1;max-width:200px"><i style="width:${p.pct}%;background:${p.c}"></i></div><span class="sub">${p.pct.toFixed(0)}%</span></div>`).join('')}</div>
+${S.monthSnaps.length?`<div class="pn"><h2>Monthly history</h2>${S.monthSnaps.slice().reverse().map(s=>`<div class="month-snap"><span>${esc(s.k)}</span><span class="sub">streak ${s.st} · rate ${(s.rate*100).toFixed(0)}%</span></div>`).join('')}</div>`:''}
+<div class="pn"><h2>Log</h2>${S.log.slice(-15).reverse().map(l=>`<div class="sub"><span class="tag">${esc(l.k)}</span> ${esc(l.m)}</div>`).join('')||'<div class="sub">Nothing yet.</div>'}</div>`}
+function vSet(){const c=S.cfg;
+return`<div class="pn"><h2>Look and name</h2><p>Site name ${inp('cfg.name',c.name)}</p><p>Colours: Background <input type="color" value="${c.bg}" onchange="up('cfg.bg',this.value)"> Accent <input type="color" value="${c.ac}" onchange="up('cfg.ac',this.value)"> Text <input type="color" value="${c.tx}" onchange="up('cfg.tx',this.value)"> Panel <input type="color" value="${c.pn}" onchange="up('cfg.pn',this.value)"></p></div>
 <div class="pn"><h2>Calendar theme</h2><p>Accent <input type="color" value="${c.ct.gb}" onchange="up('cfg.ct.gb',this.value)"> Background <input type="color" value="${c.ct.cb}" onchange="up('cfg.ct.cb',this.value)"> Text <input type="color" value="${c.ct.ct}" onchange="up('cfg.ct.ct',this.value)"> Grid <input type="color" value="${c.ct.cg}" onchange="up('cfg.ct.cg',this.value)"> Now <input type="color" value="${c.ct.cn}" onchange="up('cfg.ct.cn',this.value)"></p><button class="b" onclick="S.cfg.ct={...CT0};theme();save();render()">Reset</button></div>
-<div class="pn"><h2>Stat rules</h2><p>Decay/week ${inp('cfg.decay',c.decay,1,'70px')}</p><p>Decay floor % ${inp('cfg.fp',c.fp,1,'70px')}</p><div class="sub">Decay after 14 days idle. Academic auto-syncs from Modules.</div></div>
+<div class="pn"><h2>Event types</h2><p class="sub">Types with "counts" set to Yes count toward your streak when done.</p>${S.cfg.etypes.map((t,i)=>`<div class="row"><input value="${esc(t.n)}" style="flex:1" onchange="S.cfg.etypes[${i}].n=this.value;save();render()"><label class="sub"><input type="checkbox" ${t.streak?'checked':''} onchange="S.cfg.etypes[${i}].streak=this.checked?1:0;save()"> counts</label><button class="b x" onclick="delEtype(${i})">×</button></div>`).join('')}<p><button class="b" onclick="S.cfg.etypes.push({id:'et'+Date.now(),n:'New type',streak:0});save();render()">+ Add type</button></p></div>
+<div class="pn"><h2>Calendars</h2>${S.cal.cals.map((c,i)=>`<div class="cr"><input type="checkbox" ${c.on!==0?'checked':''} style="accent-color:${c.color}" onchange="S.cal.cals[${i}].on=this.checked?1:0;save();render()"><i class="dot" style="background:${c.color}"></i><input value="${esc(c.n)}" class="cn" onchange="S.cal.cals[${i}].n=this.value;save()"><input type="color" value="${c.color}" class="cc" onchange="S.cal.cals[${i}].color=this.value;save();render()">${c.id!='c_other'?`<span style="cursor:pointer;color:#d93025" onclick="delCal(${i})">×</span>`:''}</div>`).join('')}<button class="b" style="margin-top:8px" onclick="S.cal.cals.push({id:'c'+Date.now(),n:'New calendar',color:'#039be5',on:1});save();render()">+ Add calendar</button></div>
+<div class="pn"><h2>Degree settings</h2><p>Degree target % ${inp('degreeTarget',S.degreeTarget,1,'80px')}</p></div>
 <div class="pn"><h2>Profile</h2><p>Name ${inp('name',S.name)}</p><p>Title ${inp('title',S.title)}</p><p>Quote ${inp('quote',S.quote)}</p></div>
-<div class="pn"><h2>Rename labels</h2>${Object.keys(LBL).map(k=>`<p class="sub">${k}${inp('cfg.L.'+k,c.L[k]??LBL[k])}</p>`).join('')}</div>
-<div class="pn"><h2>Attributes</h2>${S.attrs.map((a,i)=>`<div class="row" style="background:color-mix(in srgb,var(--ac) 6%,transparent)">${inp('attrs.'+i+'.n',a.n,0,'70%')}<button class="b x" onclick="delAttr(${i})">x</button></div>${a.subs.map((s,j)=>`<div class="row" style="padding-left:16px">${inp('attrs.'+i+'.subs.'+j+'.n',s.n,0,'70%')}${s.mod?`<span class="tag">module</span>`:''}<button class="b x" onclick="delSubSafe(${i},${j})">x</button></div>`).join('')}<button class="b" onclick="addSub(${i})">+ sub</button>`).join('')}<p><button class="b" onclick="add('attrs')">+ attribute</button></p></div>
-<div class="pn"><h2>Goals editing</h2>${S.goals.map((g,i)=>`<div class="row">${inp('goals.'+i+'.n',g.n)}${sel('goals.'+i+'.sub',g.sub,so)}unit${inp('goals.'+i+'.unit',g.unit,0,'70px')}from${inp('goals.'+i+'.start',g.start,1,'60px')}to${inp('goals.'+i+'.target',g.target,1,'60px')}weeks${inp('goals.'+i+'.weeks',g.weeks,1,'55px')}<div style="width:100%" class="sub">Why<input value="${esc(g.why||'')}" style="width:100%" onchange="up('goals.${i}.why',this.value)"></div><div style="width:100%" class="sub">Anchors<input value="${esc((g.an||[]).map(a=>a.join(':')).join(', '))}" style="width:100%" onchange="setAn(${i},this.value)"></div><span class="sub">milestones</span>${inp('goals.'+i+'.mn',g.mn||4,1,'50px')}<label class="sub" style="margin-left:8px"><input type="checkbox" ${g.endOnPhase?'checked':''} onchange="up('goals.${i}.endOnPhase',this.checked?1:0)"> End on phase</label><button class="b" onclick="rebuild(${i})">Rebuild</button><button class="b x" onclick="del('goals',${i})">x</button></div>`).join('')||'<div class="sub">No goals yet.</div>'}</div>
-<div class="pn"><h2>Projects editing</h2>${S.projects.map((p,i)=>`<div class="row">${inp('projects.'+i+'.n',p.n)}${sel('projects.'+i+'.sub',p.sub,so)}<button class="b x" onclick="del('projects',${i})">x</button></div>`).join('')||'<div class="sub">No projects yet.</div>'}</div>
-<div class="pn"><h2>Data</h2><p><button class="b" onclick="backup()">Download backup</button> <label class="b" style="display:inline-block;padding:6px 9px;border:1px solid var(--ac);border-radius:8px;cursor:pointer;color:var(--ac)">Restore<input type="file" accept=".json" hidden onchange="restore(this)"></label></p><p class="sub">Last backup: ${S.lastBackup?new Date(S.lastBackup).toLocaleDateString():'never'}</p><button class="b" onclick="S.exam=0;save();render()">Retake exam</button> <button class="b x" onclick="if(confirm('Erase all?')){S=fresh();migrate();theme();save();render()}">Reset all</button></div>`}
-function delAttr(i){const a=S.attrs[i],used=S.cal.ev.filter(e=>a.subs.some(s=>s.id==e.sub)).length+S.goals.filter(g=>a.subs.some(s=>s.id==g.sub)).length+S.missions.filter(m=>a.subs.some(s=>s.id==m.sub)).length+S.projects.filter(p=>a.subs.some(s=>s.id==p.sub)).length;
-if(used&&!confirm(`${used} items link. Delete anyway?`))return;S.attrs.splice(i,1);save();render()}
-function delSubSafe(a,j){const s=S.attrs[a].subs[j];if(s.mod){toast('This sub is linked to a module. Delete the module first.');return}
-const used=S.cal.ev.filter(e=>e.sub==s.id).length+S.goals.filter(g=>g.sub==s.id).length+S.missions.filter(m=>m.sub==s.id).length+S.projects.filter(p=>p.sub==s.id).length;
-if(used&&!confirm(`${used} items link. Delete anyway?`))return;S.attrs[a].subs.splice(j,1);save();render()}
-async function backup(){try{const blob=new Blob([JSON.stringify(S)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mental-lab-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);S.lastBackup=Date.now();save();toast('Backup saved');render()}catch(e){toast('Backup failed')}}
-function restore(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.attrs)throw 0;S=o;migrate();theme();save();render();toast('Backup restored')}catch(e){toast('Not valid')}};r.readAsText(f)}
-function review(){if(S.noteDay==D()||!S.exam)return;S.noteDay=D();S.missions=S.missions.filter(m=>!m.dir);const d=D(),ra=mean([1,2,3].map(i=>frac(d-i))),w=[...flat()].sort((a,b)=>a.v-b.v)[0];let m;
-if(d-Math.floor(S.made/864e5)<3)m='Observation period. Do not perform.';
-else if(ra>=.85){S.diff=Math.min(2.5,+(S.diff+.1).toFixed(2));S.heat=0;m=pick(['Compliance noted.','Acceptable. Bar has moved.','Consistent.'])+' Difficulty x'+S.diff+'.'}
-else if(ra>=.5){S.heat=0;m=pick(['Adequate. Not a destination.','Half measures.'])}
-else{S.heat=Math.min(3,S.heat+1);m='Warning '+S.heat+'. Completion '+Math.round(ra*100)+'%. '+w.n+' weakest at '+w.v.toFixed(0)+'.';S.missions.push({id:'dir'+d,n:'Directive: 20 min on '+w.n,sub:w.id,xp:6,pts:8,done:null,dir:1})}
-S.notes.push({d,m});S.notes=S.notes.slice(-40)}
+<div class="pn"><h2>Rename tabs</h2>${Object.keys(LBL).map(k=>`<p class="sub">${k}${inp('cfg.L.'+k,c.L[k]??LBL[k])}</p>`).join('')}</div>
+<div class="pn"><h2>Data</h2><p><button class="b" onclick="backup()">Download backup</button> <label class="b" style="display:inline-block;padding:6px 9px;border:1px solid var(--ac);border-radius:8px;cursor:pointer;color:var(--ac)">Restore<input type="file" accept=".json" hidden onchange="restore(this)"></label></p><p class="sub">Last backup: ${S.lastBackup?new Date(S.lastBackup).toLocaleDateString():'never'}</p><p><button class="b" onclick="S.tutorialDone=0;save();location.reload()">Replay tutorial</button></p><button class="b x" onclick="if(confirm('Erase all?')){S=fresh();migrate();theme();save();render()}">Reset all</button></div>`}
+function delEtype(i){if(S.cfg.etypes.length<=1)return toast('Need at least one type');const t=S.cfg.etypes[i];const fb=S.cfg.etypes.find((x,j)=>j!==i);S.cal.ev.forEach(e=>{if(e.etype===t.id)e.etype=fb.id});S.cfg.etypes.splice(i,1);save();render()}
+function delCal(i){const c=S.cal.cals[i];S.cal.ev.forEach(e=>{if(e.cal==c.id)e.cal='c_other'});S.cal.cals.splice(i,1);save();render();if(tab=='home')drawCal()}
+async function backup(){try{const blob=new Blob([JSON.stringify(S)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='mr-calendar-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();URL.revokeObjectURL(url);S.lastBackup=Date.now();save();toast('Backup saved');render()}catch(e){toast('Backup failed')}}
+function restore(i){const f=i.files[0];if(!f)return;const r=new FileReader();r.onload=()=>{try{const o=JSON.parse(r.result);if(!o.cal)throw 0;S=o;migrate();theme();save();render();toast('Backup restored')}catch(e){toast('Not valid')}};r.readAsText(f)}
 function showTutorial(){if(S.tutorialDone)return;const steps=[
-{n:1,t:'Welcome, Subject.',b:'Complete the entrance exam to be placed. Then track degree, goals, habits.'},
-{n:2,t:'Modules tab.',b:'Your degree lives here. Log assessment scores. Current grade and % of year graded both update.'},
-{n:3,t:'Run the daily loop.',b:'Your calendar is at the top of the Lab tab. Mark slots done. Log tests weekly.'},
-{n:4,t:'Profile tab.',b:'Your stats and log live in the Profile tab.'}
+{n:1,t:'Welcome to Mr Calendar.',b:'A calendar, a to-do list, a streak. Nothing more.'},
+{n:2,t:'Add events.',b:'Click any day or use + Create. Drag to move, drag edges to resize. Repeat weekly for habits.'},
+{n:3,t:'Mark done daily.',b:'Tick each slot when done. A day counts toward your streak when every "counts" slot is done.'},
+{n:4,t:'Make it yours.',b:'Settings → event types, calendars, colours, identity.'}
 ];let idx=0;
 const renderTut=()=>{const s=steps[idx];$('tutorial').innerHTML=`<div class="tutorial-overlay"><div class="tutorial-box"><h2>${esc(s.t)}</h2><p>${esc(s.b)}</p><div class="tutorial-dots">${steps.map((_,i)=>`<span class="${i===idx?'on':''}"></span>`).join('')}</div><p style="text-align:right;margin:0"><button class="b" onclick="advTut()">${idx<steps.length-1?'Next':'Begin'}</button></p></div></div>`};
 window.advTut=()=>{idx++;if(idx>=steps.length){S.tutorialDone=1;save();$('tutorial').innerHTML=''}else renderTut()};
 renderTut()}
-function render(){if(!S)return;syncDegreeSub();const V={home:vHome,profile:vProfile,modules:vModules,goals:vGoals,projects:vProjects,analytics:vAn,settings:vSet};
-$('app').innerHTML=`<aside><b>🧬 ${esc(S.cfg.name)}</b>${Object.keys(V).map(k=>`<button class="${k==tab?'on':''}" onclick="tab='${k}';render();scrollTo(0,0)"><span>${ICO[k]}</span>${L(k)}</button>`).join('')}</aside><main><div class="hd"><div><h1>${esc(S.cfg.name)}</h1><div class="sub">${L('tag')}</div></div></div>${S.exam||tab=='settings'?V[tab]():vExam()}</main>`;
-if(tab=='home'&&S.exam)drawCal();clearInterval(tmr);tmr=setInterval(()=>calTick(),20000);calTick();
+function render(){if(!S)return;const V={home:vHome,profile:vProfile,modules:vModules,analytics:vAn,settings:vSet};
+$('app').innerHTML=`<aside><b>📅 ${esc(S.cfg.name)}</b>${Object.keys(V).map(k=>`<button class="${k==tab?'on':''}" onclick="tab='${k}';render();scrollTo(0,0)"><span>${ICO[k]}</span>${L(k)}</button>`).join('')}</aside><main><div class="hd"><div><h1>${esc(S.cfg.name)}</h1><div class="sub">${new Date().toDateString()}</div></div><span class="tag">${streak()} day streak</span></div>${V[tab]()}</main>`;
+if(tab=='home')drawCal();clearInterval(tmr);tmr=setInterval(()=>calTick(),20000);calTick();
 if(!S.tutorialDone)showTutorial()}
 const pill=(o,d,t)=>`<div class="pl" draggable="true" ondragstart="event.dataTransfer.setData('t','${o.ev.id}|${o.d}')" style="background:${ecol(o.ev)};${o.ev.done[o.d]?'opacity:.55;':''}" onclick="event.stopPropagation();showEv('${o.ev.id}',${o.d})" oncontextmenu="ctx(event,'${o.ev.id}',${o.d})">${o.ev.done[o.d]?'✓ ':''}${t&&!o.ev.ad?hm(o.s)+' ':''}${esc(o.ev.t)}</div>`;
 function title(){const x=dt(cd),y=x.getUTCFullYear(),m=x.getUTCMonth();if(cv=='year')return y;if(cv=='month')return MN[m]+' '+y;if(cv=='day')return x.getUTCDate()+' '+MN[m]+' '+y;if(cv=='week'){const p=dt(wsd(cd)),q=dt(wsd(cd)+6);return p.getUTCDate()+(p.getUTCMonth()!=q.getUTCMonth()?' '+MN[p.getUTCMonth()].slice(0,3):'')+' – '+q.getUTCDate()+' '+MN[q.getUTCMonth()].slice(0,3)+' '+q.getUTCFullYear()}return'Upcoming'}
@@ -454,49 +285,42 @@ function drawSb(){const s=$('csb');if(!sbOn()){s.style.display='none';return}con
 s.innerHTML=`<div class="hd"><b>${MN[x.getUTCMonth()].slice(0,3)} ${x.getUTCFullYear()}</b><span><button class="b" onclick="cd=Math.floor(Date.UTC(${x.getUTCFullYear()},${x.getUTCMonth()-1},1)/864e5);drawCal()">‹</button><button class="b" onclick="cd=Math.floor(Date.UTC(${x.getUTCFullYear()},${x.getUTCMonth()+1},1)/864e5);drawCal()">›</button></span></div><div class="mg">${mini(cd)}</div><h2 style="margin-top:14px;color:var(--ct)">Calendars</h2>
 ${S.cal.cals.map((c,i)=>`<div class="cr"><input type="checkbox" ${c.on!==0?'checked':''} style="accent-color:${c.color}" onchange="S.cal.cals[${i}].on=this.checked?1:0;save();drawMain()"><i class="dot" style="background:${c.color}"></i><input value="${esc(c.n)}" class="cn" onchange="S.cal.cals[${i}].n=this.value;save()"><input type="color" value="${c.color}" class="cc" onchange="S.cal.cals[${i}].color=this.value;save();drawMain()">${c.id!='c_other'?`<span style="cursor:pointer;color:#d93025" onclick="delCal(${i})">×</span>`:''}</div>`).join('')}
 <button class="b" style="margin-top:8px" onclick="S.cal.cals.push({id:'c'+Date.now(),n:'New calendar',color:'#039be5',on:1});save();drawSb()">+ Add calendar</button></div>`}
-function delCal(i){const c=S.cal.cals[i];S.cal.ev.forEach(e=>{if(e.cal==c.id)e.cal='c_other'});S.cal.cals.splice(i,1);save();drawCal()}
 function drawMain(){const m=$('cmain');if(!m)return;if(cq){m.innerHTML=results();return}m.innerHTML=({day:vTime,week:vTime,month:vMonth,year:vYear,agenda:vAgenda})[cv]();const g=$('gs');if(g)g.scrollTop=gsT??336}
 function vTime(){const n=cv=='week'?7:1,a=cv=='week'?wsd(cd):cd,days=Array.from({length:n},(_,i)=>a+i),all=occs(a,a+n-1).filter(o=>vis(o.ev)),gt=`grid-template-columns:48px repeat(${n},minmax(0,1fr))`;
-const head=days.map(d=>`<div class="dh ${d==D()?'td':''}" onclick="cd=${d};cv='day';drawCal()">${WD[wd(d)]}<b>${dt(d).getUTCDate()}</b></div>`).join(''),adr=days.map(d=>`<div class="adc">${all.filter(o=>o.ev.ad&&o.d<=d&&d<=o.d+o.span).map(o=>pill(o,d)).join('')}</div>`).join('');
+const head=days.map(d=>`<div class="dh ${d==D()?'td':''}" onclick="cd=${d};cv='day';drawCal()">${WD[wd(d)]}<b>${dt(d).getUTCDate()}</b></div>`).join(''),adr=days.map(d=>`<div class="adc">${all.filter(o=>o.ev.ad&&o.d<=d&&d<=o.d).map(o=>pill(o,d)).join('')}</div>`).join('');
 const cols=days.map(d=>{const L=all.filter(o=>!o.ev.ad&&o.d==d).map(o=>({o,s:(o.s-midn(d))/6e4,e:Math.min(1440,(o.e-midn(d))/6e4)})).sort((x,y)=>x.s-y.s);let cl_=[],ce=0;const fl=()=>{const ln=[];cl_.forEach(z=>{let i=ln.findIndex(e=>e<=z.s);if(i<0){i=ln.length;ln.push(0)}ln[i]=z.e;z.l=i});cl_.forEach(z=>z.n=ln.length)};
 L.forEach(z=>{if(cl_.length&&z.s>=ce){fl();cl_=[];ce=0}cl_.push(z);ce=Math.max(ce,z.e)});if(cl_.length)fl();
-return`<div class="col" data-d="${d}" onclick="if(event.pointerType==='touch'&&!event.target.closest('.ev'))newAt(${d},event,this)">${L.map(z=>{const ev=z.o.ev;return`<div class="ev" data-id="${ev.id}" data-d="${d}" style="top:${z.s*.8}px;height:${Math.max(14,(z.e-z.s)*.8)}px;left:${z.l/z.n*100}%;width:calc(${100/z.n}% - 2px);background:${ecol(ev)};${ev.done[d]?'opacity:.6;':''}${ev.st=='floating'?'border:2px dashed var(--cb);':''}" oncontextmenu="ctx(event,'${ev.id}',${d})"><div class="rz t"></div><b>${ev.done[d]?'✓ ':''}${esc(ev.t)}</b><div>${hm(z.o.s)}–${hm(z.o.e)}</div><div class="rz b"></div></div>`}).join('')}${d==D()?`<div class="nowl" style="top:${(Date.now()-midn(d))/6e4*.8}px"><i></i></div>`:''}</div>`}).join('');
+return`<div class="col" data-d="${d}" onclick="if(event.pointerType==='touch'&&!event.target.closest('.ev'))newAt(${d},event,this)">${L.map(z=>{const ev=z.o.ev;return`<div class="ev" data-id="${ev.id}" data-d="${d}" style="top:${z.s*.8}px;height:${Math.max(14,(z.e-z.s)*.8)}px;left:${z.l/z.n*100}%;width:calc(${100/z.n}% - 2px);background:${ecol(ev)};${ev.done[d]?'opacity:.6;':''}" oncontextmenu="ctx(event,'${ev.id}',${d})"><div class="rz t"></div><b>${ev.done[d]?'✓ ':''}${esc(ev.t)}</b><div>${hm(z.o.s)}–${hm(z.o.e)}</div><div class="rz b"></div></div>`}).join('')}${d==D()?`<div class="nowl" style="top:${(Date.now()-midn(d))/6e4*.8}px"><i></i></div>`:''}</div>`}).join('');
 return`<div class="tg"><div class="gr1" style="${gt}"><div></div>${head}</div><div class="gr1" style="${gt}"><div class="sub" style="font-size:10px;padding:4px">all-day</div>${adr}</div><div id="gs" class="gs" onscroll="gsT=this.scrollTop"><div class="gr1" style="${gt};height:1152px"><div class="hrs">${Array.from({length:24},(_,h)=>`<div class="hl" style="top:${h*48}px">${h?pad(h)+':00':''}</div>`).join('')}</div>${cols}</div></div></div>`}
 function vMonth(){const x=dt(cd),y=x.getUTCFullYear(),m=x.getUTCMonth(),f=Math.floor(Date.UTC(y,m,1)/864e5),a=f-((wd(f)+6)%7),dim=new Date(Date.UTC(y,m+1,0)).getUTCDate(),wk=Math.ceil((((wd(f)+6)%7)+dim)/7),all=occs(a,a+wk*7-1).filter(o=>vis(o.ev));
-return`<div class="mhd">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(w=>`<div>${w}</div>`).join('')}</div><div class="mgrid">${Array.from({length:wk*7},(_,i)=>{const d=a+i,l=all.filter(o=>o.d<=d&&d<=o.d+o.span).sort((p,q)=>p.s-q.s);return`<div class="mc ${dt(d).getUTCMonth()!=m?'om':''}" onclick="newEv(${d},540,600)" ondragover="event.preventDefault()" ondrop="dropD(event,${d})"><span class="mn ${d==D()?'td':''}" onclick="event.stopPropagation();cd=${d};cv='day';drawCal()">${dt(d).getUTCDate()}</span>${l.slice(0,3).map(o=>pill(o,d,1)).join('')}${l.length>3?`<div class="sub" onclick="event.stopPropagation();cd=${d};cv='day';drawCal()">+${l.length-3} more</div>`:''}</div>`}).join('')}</div>`}
+return`<div class="mhd">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(w=>`<div>${w}</div>`).join('')}</div><div class="mgrid">${Array.from({length:wk*7},(_,i)=>{const d=a+i,l=all.filter(o=>o.d==d).sort((p,q)=>p.s-q.s);return`<div class="mc ${dt(d).getUTCMonth()!=m?'om':''}" onclick="newEv(${d},540,600)" ondragover="event.preventDefault()" ondrop="dropD(event,${d})"><span class="mn ${d==D()?'td':''}" onclick="event.stopPropagation();cd=${d};cv='day';drawCal()">${dt(d).getUTCDate()}</span>${l.slice(0,3).map(o=>pill(o,d,1)).join('')}${l.length>3?`<div class="sub" onclick="event.stopPropagation();cd=${d};cv='day';drawCal()">+${l.length-3} more</div>`:''}</div>`}).join('')}</div>`}
 function vYear(){const y=dt(cd).getUTCFullYear();return`<div class="yg">${Array.from({length:12},(_,m)=>{const f=Math.floor(Date.UTC(y,m,1)/864e5);return`<div class="yc"><b onclick="cd=${f};cv='month';drawCal()">${MN[m]}</b><div class="mg">${mini(f,1)}</div></div>`}).join('')}</div>`}
 const fdate=d=>{const x=dt(d);return WD[wd(d)]+' '+x.getUTCDate()+' '+MN[x.getUTCMonth()].slice(0,3)+' '+x.getUTCFullYear()},agRows=l=>{let last=-1,h='';l.forEach(o=>{if(o.d!=last){last=o.d;h+=`<h3>${fdate(o.d)}${o.d==D()?' (today)':''}</h3>`}h+=`<div class="ar" onclick="showEv('${o.ev.id}',${o.d})" oncontextmenu="ctx(event,'${o.ev.id}',${o.d})"><i style="background:${ecol(o.ev)}"></i><span style="width:110px;font-size:12px">${o.ev.ad?'All day':hm(o.s)+' – '+hm(o.e)}</span><span class="${o.ev.done[o.d]?'done':''}" style="flex:1">${esc(o.ev.t)}</span><span class="sub">${esc(calOf(o.ev)?.n||'')}</span></div>`});return h};
 function vAgenda(){const l=occs(cd,cd+60).filter(o=>vis(o.ev)).sort((a,b)=>a.s-b.s);return`<div class="ag">${agRows(l)||'<div class="sub">No upcoming events.</div>'}</div>`}
 function results(){const q=cq.toLowerCase(),l=occs(D()-120,D()+365).filter(o=>vis(o.ev)&&[o.ev.t,o.ev.desc,o.ev.loc,o.ev.guests].join(' ').toLowerCase().includes(q)).sort((a,b)=>a.s-b.s).slice(0,120);return`<div class="ag"><h2>Search results</h2>${agRows(l)||'<div class="sub">No matches.</div>'}</div>`}
 function newAt(d,e,c){const m=Math.min(1380,sn15((e.clientY-c.getBoundingClientRect().top)/.8));newEv(d,m,m+60)}
-function newEv(d,m0,m1){openEd({id:'e'+Date.now()+Math.floor(rnd()*99),t:'',s:midn(d)+m0*6e4,e:midn(d)+m1*6e4,ad:0,cal:'c_other',color:'',loc:'',desc:'',rep:'none',wk:[],rem:10,guests:'',type:'other',done:{},paid:{},ex:[],st:'fixed',tg:'',lk:'',sub:flat()[0]?.id,xp:5,pts:5},true)}
+function newEv(d,m0,m1){openEd({id:'e'+Date.now()+Math.floor(rnd()*99),t:'',s:midn(d)+m0*6e4,e:midn(d)+m1*6e4,ad:0,cal:'c_other',color:'',loc:'',desc:'',rep:'none',wk:[],rem:10,etype:S.cfg.etypes[0].id,done:{},ex:[]},true)}
 function openEd(ev,isNew,od){edv=JSON.parse(JSON.stringify(ev));edv._d=od??dn(ev.s);const d=dn(ev.s),o=(a,v)=>a.map(x=>`<option value="${esc(x[0])}" ${x[0]==v?'selected':''}>${esc(x[1])}</option>`).join('');
 $('mb').innerHTML=`<h2>${isNew?'New event':'Edit event'}</h2><input id="f_t" placeholder="Add title" value="${esc(ev.t)}" style="width:100%;font-size:18px;border:0;border-bottom:2px solid #1a73e8;border-radius:0;margin-bottom:8px">
-${!isNew&&ev.rep&&ev.rep!='none'&&ev.st!='anchored'?`<div class="row">Apply to <select id="f_sc"><option value="one">This only</option><option value="all">All</option></select></div>`:''}<div class="row"><input type="date" id="f_d" value="${ymd(d)}"><label><input type="checkbox" id="f_a" ${ev.ad?'checked':''} onchange="$('f_tm').style.display=this.checked?'none':'flex'"> All day</label></div>
+${!isNew&&ev.rep&&ev.rep!='none'?`<div class="row">Apply to <select id="f_sc"><option value="one">This only</option><option value="all">All</option></select></div>`:''}<div class="row"><input type="date" id="f_d" value="${ymd(d)}"><label><input type="checkbox" id="f_a" ${ev.ad?'checked':''} onchange="$('f_tm').style.display=this.checked?'none':'flex'"> All day</label></div>
 <div class="row" id="f_tm" style="display:${ev.ad?'none':'flex'}"><input type="time" id="f_s" value="${hm(ev.s)}"> to <input type="time" id="f_e" value="${hm(ev.e)}"></div>
-<div class="row">Type <select id="f_ty" onchange="tyCh()">${o(TY.map(t=>[t,t]),ev.type)}</select> Calendar <select id="f_c">${o(S.cal.cals.map(c=>[c.id,c.n]),ev.cal)}</select></div>
-<div class="row">Slot <select id="f_st" onchange="stCh()">${o([['fixed','Fixed'],['floating','Floating'],['anchored','Anchored']],ev.st||'fixed')}</select></div>
-<div class="row" id="f_an" style="display:${ev.st=='anchored'?'flex':'none'}">After <select id="f_anc">${o(S.cal.ev.filter(x=>x.id!=ev.id).map(x=>[x.id,x.t]),ev.anc)}</select> gap <input id="f_gap" type="number" value="${ev.gap||0}" style="width:60px"> min</div>
-<div class="row">Target <input id="f_tg" value="${esc(ev.tg||'')}" placeholder="e.g. 30 min" style="flex:1"> Goal <select id="f_lk">${o([['','None'],['maint','Maintenance'],...S.goals.map(g=>[g.id,g.n])],ev.lk||'')}</select></div>
-<div class="row" id="f_mf" style="display:${ev.type=='mission'?'flex':'none'}">Sub <select id="f_sub">${o(flat().map(s=>[s.id,s.n]),ev.sub)}</select> xp <input id="f_xp" type="number" value="${ev.xp}" style="width:60px"> pts <input id="f_pt" type="number" value="${ev.pts}" style="width:60px"></div>
+<div class="row">Type <select id="f_et">${o(S.cfg.etypes.map(t=>[t.id,t.n]),ev.etype)}</select> Calendar <select id="f_c">${o(S.cal.cals.map(c=>[c.id,c.n]),ev.cal)}</select></div>
 <div class="row"><span class="sw" style="background:conic-gradient(#ccc,#eee,#ccc);border-color:${!ev.color?'#000':'transparent'}" onclick="pickC('')"></span>${EVC.map(c=>`<span class="sw" data-c="${c}" style="background:${c};border-color:${ev.color==c?'#000':'transparent'}" onclick="pickC('${c}')"></span>`).join('')}</div>
 <input id="f_l" placeholder="Location" value="${esc(ev.loc)}" style="width:100%;margin:4px 0"><textarea id="f_dc" placeholder="Description" rows="3" style="width:100%">${esc(ev.desc)}</textarea>
 <div class="row">Repeat <select id="f_r" onchange="$('f_wk').style.display=this.value=='weekly'?'inline':'none'">${o(RP.map(r=>[r,r]),ev.rep||'none')}</select><span id="f_wk" style="display:${ev.rep=='weekly'?'inline':'none'}">${WD.map((w,i)=>`<label><input type="checkbox" id="wk${i}" ${(ev.wk||[]).includes(i)?'checked':''}>${w[0]}</label>`).join(' ')}</span></div>
 <div class="row">Reminder <select id="f_rm">${o(RM,ev.rem)}</select></div>
 <p><button class="b" onclick="saveEd()">Save</button> <button class="b" onclick="$('modal').style.display='none'">Cancel</button>${isNew?'':` <button class="b x" onclick="delEv('${ev.id}')">Delete</button>`}</p>`;$('modal').style.display='flex'}
 function pickC(c){edv.color=c;document.querySelectorAll('#mb .sw').forEach(s=>s.style.borderColor=(s.dataset.c||'')==c?'#000':'transparent')}
-function stCh(){const v=$('f_st').value;$('f_an').style.display=v=='anchored'?'flex':'none'}
-function tyCh(){const t=$('f_ty').value;$('f_mf').style.display=t=='mission'?'flex':'none';const c=S.cal.cals.find(x=>x.id=='c_'+t);if(c)$('f_c').value=c.id}
 function saveEd(){const ev=edv,d=Math.floor(Date.parse($('f_d').value)/864e5);if(isNaN(d))return toast('Pick date');ev.t=$('f_t').value||'(No title)';ev.ad=$('f_a').checked?1:0;const tm=v=>{const[a,b]=v.split(':').map(Number);return(a*60+(b||0))*6e4};
 if(ev.ad){ev.s=midn(d);ev.e=midn(d+1)}else{ev.s=midn(d)+tm($('f_s').value||'09:00');ev.e=midn(d)+tm($('f_e').value||'10:00');if(ev.e<=ev.s)ev.e=ev.s+30*6e4}
-ev.type=$('f_ty').value;ev.cal=$('f_c').value;ev.loc=$('f_l').value;ev.desc=$('f_dc').value;ev.rep=$('f_r').value;ev.rem=+$('f_rm').value;ev.st=$('f_st').value;ev.anc=$('f_anc').value;ev.gap=+$('f_gap').value||0;ev.tg=$('f_tg').value;ev.lk=$('f_lk').value;ev.sub=$('f_sub').value;ev.xp=+$('f_xp').value||0;ev.pts=+$('f_pt').value||0;
-ev.wk=[0,1,2,3,4,5,6].filter(i=>$('wk'+i).checked);if(ev.rep=='weekly'&&!ev.wk.length)ev.wk=[wd(d)];const sc=$('f_sc');if(sc&&sc.value=='one'){const orig=evOf(ev.id);orig.ex=[...(orig.ex||[]),ev._d];ev.id='e'+Date.now()+Math.floor(rnd()*99);ev.rep='none';ev.wk=[];ev.ex=[];ev.done=orig.done[ev._d]?{[d]:1}:{};ev.paid=orig.paid[ev._d]?{[d]:1}:{};ev.auto=0}delete ev._d;const i=S.cal.ev.findIndex(x=>x.id==ev.id);i<0?S.cal.ev.push(ev):S.cal.ev[i]=ev;save();$('modal').style.display='none';cd=d;drawCal()}
-function showEv(id,d){const ev=evOf(id);if(!ev)return;const c=calOf(ev),rec=ev.rep&&ev.rep!='none',rp=rec?'Repeats '+ev.rep:'No repeat',dn_=ev.done[d],can=(ev.type=='habit'||ev.type=='mission')&&d<=D();
-$('mb').innerHTML=`<div style="border-left:6px solid ${ecol(ev)};padding-left:10px"><h2 style="font-size:17px;text-transform:none;letter-spacing:0;color:${ecol(ev)}">${esc(ev.t)}</h2><div>${fdate(d)} | ${ev.ad?'All day':hm(ev.s)+' – '+hm(ev.e)}</div><div class="sub">${rp} | ${esc(c?.n||'')} <span class="tag">${esc(ev.type)}</span></div>${ev.type=='mission'?`<div class="sub">Reward: ${esc(subOf(ev.sub)?.n||'-')}</div>`:''}<div class="sub">${esc(ev.st||'fixed')}${ev.tg?' | target: '+esc(ev.tg):''} | ${ev.lk=='maint'?'maintenance':ev.lk?'goal: '+esc(S.goals.find(g=>g.id==ev.lk)?.n||'?'):(ev.type=='habit'||ev.type=='mission'?'<b style="color:#d93025">noise</b>':'')}</div>${ev.loc?`<p>📍 ${esc(ev.loc)}</p>`:''}${ev.desc?`<p>${esc(ev.desc)}</p>`:''}</div>
+ev.etype=$('f_et').value;ev.cal=$('f_c').value;ev.loc=$('f_l').value;ev.desc=$('f_dc').value;ev.rep=$('f_r').value;ev.rem=+$('f_rm').value;
+ev.wk=[0,1,2,3,4,5,6].filter(i=>$('wk'+i).checked);if(ev.rep=='weekly'&&!ev.wk.length)ev.wk=[wd(d)];const sc=$('f_sc');if(sc&&sc.value=='one'){const orig=evOf(ev.id);orig.ex=[...(orig.ex||[]),ev._d];ev.id='e'+Date.now()+Math.floor(rnd()*99);ev.rep='none';ev.wk=[];ev.ex=[];ev.done=orig.done[ev._d]?{[d]:1}:{}}delete ev._d;const i=S.cal.ev.findIndex(x=>x.id==ev.id);i<0?S.cal.ev.push(ev):S.cal.ev[i]=ev;save();$('modal').style.display='none';cd=d;drawCal()}
+function showEv(id,d){const ev=evOf(id);if(!ev)return;const c=calOf(ev),rec=ev.rep&&ev.rep!='none',rp=rec?'Repeats '+ev.rep:'No repeat',dn_=ev.done[d],can=etStreak(ev)&&d<=D(),et=etOf(ev.etype);
+$('mb').innerHTML=`<div style="border-left:6px solid ${ecol(ev)};padding-left:10px"><h2 style="font-size:17px;text-transform:none;letter-spacing:0;color:${ecol(ev)}">${esc(ev.t)}</h2><div>${fdate(d)} | ${ev.ad?'All day':hm(ev.s)+' – '+hm(ev.e)}</div><div class="sub">${rp} | ${esc(c?.n||'')} <span class="tag">${esc(et?.n||'')}</span></div>${ev.loc?`<p>📍 ${esc(ev.loc)}</p>`:''}${ev.desc?`<p>${esc(ev.desc)}</p>`:''}</div>
 <p>${can?`<button class="b ${dn_?'on':''}" onclick="markDone('${id}',${d})">${dn_?'Done (undo)':'Mark done'}</button> `:''}<button class="b" onclick="openEd(evOf('${id}'),false,${d})">Edit</button> <button class="b" onclick="dupEv('${id}')">Duplicate</button> ${rec?`<button class="b x" onclick="delEv('${id}','one',${d})">Delete this</button> <button class="b x" onclick="delEv('${id}')">Delete all</button>`:`<button class="b x" onclick="delEv('${id}')">Delete</button>`}</p>`;$('modal').style.display='flex'}
-function dupEv(id){const ev=JSON.parse(JSON.stringify(evOf(id)));ev.id='e'+Date.now()+Math.floor(rnd()*99);ev.t+=' (copy)';ev.done={};ev.paid={};S.cal.ev.push(ev);save();$('modal').style.display='none';drawCal();toast('Duplicated')}
+function dupEv(id){const ev=JSON.parse(JSON.stringify(evOf(id)));ev.id='e'+Date.now()+Math.floor(rnd()*99);ev.t+=' (copy)';ev.done={};S.cal.ev.push(ev);save();$('modal').style.display='none';drawCal();toast('Duplicated')}
 function delEv(id,mode,d){const ev=evOf(id);if(mode=='one'&&ev)ev.ex=[...(ev.ex||[]),d];else S.cal.ev=S.cal.ev.filter(x=>x.id!=id);save();$('modal').style.display='none';drawCal();toast('Deleted')}
-function ctx(e,id,d){e.preventDefault();e.stopPropagation();const c=$('ctx'),ev=evOf(id),can=(ev.type=='habit'||ev.type=='mission')&&d<=D();c.innerHTML=`<div onclick="showEv('${id}',${d})">Details</div><div onclick="openEd(evOf('${id}'),false,${d})">Edit</div><div onclick="dupEv('${id}')">Duplicate</div>${can?`<div onclick="markDone('${id}',${d})">${ev.done[d]?'Mark not done':'Mark done'}</div>`:''}${ev.rep&&ev.rep!='none'?`<div onclick="delEv('${id}','one',${d})" style="color:#d93025">Delete this</div><div onclick="delEv('${id}')" style="color:#d93025">Delete all</div>`:`<div onclick="delEv('${id}')" style="color:#d93025">Delete</div>`}`;c.style.display='block';c.style.left=Math.min(e.clientX,innerWidth-170)+'px';c.style.top=Math.min(e.clientY,innerHeight-190)+'px'}
+function ctx(e,id,d){e.preventDefault();e.stopPropagation();const c=$('ctx'),ev=evOf(id),can=etStreak(ev)&&d<=D();c.innerHTML=`<div onclick="showEv('${id}',${d})">Details</div><div onclick="openEd(evOf('${id}'),false,${d})">Edit</div><div onclick="dupEv('${id}')">Duplicate</div>${can?`<div onclick="markDone('${id}',${d})">${ev.done[d]?'Mark not done':'Mark done'}</div>`:''}${ev.rep&&ev.rep!='none'?`<div onclick="delEv('${id}','one',${d})" style="color:#d93025">Delete this</div><div onclick="delEv('${id}')" style="color:#d93025">Delete all</div>`:`<div onclick="delEv('${id}')" style="color:#d93025">Delete</div>`}`;c.style.display='block';c.style.left=Math.min(e.clientX,innerWidth-170)+'px';c.style.top=Math.min(e.clientY,innerHeight-190)+'px'}
 function shiftEv(ev,k){if(!k)return;ev.s=shiftD(ev.s,k);ev.e=shiftD(ev.e,k);if(ev.rep=='weekly'&&ev.wk?.length)ev.wk=ev.wk.map(w=>((w+k)%7+7)%7)}
 function dropD(e,d){e.preventDefault();const[id,od]=e.dataTransfer.getData('t').split('|'),ev=evOf(id);if(!ev)return;shiftEv(ev,d-+od);save();drawMain()}
 document.addEventListener('pointerdown',e=>{if(e.pointerType=='touch'||e.button||!e.target.closest('#calroot'))return;const el=e.target.closest('.ev'),col=e.target.closest('.col');
@@ -508,11 +332,11 @@ let dm=sn15((e.clientY-g.y)/.8);if(g.mode=='mv'){dm=Math.max(-g.top/.8,Math.min(
 else if(g.mode=='rb'){dm=Math.max(dm,(12-g.h)/.8);g.el.style.height=g.h+dm*.8+'px'}else{dm=Math.min(dm,(g.h-12)/.8);dm=Math.max(dm,-g.top/.8);g.el.style.top=g.top+dm*.8+'px';g.el.style.height=g.h-dm*.8+'px'}g.dm=dm});
 document.addEventListener('pointerup',()=>{const g=drag;if(!g)return;drag=null;
 if(g.mode=='cr'){g.g.remove();let a=g.m0,b=g.m0+60;if(g.mv){a=Math.min(g.m0,g.m1);b=Math.max(g.m0,g.m1,a+15)}a=Math.max(0,Math.min(a,1425));newEv(g.d,a,Math.min(1440,b));return}
-if(!g.mv){showEv(g.ev.id,g.d);return}let ev=g.ev;const k=g.dm*6e4;if(ev.rep&&ev.rep!='none'&&ev.st!='anchored')ev=splitOcc(ev,g.d);if(ev.st=='anchored'){if(g.mode!='rb')ev.gap=(ev.gap||0)+g.dm;else ev.e=Math.max(ev.s+15*6e4,ev.e+k);save();drawMain();return}
+if(!g.mv){showEv(g.ev.id,g.d);return}let ev=g.ev;const k=g.dm*6e4;if(ev.rep&&ev.rep!='none')ev=splitOcc(ev,g.d);
 if(g.mode=='mv'){ev.s+=k;ev.e+=k;shiftEv(ev,g.dd)}else if(g.mode=='rb')ev.e=Math.max(ev.s+15*6e4,ev.e+k);else ev.s=Math.min(ev.e-15*6e4,ev.s+k);save();drawMain()});
 document.addEventListener('click',()=>{const c=$('ctx');if(c)c.style.display='none'});
 function calTick(){if(!S||!S.cal)return;const n=Date.now(),d=D();document.querySelectorAll('.nowl').forEach(e=>e.style.top=(n-midn(d))/6e4*.8+'px');
 occs(d,d+1).forEach(o=>{const ev=o.ev;if(ev.ad||ev.rem==null||ev.rem<0)return;const k=ev.id+o.d;if(n>=o.s-ev.rem*6e4&&n<o.s&&!fired.has(k)){fired.add(k);const m=ev.t+' at '+hm(o.s);toast('⏰ '+m);try{if(Notification.permission=='granted')new Notification(S.cfg.name,{body:m})}catch(x){}}})}
 (async()=>{try{if(window.claude){const[u,d]=await Promise.all([claude.use('user'),claude.use('db')]);if(u&&d){ref=d.collection('data/users/'+await u.id()).doc('save');const s=await ref.get();if(s.exists)S=JSON.parse(s.data().j)}}}catch(e){}
-if(!S)try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();review();theme();save();render();setInterval(calTick,20000);addEventListener('resize',()=>{if(tab=='home')drawCal()})})();
+if(!S)try{S=JSON.parse(localStorage.getItem('ml'))}catch(e){}if(!S)S=fresh();migrate();step();theme();save();render();setInterval(calTick,20000);addEventListener('resize',()=>{if(tab=='home')drawCal()})})();
 </script></body></html>
